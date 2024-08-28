@@ -1,42 +1,75 @@
-$(document).on('input', function(){
-    const value = parseInt($('#input_value').val(), 10); // Ensure the value is an integer
-    const percent = `${value}%`; // Use the value for height
-
-    let color = '';
-
-    if (value <= 20) {
-        color = '#f6b2b2';
-    } else if (value < 35) {
-        color = '#f6c8b2';
-    } else if (value < 50) {
-        color = '#f6d7b2';
-    } else if (value < 60) {
-        color = '#f6efb2';
-    } else if (value < 70) {
-        color = '#e4f6b2';
-    } else if (value < 80) {
-        color = '#d4f6b2';
-    } else if (value <= 100) {
-        color = '#a8fa8c';
+function trashDisplay(Data){
+    let percent = Data;
+    if (Data>100){
+        Data = 0+'%';
+    }else if(Data == ''){
+        Data = 0+'%';
+    }else if(Data < 0){
+        Data = 0+'%';
+    }else{
+        Data = Data+'%';
     }
 
-    $('.containerBin').css({
-        'border-bottom': `3px solid ${color}`, // Use the variable color
-        'border-left': `3px solid ${color}`, // Use the variable color
-        'border-right': `3px solid ${color}`, // Use the variable color
-        'border-radius-bottom-right': '10px',
-        'border-radius-bottom-left': '10px',
-        'height': '350px',
-        'width': '150px',
-        'position': 'relative'
-    });
+    let colorContent = ''
 
-    $('.trashbin').css({
-        'background-color': color, // Use the variable color
-        'height': percent, // Correctly set the height as a percentage
+    // Lets change the color depend to percentage
+    if(percent <= 20){
+        colorContent = '#fa8c8c'
+        console.log(colorContent)
+    }else if(percent <= 30){
+        colorContent = '#fab78c'
+        console.log(colorContent)
+    }else if(percent <= 50){
+        colorContent = '#faf38c'
+        console.log(colorContent)
+    }else if(percent <= 70){
+        colorContent = '#e3fa8c'
+        console.log(colorContent)
+    }else if(percent <= 80){
+        colorContent = '#c5fa8c'
+        console.log(colorContent)
+    }else if(percent <= 100){
+        colorContent = '#a5fa8c'
+        console.log(colorContent)
+    }
+
+    $('#trashPercent').text(Data)
+
+    $('.trashBinContainer').css({
+        'display': 'flex',
+        'background-color': '#d3edf8',
+        'justify-content': 'center',
+        'height': '350px',
+        'width': '100px',
+        'border-bottom': '3px solid green',
+        'border-left': '3px solid green',
+        'border-right': '3px solid green',
+        'border-radius': ' 0px 0px 15px 15px',
+        'position': 'relative'
+    })
+
+    $('.trashBinContent').css({
+        'width': '100%',
+        'height': Data,
+        'background-color': colorContent,
         'position': 'absolute',
+        'border-radius': ' 0px 0px 13px 13px',
         'bottom': '0',
-        'left': '0',
-        'width': '100%'
-    });
+        'left': '0'
+    })
+
+    $('.trashPercent').css({
+        'position': 'absolute',
+        'top': '150',
+        'text-align': 'center',
+        'font-weight': 'bolder',
+        'z-index': '10',
+        'color': 'green'
+    })
+}
+trashDisplay(0)
+
+$(document).on('input', function(){
+    const trashData = $('#trashData').val()
+    trashDisplay(trashData)
 });
