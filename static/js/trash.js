@@ -19,6 +19,20 @@ function message(data){
 function trashDisplay(Data){
     total = total + Data;
     message(total)
+    
+    // ajax calls
+    $.ajax({
+        type: "POST",
+        url: "/trashLogs",
+        contentType: "application/json", // Ensure you're sending JSON
+        data: JSON.stringify({ data: total }), // Serialize your data
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+        }
+    });
+    
+
     // console.log(total)
     let percent = total;
     if (total>100){
