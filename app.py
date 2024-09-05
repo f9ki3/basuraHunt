@@ -24,7 +24,7 @@ google = oauth.register(
 
 @app.route('/')
 def index():
-    return 'Welcome! <a href="/login">Login with Google</a>'
+    return render_template('Auth.html')
 
 @app.route('/login')
 def login():
@@ -84,6 +84,6 @@ def update_count():
 if __name__ == "__main__":
     app.run(debug=True)
     Database()
-    Accounts().createTableAccounts()
+    # Accounts().createTableAccounts()
     TrashLogs().createTableTrashLogs()
     TrashCount().createTableTrashCount()

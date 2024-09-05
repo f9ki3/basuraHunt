@@ -51,20 +51,3 @@ class TrashCount(Database):
         conn.close()
         return data
     
-class Accounts(Database):
-    def createTableAccounts(self):
-        conn = self.conn
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                google_id TEXT UNIQUE NOT NULL,
-                email TEXT UNIQUE NOT NULL,
-                name TEXT
-            )
-        ''')
-        conn.commit()
-        print('Accounts table created successfully')
-
-
-    
