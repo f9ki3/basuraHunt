@@ -8,12 +8,21 @@
 <body>
     <!-- {% include 'header.html' %} -->
     <div class="container pt-3">
-        <div>
-            <h1>Welcome to BasuraHunt</h1>
-            <p>Next Level Monitoring Application System for Waste Management Solution</p>
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <div class="border p-4 rounded-4">
+                    {% include 'trash_bin1.html' %}
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="border p-4 rounded-4">
+                    {% include 'trash_bin2.html' %}
+                </div>
+            </div>
+            
         </div>
-        {% include 'trash_bin.html' %}
     </div>
+    
     {% include 'footer_links.html' %}
 </body>
 </html>

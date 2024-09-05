@@ -2,7 +2,7 @@ import sqlite3
 
 class Database:
     def __init__(self):
-        self.conn = sqlite3.connect('trash.db')
+        self.conn = sqlite3.connect('basurahunt.db')
     
 class TrashLogs(Database):
     def createTableTrashLogs(self):
@@ -41,6 +41,15 @@ class TrashCount(Database):
         # print("Trash Count Updated!")
         conn.close()
     
+    def updateTrashCount2(self, count):
+        conn = self.conn
+        conn.cursor().execute(f'''
+        UPDATE trashCount SET count = {count} WHERE id = 2;
+    ''')
+        conn.commit()
+        # print("Trash Count Updated!")
+        conn.close()
+    
     # We encounter error snce we forget to remove the count parameter
     def getTrashCount(self):
         conn = self.conn
@@ -51,3 +60,33 @@ class TrashCount(Database):
         conn.close()
         return data
     
+    def getTrashCount2(self):
+        conn = self.conn
+        data = conn.cursor().execute(f'''
+        SELECT count FROM trashCount WHERE id = 2;
+    ''').fetchone()
+        print(f"Retrieved id = {data} Count!")
+        conn.close()
+        return data
+
+class Accounts(Database):
+    def createTableAccounts(self):
+        conn = self.conn
+        conn.cursor().execute('''CREATE TABLE IF NOT EXISTS users (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        student_no TEXT NULL,
+                        email TEXT UNIQUE NOT NULL,
+                        password TEXT NOT NULL,
+                        fname TEXT NULL,
+                        lname TEXT NULL,
+                        contact TEXT NULL,
+                        address TEXT NULL,
+                        profle TEXT NULL,
+                        status INTEGER
+                    )''')
+        conn.commit()
+        print("Table Account Created!")
+        conn.close()
+
+    def checkEmail(self):
+        pass

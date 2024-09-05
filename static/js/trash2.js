@@ -2,7 +2,7 @@
 function getCount(callback) {
     $.ajax({
         type: "GET",
-        url: "/getCount",
+        url: "/getCount2",
         dataType: "json",
         success: function (response) {
             callback(Number(response)); // Pass the response to the callback

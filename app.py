@@ -55,15 +55,37 @@ def authorized():
             surname = user_info.get('family_name')
             profile_picture = user_info.get('picture')
 
-            return (f'Logged in as: {first_name} {surname}, Email: {email}, '
-                    f'Profile Picture: <img src="{profile_picture}" alt="Profile Picture" />, ')
+            # return (f'Logged in as: {first_name} {surname}, Email: {email}, '
+            #         f'Profile Picture: <img src="{profile_picture}" alt="Profile Picture" />, ')
+            return redirect('/landing')
     except Exception as e:
         return f'Login failed: {str(e)}'
 
     return 'Login failed!'
 
+@app.route('/landing')
+def home():
+    return render_template('index.html')
+
 
 # Create API that gets and retrieves data from the model
+@app.route('/createAccountManual', methods=['POST'])
+def create_account_manual():
+    # Extract data from the request
+    data = request.json  # Assuming you're sending JSON data
+
+    # Process the data (this is where you handle the business logic)
+    # For example, you might save the data to a database here
+
+    # Prepare a response (this is where you send a response back to the client)
+    response = {
+        'status': 'success',
+        'message': 'Account created successfully',
+        'data': data  # Echo back the received data or any other information
+    }
+    print(response)
+    return jsonify(response)  # Return JSON response
+
 @app.route('/getCount', methods=['GET'])
 def getCount():
     data = TrashCount().getTrashCount()
@@ -81,9 +103,26 @@ def update_count():
 
     return jsonify(response)
 
+@app.route('/getCount2', methods=['GET'])
+def getCount2():
+    data = TrashCount().getTrashCount2()
+    return jsonify(data)
+
+@app.route('/updateCount2', methods=['POST'])
+def update_count2():
+    total = request.form.get('total')
+    TrashCount().updateTrashCount2(total)
+
+    response = {
+        'status': 'success',
+        'total_received': total
+    }
+
+    return jsonify(response)
+
 if __name__ == "__main__":
     app.run(debug=True)
     Database()
-    # Accounts().createTableAccounts()
+    Accounts().createTableAccounts()
     TrashLogs().createTableTrashLogs()
     TrashCount().createTableTrashCount()
