@@ -1,53 +1,70 @@
 import sqlite3
 
-class Trash:
+class Database:
     def __init__(self):
-        self.conn = sqlite3.connect('basurahunt.db')
+        self.conn = sqlite3.connect('trash.db')
     
-    def tableTrashLogs(self):
+class TrashLogs(Database):
+    def createTableTrashLogs(self):
         conn = self.conn
         conn.cursor().execute('''
-        CREATE TABLE IF NOT EXISTS trashLogs(
+        CREATE TABLE IF NOT EXISTS trashLogs (
                               id INTEGER PRIMARY KEY AUTOINCREMENT,
                               date TEXT NOT NULL,
                               message TEXT NOT NULL,
                               percent INTEGER NOT NULL
-                              )
-        ''')
+                              );
+    ''')
         conn.commit()
-        # lets make a logs if success!
-        # print('Table Logs Created!')
+        # print("Table Trash Logs Created!")
         conn.close()
-    
-    def tableTrashContent(self):
+
+class TrashCount(Database):
+    def createTableTrashCount(self):
         conn = self.conn
         conn.cursor().execute('''
-        CREATE TABLE IF NOT EXISTS trashCount(
+        CREATE TABLE IF NOT EXISTS trashCount (
                               id INTEGER PRIMARY KEY AUTOINCREMENT,
                               count INTEGER NOT NULL
-                              )
-        ''')
+                              );
+    ''')
         conn.commit()
-        # lets make a logs if success!
-        # print('Table Count Created!')
+        # print("Table Trash Count Created!")
         conn.close()
     
-    def updateTrashContent(self, count):
+    def updateTrashCount(self, count):
         conn = self.conn
         conn.cursor().execute(f'''
-        UPDATE trashCount SET count = {count} WHERE id = 1
-        ''',)
+        UPDATE trashCount SET count = {count} WHERE id = 1;
+    ''')
         conn.commit()
-        # lets make a logs if success!
-        print('Table Count Updated!')
+        # print("Trash Count Updated!")
         conn.close()
     
-    def getTrashContent(self):
+    # We encounter error snce we forget to remove the count parameter
+    def getTrashCount(self):
         conn = self.conn
-        data = conn.cursor().execute('''
-        SELECT count FROM trashCount WHERE id = 1
-        ''',).fetchone()
-        # lets make a logs if success!
-        # print('Table Count Retrieved!')
+        data = conn.cursor().execute(f'''
+        SELECT count FROM trashCount WHERE id = 1;
+    ''').fetchone()
+        print(f"Retrieved id = {data} Count!")
         conn.close()
         return data
+    
+class Accounts(Database):
+    def createTableAccounts(self):
+        conn = self.conn
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                google_id TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                name TEXT
+            )
+        ''')
+        conn.commit()
+        print('Accounts table created successfully')
+
+
+    
