@@ -6,49 +6,59 @@ $('#auth').html(`
             </div>
         </div>
         <h2 class="fw-bolder w-100 mb-3 text-center">Create an Account</h2>
+
+        <div>
+            <div id="message_alert" style="display: none" class="alert ps-4 alert-primary alert-dismissible fade show" role="alert">
+            <strong>Note:</strong> You should use strong password containing numbers or specal characters.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+
         <div id="prm">
             <input autocomplete="off" id="email" type="email" placeholder="Email" class="ps-4 form-control mb-3 fs-6 form-control-lg">
             <input autocomplete="off" id="student_id" type="text" placeholder="Student No" class="ps-4 form-control mb-3 fs-6 form-control-lg">
         </div>
+    
         <div id="pass" style="display: none;">
             <input autocomplete="off" id="vpassword" type="password" placeholder="Enter Password" class="ps-4 form-control mb-3 fs-6 form-control-lg">
             <input autocomplete="off" id="cpassword" type="password" placeholder="Confirm Password" class="ps-4 form-control fs-6 form-control-lg">
         </div>
-        <button id="continue" disabled class="w-100 btn-lg fs-6 btn" style="background-color: #009429; color: white;">Continue</button>
-        <button id="create" disabled class="mt-3 w-100 btn-lg fs-6 btn" style="display: none; background-color: #009429; color: white;">Create</button>
+        <button id="continue" disabled class="border w-100 btn-lg fs-6 btn" style="background-color: #009429; color: white;">Continue</button>
+        <button id="create" disabled class="border mt-3 w-100 btn-lg fs-6 btn" style="display: none; background-color: #009429; color: white;">Create</button>
+        <button id="back" class="mt-3 w-100 btn-lg border fs-6 btn text-muted" style="display: none;">Back</button>
         <p class="text-center mt-3 mb-3">or</p>
         <div>
             <a href="/login" class=" mt-3 w-100 btn btn-lg fs-6 border d-flex flex-row align-items-center text-muted">
                 <i class="bi bi-google fs-5 me-4 ms-2"></i> Continue with Google
             </a>
-            <a href="#" class=" mt-3 w-100 btn btn-lg fs-6 border d-flex flex-row align-items-center text-muted">
+            <a href="#" class=" mt-3 w-100 btn btn-lg fs-6 d-flex border flex-row align-items-center text-muted">
                 <i class="bi bi-facebook fs-5 me-4 ms-2"></i> Continue with Facebook
             </a>
         </div>
     </div>
     `);
 
-    $(document).on('input', function() {  
+    $('#email, #student_id').on('input', function() {  
         let email = $('#email').val().trim();  // Trim to avoid empty spaces
         let student_id = $('#student_id').val().trim();
-    
+        
         // Email validation regex
         let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
+        
         // Validate email
         if (emailPattern.test(email)) {
             $('#email').removeClass('is-invalid').addClass('is-valid');
         } else {
             $('#email').removeClass('is-valid').addClass('is-invalid');
         }
-    
+        
         // Validate student_id (must be exactly 5 characters)
-        if (student_id.length === 10) {
+        if (student_id.length === 5) {
             $('#student_id').removeClass('is-invalid').addClass('is-valid');
         } else {
             $('#student_id').removeClass('is-valid').addClass('is-invalid');
         }
-    
+        
         // Enable/Disable the button based on both validations
         if ($('#email').hasClass('is-valid') && $('#student_id').hasClass('is-valid')) {
             $('#continue').prop('disabled', false);  // Enable the button
@@ -56,11 +66,53 @@ $('#auth').html(`
             $('#continue').prop('disabled', true);  // Disable the button
         }
     });
+    
 
     $('#continue').on('click', function() {  
         $(this).hide();
         $('#prm').hide();
-        $('#create, #pass').show();
+        $('#create, #pass, #back, #message_alert').show();
+    });
+
+    $('#back').on('click', function() {  
+        $('#prm, #continue').show();
+        $('#create, #pass, #back').hide();
+    });
+    
+
+    $('#vpassword, #cpassword').on('input', function() {  
+        let vpassword = $('#vpassword').val().trim();  // Trim to avoid empty spaces
+        let cpassword = $('#cpassword').val().trim();
+        
+        // Validate if the passwords match
+        if (vpassword && cpassword && vpassword === cpassword) {
+            $('#vpassword, #cpassword').removeClass('is-invalid').addClass('is-valid');
+            console.log('Passwords match');
+        } else {
+            $('#vpassword, #cpassword').removeClass('is-valid').addClass('is-invalid');
+            console.log('Passwords do not match');
+        }
+
+        // Enable/Disable the button based on both validations
+        if ($('#vpassword').hasClass('is-valid') && $('#cpassword').hasClass('is-valid')) {
+            $('#create').prop('disabled', false);  // Enable the button
+            $('#back').prop('disabled', true);
+        } else {
+            $('#create').prop('disabled', true);  // Disable the button
+            $('#back').prop('disabled', false);
+        }
+    });
+
+    $('#create').on('click', function() {  
+        let email = $('#email').val()
+        let student_id = $('#student_id').val()
+        let vpassword = $('#vpassword').val()
+
+        console.log({
+            'email': email,
+            'student_id': student_id,
+            'password': vpassword,
+        })
     });
     
     
