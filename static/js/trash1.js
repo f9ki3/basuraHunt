@@ -1,4 +1,3 @@
-
 function getCount(callback) {
     $.ajax({
         type: "GET",

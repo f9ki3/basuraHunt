@@ -57,16 +57,23 @@ def authorized():
 
             # return (f'Logged in as: {first_name} {surname}, Email: {email}, '
             #         f'Profile Picture: <img src="{profile_picture}" alt="Profile Picture" />, ')
-            return redirect('/landing')
+            return redirect('/dashboard')
     except Exception as e:
         return f'Login failed: {str(e)}'
 
     return 'Login failed!'
 
-@app.route('/landing')
-def home():
-    return render_template('index.html')
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
+@app.route('/waste_level')
+def waste_level():
+    return render_template('waste_level.html')
+
+@app.route('/logout')
+def logout():
+    return redirect('/')
 
 # Create API that gets and retrieves data from the model
 @app.route('/createAccountManual', methods=['POST'])

@@ -1,7 +1,12 @@
-<div>
-    <li>Dashboards</li>
-    <li>Reports</li>
-    <li>Notification</li>
-    <li>Profile</li>
-    <li>Logout</li>
+<div style="width: 20%; height: 100vh; " class="p-3 border nav-color sticky-top">
+    <div style="width: 60%;" class="ms-3 mb-3">
+        <img style="object-fit: cover; width: 100%" src="{{ url_for('static', filename='img/logo.png') }}" alt="">
+    </div>
+    <a class="btn w-100 mb-2 text-start" href="/dashboard"><i class="bi fs-4 me-3 bi-soundwave"></i>Dashboards</a>
+    <a class="btn w-100 mb-2 text-start" href="/waste_level"><i class="bi fs-4 me-3 bi-speedometer2"></i>Waste Level Indicator</a>
+    <a class="btn w-100 mb-2 text-start"><i class="bi fs-4 me-3 bi-book"></i>Student Reports</a>
+    <a class="btn w-100 mb-2 text-start"><i class="bi fs-4 me-3 bi-person"></i>Account Management</a>
+    <a class="btn w-100 mb-2 text-start"><i class="bi fs-4 me-3 bi-trophy"></i>Student Rewards</a>
+    <a class="btn w-100 mb-2 text-start"><i class="bi fs-4 me-3 bi-recycle"></i>Recycle Records</a>
+    <a class="btn w-100 mb-2 text-start" href="/logout"><i class="bi fs-4 me-3 bi-power"></i>Logout</a>
 </div>

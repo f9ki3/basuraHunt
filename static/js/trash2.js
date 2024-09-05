@@ -1,4 +1,3 @@
-
 function getCount(callback) {
     $.ajax({
         type: "GET",
@@ -28,9 +27,22 @@ getCount(function(data) {
         }
     }
 
+    function updateCount(total){
+        $.ajax({
+            type: "POST",
+            url: "/updateCount2",
+            data: {total: total},
+            dataType: "json",
+            success: function (response) {
+                console.log(response); 
+            }
+        });
+    }
+
     function trashDisplay(Data){
         total = total + Data;
         message(total)
+        updateCount(total)
         // console.log(total)
         let percent = total;
         if (total>100){

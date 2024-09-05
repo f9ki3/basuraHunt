@@ -2,3 +2,11 @@
 .btn-hover:hover {
     background-color: #ebfff1; /* Example hover background color */
 }
+
+/* .body-color{
+    background-color: rgb(246, 250, 255);
+} */
+
+.nav-color{
+    background-color: white;
+}
