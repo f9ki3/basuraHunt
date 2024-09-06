@@ -5,6 +5,8 @@ from datetime import datetime
 from trashModel import *
 
 app = Flask(__name__)
+
+
 app.secret_key = os.urandom(24)
 
 app.config['GOOGLE_CLIENT_ID'] = '323113079361-ig181jaikulgfuluofqqet9o5lhfvmqg.apps.googleusercontent.com'
@@ -127,8 +129,18 @@ def update_count2():
 
     return jsonify(response)
 
+@app.route('/data', methods=['POST'])
+def receive_data():
+    data = request.json
+    distance = data.get('distance')
+    print(distance)
+    # Save data to a database if needed
+    return jsonify({"status": "success", "distance": distance}), 200
+
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
     Database()
     Accounts().createTableAccounts()
     TrashLogs().createTableTrashLogs()

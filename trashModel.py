@@ -35,7 +35,7 @@ class TrashCount(Database):
     def updateTrashCount(self, count):
         conn = self.conn
         conn.cursor().execute(f'''
-        UPDATE trashCount SET count = {count} WHERE id = 1;
+        SELECT FROM trashCount SET count = {count} WHERE id = 1;
     ''')
         conn.commit()
         # print("Trash Count Updated!")
