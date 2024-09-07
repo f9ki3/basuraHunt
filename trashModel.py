@@ -39,7 +39,7 @@ class TrashCount(Database):
         UPDATE trashCount SET count = ? WHERE id = 1;
         ''', (count,))
         conn.commit()
-        # print("Trash Count Updated!")
+        print("Trash Count Updated!")
         conn.close()
 
     
@@ -50,7 +50,7 @@ class TrashCount(Database):
     ''')
         conn.commit()
         # print("Trash Count Updated!")
-        conn.close()
+        # conn.close()
     
     # We encounter error snce we forget to remove the count parameter
     def getTrashCount(self):

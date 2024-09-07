@@ -18,7 +18,7 @@ getCount(function(data) {
             $('#messageTrash2').text('Empty Trash!')
         }else if(data < 50){
             $('#messageTrash2').text('Normal Level')
-        }else if(data > 50 && data < 60){
+        }else if(data > 50 && data < 70){
             $('#messageTrash2').text('Bin Half Filled')
         }else if(data < 100){
             $('#messageTrash2').text('Critical Level')
@@ -59,24 +59,18 @@ getCount(function(data) {
         let colorContent = ''
 
         // Lets change the color depend to percentage
-        if(percent <= 20){
-            colorContent = '#fa8c8c'
-            
-        }else if(percent <= 30){
-            colorContent = '#fab78c'
-            
-        }else if(percent <= 50){
-            colorContent = '#faf38c'
-            
-        }else if(percent <= 70){
-            colorContent = '#e3fa8c'
-            
-        }else if(percent <= 80){
-            colorContent = '#c5fa8c'
-            
-        }else if(percent <= 100){
-            colorContent = '#a5fa8c'
-            
+        if (percent <= 20) {
+            colorContent = '#a5fa8c'; // Light green
+        } else if (percent <= 30) {
+            colorContent = '#c5fa8c'; // Lighter green
+        } else if (percent <= 50) {
+            colorContent = '#e3fa8c'; // Even lighter green
+        } else if (percent <= 70) {
+            colorContent = '#faf38c'; // Pale yellow
+        } else if (percent <= 80) {
+            colorContent = '#fab78c'; // Light orange
+        } else if (percent <= 100) {
+            colorContent = '#fa8c8c'; // Light red
         }
 
         $('#trashPercent2').text(Data)
@@ -114,6 +108,10 @@ getCount(function(data) {
         })
     }
     trashDisplay(0)
+    // setInterval(function() {
+    //     trashDisplay(0);
+    // }, 2000);
+
 
     $('#throwTrash2').on('click', function(){
         trashDisplay(1)
