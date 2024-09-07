@@ -1,9 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-#define echoPin D6  // CHANGE PIN NUMBER HERE IF YOU WANT TO USE A DIFFERENT PIN
-#define trigPin D5  // CHANGE PIN NUMBER HERE IF YOU WANT TO USE A DIFFERENT PIN
-#define ledPin D4   // Built-in LED pin for NodeMCU
+#define echoPin D6  
+#define trigPin D5  
+#define ledPin D4   
 
 const char* ssid = "StarLink";       // Replace with your Wi-Fi network name
 const char* password = "SmartBro123"; // Replace with your Wi-Fi password
@@ -16,7 +16,7 @@ void setup() {
   Serial.begin(9600);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
-  pinMode(ledPin, OUTPUT); // Initialize the built-in LED pin
+  pinMode(ledPin, OUTPUT); 
   
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
@@ -26,7 +26,7 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("Connected to WiFi");
-  digitalWrite(ledPin, HIGH); // Turn on the LED to indicate successful Wi-Fi connection
+  digitalWrite(ledPin, HIGH); 
 }
 
 void loop() {
@@ -34,7 +34,7 @@ void loop() {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   
-  // Set the trigger pin high for 10 microseconds
+  
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);

@@ -34,12 +34,14 @@ class TrashCount(Database):
     
     def updateTrashCount(self, count):
         conn = self.conn
-        conn.cursor().execute(f'''
-        SELECT FROM trashCount SET count = {count} WHERE id = 1;
-    ''')
+        cursor = conn.cursor()
+        cursor.execute('''
+        UPDATE trashCount SET count = ? WHERE id = 1;
+        ''', (count,))
         conn.commit()
         # print("Trash Count Updated!")
         conn.close()
+
     
     def updateTrashCount2(self, count):
         conn = self.conn

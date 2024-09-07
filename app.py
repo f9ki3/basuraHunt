@@ -131,12 +131,25 @@ def update_count2():
 
 @app.route('/data', methods=['POST'])
 def receive_data():
+    # Get the distance from the request
     data = request.json
-    distance = data.get('distance')
-    print(distance)
-    # Save data to a database if needed
-    return jsonify({"status": "success", "distance": distance}), 200
+    distance = int(data.get('distance', 0))  # Provide a default value of 0 if 'distance' is not in the request
 
+    # Define the maximum range
+    max_range = 15  # in cm
+
+    # Calculate the reverse percentage, ensuring it does not go below 0%
+    percentage = max(0, int((1 - (distance / max_range)) * 100))
+
+    # Print the distance and percentage for debugging purposes
+    print(f"Trash Percentage: {percentage}%")
+
+    # Return the distance and percentage as a JSON response
+    return jsonify({
+        "status": "success",
+        "distance": distance,
+        "percentage": percentage  # No need to round since it's already an integer
+    }), 200
 
 
 if __name__ == "__main__":
