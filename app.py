@@ -26,6 +26,11 @@ google = oauth.register(
 
 @app.route('/')
 def index():
+    status = session.get('status')
+    if status == 0:
+        return redirect('dashboard')
+    if status == 1:
+        return redirect('/home')
     return render_template('Auth.html')
 
 @app.route('/success_create')
@@ -50,6 +55,13 @@ def loginAccount():
         e = data.get('log_password')
         
         data = Accounts().log_account(p,e)
+
+        if data == 1:
+            session['status'] = data
+            session['email'] = p 
+        elif data == 0:
+            session['status'] = data
+            session['email'] = p 
 
         # Optionally, you can perform additional processing here
 
@@ -89,7 +101,11 @@ def authorized():
 # Admnastrator
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    status = session.get('status')
+    if status == 0:
+        return render_template('dashboard.html')
+    else:
+        return redirect('/')
 
 @app.route('/waste_level')
 def waste_level():
@@ -97,13 +113,17 @@ def waste_level():
 
 @app.route('/logout')
 def logout():
+    session.clear()
     return redirect('/')
 
 # Students
 @app.route('/home')
 def home():
-    return render_template('home.html')
-
+    status = session.get('status')
+    if status == 1:
+        return render_template('home.html')
+    else:
+        return redirect('/')
 
 # Create API that gets and retrieves data from the model
 @app.route('/createAccountManual', methods=['POST'])
