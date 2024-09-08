@@ -1,0 +1,35 @@
+<div style="background-color: white;" class="sticky-top">
+    <div class="container z-index-3  d-flex justify-content-between align-items-center">
+        <div class="p-2">
+            <img style="object-fit: cover; width: 6rem; height: auto;" src="../static/img/logo.png" alt="Icon">
+        </div>
+        <div class="d-flex align-items-center">
+            <!-- Notification button -->
+            <button class="btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><i class="bi fs-3 bi-bell-fill"></i></button>
+            
+            <!-- User dropdown button -->
+            <div class="dropdown">
+                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi fs-3 bi-person-circle"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#">Recycle Submission</a></li>
+                    <li><a class="dropdown-item" href="#">Report Submission</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Notification</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <!-- <p>Try scrolling the rest of the page to see this option in action.</p> -->
+    </div>
+  </div>

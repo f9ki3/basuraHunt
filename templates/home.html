@@ -6,15 +6,29 @@
     {% include 'header_links.html' %}
 </head>
 <body>
-    <!-- {% include 'header.html' %} -->
+    {% include 'nav.html' %}
     <div class="container pt-3">
         <div  class="row d-flex justify-content-center flex-column align-items-center">
-            <div class="col-12 col-md-6 col-lg-3" style="color: #252422;">
-                
-                <h2 class="fw-bolder w-100 mb-5 text-center">Homepage</h2>
-        
-                
-                
+            <div class="col-12 col-md-6 col-lg-6" style="color: #252422;">
+
+                <div class=" mb-3" style="height: 100px;">
+                    <h1 class="text-start fw-bolder w-100">Hello Idan</h1>
+                    <p>What do you want to report in BasuraHunt?</p>
+                </div>
+                <div class="border p-4 rounded mb-3" style="height: auto;">
+                    <input type="text" class="form-control" style="height: 50px;" placeholder="Write your report here...">
+                    <input class="form-control form-control mt-3" id="formFileLg" type="file">
+                    <button id="continue" disabled class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #009429; color: white;">
+                        <i class="bi fs-3 bi-reply me-2"></i>Report
+                    </button>
+                    
+                </div>
+                <div class="border rounded mb-3" style="height: 300px;">
+
+                </div>
+                <div class="border rounded mb-3" style="height: 300px;">
+
+                </div>
             </div>
         </div>
     </div>
