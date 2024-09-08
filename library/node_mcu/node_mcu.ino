@@ -5,8 +5,8 @@
 #define trigPin D5  
 #define ledPin D4   
 
-const char* ssid = "StarLink";       // Replace with your Wi-Fi network name
-const char* password = "SmartBro123"; // Replace with your Wi-Fi password
+const char* ssid = "ROUTER1";       // Replace with your Wi-Fi network name
+const char* password = "chloesmartbro123"; // Replace with your Wi-Fi password
 const char* serverName = "http://192.168.1.120:5000/data"; // Replace with your server URL
 
 long duration;

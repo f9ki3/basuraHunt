@@ -14,6 +14,20 @@ $('#auth').html(`
             </div>
         </div>
 
+        <div>
+            <div id="warn_create" style="display: none" class="alert ps-4 alert-danger alert-dismissible fade show" role="alert">
+            <strong>Warning</strong> Your email is already registered!.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+
+        <div>
+            <div id="warn_server" style="display: none" class="alert ps-4 alert-danger alert-dismissible fade show" role="alert">
+            <strong>Server Error</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+
         <div id="prm">
             <input autocomplete="off" id="email" type="email" placeholder="Enter your Email" class="ps-4 form-control mb-3 fs-6 form-control-lg">
             <input autocomplete="off" id="student_id" type="text" placeholder="Enter your Student No" class="ps-4 form-control mb-3 fs-6 form-control-lg">
@@ -23,8 +37,14 @@ $('#auth').html(`
             <input autocomplete="off" id="vpassword" type="password" placeholder="Enter Password" class="ps-4 form-control mb-3 fs-6 form-control-lg">
             <input autocomplete="off" id="cpassword" type="password" placeholder="Confirm Password" class="ps-4 form-control fs-6 form-control-lg">
         </div>
+        
         <button id="continue" disabled class="border w-100 btn-lg fs-6 btn" style="background-color: #009429; color: white;">Continue</button>
-        <button id="create" disabled class="border mt-3 w-100 btn-lg fs-6 btn" style="display: none; background-color: #009429; color: white;">Create</button>
+        <button id="create" disabled class="border mt-3 w-100 btn-lg fs-6 btn" style="display: none; background-color: #009429; color: white;">
+            <p id="create_text" class="m-0 p-0">Create</p>
+            <div id="create_loader" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </button>
         <button id="back" class="mt-3 w-100 btn-lg border fs-6 btn text-muted" style="display: none;">Back</button>
         <p class="text-center mt-3 mb-3">Already have an account? <a id="log" style="cursor: pointer; text-decoration: none; color: #009429">Login</a></p>
         <p class="text-center mt-3 mb-3">or</p>
@@ -47,14 +67,26 @@ $('#auth').html(`
                 </div>
             </div>
             <h2 class="fw-bolder w-100 mb-5 text-center">BasuraHunt</h2>
-    
-            <div id="prm">
-                <input autocomplete="off" id="log_email" type="email" placeholder="Email Address" class="ps-4 form-control mb-3 fs-6 form-control-lg">
-                <input autocomplete="off" id="log_password" type="password" placeholder="Enter Password" class="ps-4 form-control mb-3 fs-6 form-control-lg">
+            <div>
+                <div id="log_val" style="display: none;" class="alert ps-4 alert-danger alert-dismissible fade show" role="alert">
+                    Incorrect email or password.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </div>
-        
 
-            <button id="login" disabled class="border w-100 btn-lg fs-6 btn" style="background-color: #009429; color: white;">Login</button>
+            <div>
+                <div id="prm">
+                    <input autocomplete="off" id="log_email" type="email" placeholder="Email Address" class="ps-4 form-control mb-3 fs-6 form-control-lg">
+                    <input autocomplete="off" id="log_password" type="password" placeholder="Enter Password" class="ps-4 form-control mb-3 fs-6 form-control-lg">
+                </div>
+
+                <button id="login" disabled class="border w-100 btn-lg fs-6 btn" style="background-color: #009429; color: white;">
+                    <p id="login_text" class="m-0 p-0">Login</p>
+                    <div id="login_loader" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </button>
+                
     
             <p class="text-center mt-3 mb-3">Don't have an Account? <a id="cre" style="cursor: pointer; text-decoration: none; color: #009429">Create</a></p>
             <p class="text-center mt-3 mb-3">or</p>
@@ -137,34 +169,57 @@ $('#auth').html(`
     });
 
     $('#create').on('click', function() {  
-        let email = $('#email').val()
-        let student_id = $('#student_id').val()
-        let vpassword = $('#vpassword').val()
-
-        data = {
+        $('#create_text').hide();
+        $('#create_loader').show();
+        $('#create').prop('disabled', true);
+    
+        let email = $('#email').val();
+        let student_id = $('#student_id').val();
+        let vpassword = $('#vpassword').val();
+    
+        let data = {
             'email': email,
             'student_id': student_id,
-            'password': vpassword,
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/createAccountManual",
-            data: JSON.stringify(data), // Convert data to JSON string
-            contentType: "application/json", // Set the content type to JSON
-            dataType: "json",
-            success: function(response) {
-                // Handle the response from the server
-                console.log(response);
-                // You can update your UI or perform other actions here
-            },
-            error: function(xhr, status, error) {
-                // Handle errors here
-                console.error('Error:', error);
-            }
-        });
+            'password': vpassword
+        };
         
+        // Introduce a delay of 3 seconds (3000 milliseconds) before making the request
+        setTimeout(function() {
+            $.ajax({
+                type: "POST",
+                url: "/createAccountManual",
+                data: JSON.stringify(data), // Convert data to JSON string
+                contentType: "application/json", // Set the content type to JSON
+                dataType: "json",
+                success: function(response) {
+                    let responseData = response.data;
+    
+                    if (responseData == 1) {
+                        window.location.href = '/success_create';
+                    } else if (responseData == 0) {
+                        $('#message_alert').hide();
+                        $('#warn_create').show();
+                        $('#back').click();
+                        $('#email').val('').removeClass('is-valid').addClass('is-invalid');
+                    } else {
+                        $('#message_alert').hide();
+                        $('#warn_server').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    $('#message_alert').hide();
+                    $('#warn_server').show();
+                },
+                complete: function() {
+                    $('#create_text').show();
+                    $('#create_loader').hide();
+                    $('#create').prop('disabled', false);
+                }
+            });
+        }, 3000); // Delay in milliseconds
     });
+    
     
     
     
@@ -184,6 +239,76 @@ $('#auth').html(`
     });
     
 
+    // logn
+    $('#log_email, #log_password').on('input', function() {
+
+        function checkFields() {
+            let log_email = $('#log_email').val();
+            let log_password = $('#log_password').val();
+            
+            if (log_email && log_password) {
+                $('#login').prop('disabled', false); // Enable button
+            } else {
+                $('#login').prop('disabled', true); // Disable button
+            }
+        }
+
+        checkFields();
+    });
+    
+    $('#login').click(function(){
+        let log_email = $('#log_email').val()
+        let log_password = $('#log_password').val()
+
+        $('#login_text').hide();
+        $('#login_loader').show();
+        $('#login').prop('disabled', true);
+
+        data = {
+            'log_email': log_email,
+            'log_password': log_password
+        }
+
+        setTimeout(function() {
+            $.ajax({
+                type: "POST",
+                url: "/log_account",
+                data: JSON.stringify({
+                    log_email: log_email,
+                    log_password: log_password
+                }),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (response) {
+                    // console.log(response.data)
+                    if (response.data == 0) {
+                        $('#login_text').show();
+                        $('#login_loader').hide();
+                        $('#login').prop('disabled', false);
+                        window.location.href='/dashboard'
+                    } else if (response.data == 1) {
+                        $('#login_text').show();
+                        $('#login_loader').hide();
+                        $('#login').prop('disabled', false);
+                        console.log(response.data)
+                        window.location.href='/home'
+                    } else if (response.data == 2){
+                        $('#log_val').hide();
+                        $('#login_text, #log_val').show();
+                        $('#login_loader').hide();
+                        $('#login').prop('disabled', false);
+                        $('#log_email, #log_password').addClass('is-invalid');
+                        
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }, 3000); // 3000 milliseconds = 3 seconds
+        
+        
+    })
     
 
 

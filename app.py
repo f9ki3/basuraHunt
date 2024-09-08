@@ -28,6 +28,10 @@ google = oauth.register(
 def index():
     return render_template('Auth.html')
 
+@app.route('/success_create')
+def success_create():
+    return render_template('success_create.html')
+
 @app.route('/login')
 def login():
     # Generate a nonce and store it in the session
@@ -36,6 +40,23 @@ def login():
     # Pass the nonce in the authorization request
     redirect_uri = url_for('authorized', _external=True)
     return google.authorize_redirect(redirect_uri, nonce=session['nonce'])
+
+@app.route('/log_account', methods=['POST'])
+def loginAccount():
+    # Ensure the request contains JSON data
+    if request.is_json:
+        data = request.get_json()  # Use get_json() to parse JSON
+        p = data.get('log_email')
+        e = data.get('log_password')
+        
+        data = Accounts().log_account(p,e)
+
+        # Optionally, you can perform additional processing here
+
+        # For debugging purposes, return the received data
+        return jsonify({"data": data})
+    else:
+        return jsonify({"error": "Invalid request format"}), 400
 
 @app.route('/login/callback')
 def authorized():
@@ -65,6 +86,7 @@ def authorized():
 
     return 'Login failed!'
 
+# Admnastrator
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
@@ -77,20 +99,25 @@ def waste_level():
 def logout():
     return redirect('/')
 
+# Students
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
+
 # Create API that gets and retrieves data from the model
 @app.route('/createAccountManual', methods=['POST'])
 def create_account_manual():
     # Extract data from the request
     data = request.json  # Assuming you're sending JSON data
-
-    # Process the data (this is where you handle the business logic)
-    # For example, you might save the data to a database here
-
+    email = data.get('email')
+    student_id = data.get('student_id')
+    password = data.get('password')
+    data = Accounts().insertAccounts(student_id, email, password)
     # Prepare a response (this is where you send a response back to the client)
     response = {
         'status': 'success',
-        'message': 'Account created successfully',
-        'data': data  # Echo back the received data or any other information
+        'data': data
     }
     print(response)
     return jsonify(response)  # Return JSON response

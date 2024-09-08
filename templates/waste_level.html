@@ -8,7 +8,12 @@
 <body>
     <div class="d-flex flex-row body-color">
         {% include 'header.html' %}
-        <div class="container pt-3">
+        <div id="loader" style="display: flex; justify-content: center; align-items: center; height: 100vh; width: 80%">
+            <div class="spinner-grow text-dark" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+        </div>
+        <div id="waste_level" style="display: none;" class="container pt-3">
             <div class="row g-4">
                 <div class="col-12 col-md-6">
                     <div style="background-color: white;" class="border p-4 rounded-4">
