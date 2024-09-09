@@ -1,4 +1,9 @@
 setInterval(function() {
+    $('#waste_level').show()
+    $('#loader').hide()
+},3000)
+
+setInterval(function() {
     function getCount(callback) {
         $.ajax({
             type: "GET",

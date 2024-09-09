@@ -146,6 +146,19 @@ class Accounts(Database):
         
         conn.close()
 
+class StudentReport(Database):
+    def createTableStudentReport(self):
+        conn = self.conn
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS studentReport(
+                           id INTEGER PRIMARY KEY AUTOINCREMENT,
+                           date TEXT NOT NULL,
+                           description TEXT NOT NULL, 
+                           media TEXT NOT NULL
+                           )''')
+        conn.commit()  # Commit the transaction (this was mistakenly on the cursor)
+        print("Table Student Report Created!")
+        conn.close()   # Close the connection properly
 
 
 

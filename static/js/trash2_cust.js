@@ -2,7 +2,7 @@ setInterval(function() {
     function getCount(callback) {
         $.ajax({
             type: "GET",
-            url: "/getCount",
+            url: "/getCount2",
             dataType: "json",
             success: function (response) {
                 callback(Number(response)); // Pass the response to the callback
@@ -16,24 +16,22 @@ setInterval(function() {
         // The status are, Empty Trash, Normal Level, Bin Half Filled, Critical Level, Bin Full
         function message(data){
             if (data == 0 ){
-                $('#messageTrash').text('Empty Trash!')
+                $('#messageTrash2').text('Empty Trash!')
             }else if(data < 50){
-                $('#messageTrash').text('Normal Level')
-            }else if(data > 50 && data < 60){
-                $('#messageTrash').text('Bin Half Filled')
+                $('#messageTrash2').text('Normal Level')
+            }else if(data > 50 && data < 70){
+                $('#messageTrash2').text('Bin Half Filled')
             }else if(data < 100){
-                $('#messageTrash').text('Critical Level')
-            }else if(data > 100){
-                $('#messageTrash').text('Bin Full')
+                $('#messageTrash2').text('Critical Level')
             }else{
-                $('#messageTrash').text('Bin Full')
+                $('#messageTrash2').text('Bin Full')
             }
         }
     
         function updateCount(total){
             $.ajax({
                 type: "POST",
-                url: "/updateCount",
+                url: "/updateCount2",
                 data: {total: total},
                 dataType: "json",
                 success: function (response) {
@@ -41,7 +39,6 @@ setInterval(function() {
                 }
             });
         }
-        
     
         function trashDisplay(Data){
             total = total + Data;
@@ -60,9 +57,9 @@ setInterval(function() {
                 Data = total+'%';
             }
     
-            // Lets change the color depending on percentage
-            var colorContent;
-
+            let colorContent = ''
+    
+            // Lets change the color depend to percentage
             if (percent <= 20) {
                 colorContent = '#a5fa8c'; // Light green
             } else if (percent <= 30) {
@@ -75,21 +72,11 @@ setInterval(function() {
                 colorContent = '#fab78c'; // Light orange
             } else if (percent <= 100) {
                 colorContent = '#fa8c8c'; // Light red
-            } else {
-                // This block handles any percent value greater than 100
-                colorContent = '#fa8c8c'; // Light red
             }
-
-            // Use the colorContent in your animation or styling code
-            $('.trashBinContent').css({
-                'background-color': colorContent
-            });
-
     
+            $('#trashPercent2').text(Data)
     
-            $('#trashPercent').text(Data)
-    
-            $('.trashBinContainer').css({
+            $('.trashBinContainer2').css({
                 'display': 'flex',
                 'background-color': '#e3f7fe',
                 'justify-content': 'center',
@@ -102,7 +89,7 @@ setInterval(function() {
                 'position': 'relative'
             })
     
-            $('.trashBinContent').css({
+            $('.trashBinContent2').css({
                 'width': '100%',
                 'height': Data,
                 'background-color': colorContent,
@@ -110,9 +97,9 @@ setInterval(function() {
                 'border-radius': ' 0px 0px 13px 13px',
                 'bottom': '0',
                 'left': '0'
-            })
+            }); // Adjust the duration (1000ms) as needed
     
-            $('.trashPercent').css({
+            $('.trashPercent2').css({
                 'position': 'absolute',
                 'top': '150',
                 'text-align': 'center',
@@ -122,15 +109,13 @@ setInterval(function() {
             })
         }
         trashDisplay(0)
-        // Trigger click event on #throwTrash every 2 seconds
         // setInterval(function() {
         //     trashDisplay(0);
         // }, 2000);
     
     
-        $('#throwTrash').on('click', function(){
+        $('#throwTrash2').on('click', function(){
             trashDisplay(1)
         });
-    });
-}, 1000);
-
+    });    
+},3000)

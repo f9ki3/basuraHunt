@@ -121,6 +121,7 @@ def logout():
 def home():
     status = session.get('status')
     if status == 1:
+        StudentReport().createTableStudentReport()
         return render_template('home.html')
     else:
         return redirect('/')
@@ -198,3 +199,4 @@ if __name__ == "__main__":
     Accounts().createTableAccounts()
     TrashLogs().createTableTrashLogs()
     TrashCount().createTableTrashCount()
+    StudentReport().createTableStudentReport()
