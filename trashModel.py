@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, datetime
 
 class Database:
     def __init__(self):
@@ -150,16 +150,35 @@ class StudentReport(Database):
     def createTableStudentReport(self):
         conn = self.conn
         cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS studentReport(
-                           id INTEGER PRIMARY KEY AUTOINCREMENT,
-                           date TEXT NOT NULL,
-                           description TEXT NOT NULL, 
-                           media TEXT NOT NULL
+        cursor.execute('''CREATE TABLE your_table_name (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            date DATETIME NOT NULL,
+                            description TEXT NOT NULL,
+                            media TEXT NOT NULL,
+                            status TEXT NOT NULL
+                        );
+
                            )''')
         conn.commit()  # Commit the transaction (this was mistakenly on the cursor)
         print("Table Student Report Created!")
         conn.close()   # Close the connection properly
-
-
-
     
+    def insertStudentReport(self, description, media):
+        conn = self.conn
+        cursor = conn.cursor()
+        # Insert data into the studentReport table
+        cursor.execute('''
+            INSERT INTO studentReport (date, description, media, status)
+            VALUES (?, ?, ?, 0)
+        ''', (datetime.now(), description, media, status))
+        conn.commit()
+        print("Student Report inserted!")
+        conn.close()  # Close the connection properly
+
+
+if __name__ == "__main__":
+    Database()
+    Accounts().createTableAccounts()
+    TrashLogs().createTableTrashLogs()
+    TrashCount().createTableTrashCount()
+    StudentReport().createTableStudentReport()
