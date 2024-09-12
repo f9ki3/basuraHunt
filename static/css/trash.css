@@ -11,8 +11,39 @@
     background-color: white;
 }
 
+/* Remove default background color when an item is clicked */
+.custom-dropdown-item {
+    background-color: transparent;
+    color: inherit;
+}
+
+.custom-dropdown-item:focus,
+.custom-dropdown-item:hover {
+    background-color: #f8f9fa; /* Add your hover background color */
+    color: #000; /* Add your hover text color */
+}
+
+.custom-dropdown-item:active {
+    background-color: transparent !important;
+    color: inherit !important;
+}
+
+
+.burger-menu2{
+    display: none;
+}
+
 @media (max-width: 767px) {
     #waste_level1 {
         display: none;
     }
+
+    .burger-menu1 {
+        display: none;
+    }
+
+    .burger-menu2 {
+        display: block;
+    }
+
 }
