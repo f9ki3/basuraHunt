@@ -230,9 +230,9 @@ def insertReport():
 
         # Save the file to the upload folder
         file.save(file_path)
-
+        student_id = json.loads(session.get('session_data', '{}')).get('id')
         # Process your form data (desc) here, e.g., save to a database
-        StudentReport().insertStudentReport(desc, filename)
+        StudentReport().insertStudentReport(student_id, desc, filename)
 
         return jsonify({
             "message": "Report inserted successfully",

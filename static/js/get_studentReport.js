@@ -54,11 +54,11 @@ function studentReportPost() {
     
             // Check if data is an array
             if (Array.isArray(data)) {
-                // console.log(data);
+                console.log(data);
                 data.reverse().forEach(function(report) {
                     // Determine which status button to show
                     let statusButtons = '';
-                    switch (report.status) {
+                    switch (report.report_status) {
                         case '0':
                             statusButtons = `
                                 <button class="btn border mt-3" disabled><i class="bi bi-repeat me-2"></i> Pending</button>
@@ -82,14 +82,14 @@ function studentReportPost() {
                     <div class="border p-4 rounded rounded-4 mb-3 shadow" style="height: auto;">
                         <div class="d-flex">
                             <i class="bi me-2 fs-3 bi-person-circle"></i>
-                            <p class="text-muted">Idan Encinas</p>
+                            <p class="text-muted">${report.user_email}</p>
                         </div>
                         
                         <div style="height: auto;" class="p-3 bg-light rounded-4">
-                            <p>${report.description}</p>
+                            <p>${report.report_description}</p>
                         </div>
                         <div style="height: 300px; width: 100%" class="mt-3 border bg-light rounded-4">
-                            <img style="object-fit: cover; width: 100%; height: 100%;" class="rounded-4" src="../static/uploads/${report.media}" alt="Image">
+                            <img style="object-fit: cover; width: 100%; height: 100%;" class="rounded-4" src="../static/uploads/${report.report_media}" alt="Image">
                         </div>
                         <div>
                             <button class="btn border mt-3"><i class="bi bi-reply me-2"></i> Follow Up</button>

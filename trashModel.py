@@ -154,24 +154,26 @@ class StudentReport(Database):
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS  studentReport (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                student_id INTEGER NOT NULL,  -- Changed to INTEGER to match the id type in users
                 date DATETIME NOT NULL,
                 description TEXT NOT NULL,
                 media TEXT NOT NULL,
-                status TEXT NOT NULL
+                status TEXT NOT NULL,
+                FOREIGN KEY (student_id) REFERENCES users(id)  -- Foreign key constraint
             );
         ''')
         conn.commit()  # Commit the transaction
         print("Table Student Report Created!")
         conn.close()   # Close the connection properly
     
-    def insertStudentReport(self, description, media):
+    def insertStudentReport(self, student_id, description, media):
         conn = self.conn
         cursor = conn.cursor()
         # Insert data into the studentReport table
         cursor.execute('''
-            INSERT INTO studentReport (date, description, media, status)
-            VALUES (?, ?, ?, ?)
-        ''', (datetime.now(), description, media, '0'))
+            INSERT INTO studentReport (date, student_id, description, media, status)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (datetime.now(), student_id, description, media, '0'))
         conn.commit()
         print("Student Report inserted!")
         conn.close()  # Close the connection properly
@@ -181,7 +183,25 @@ class StudentReport(Database):
         cursor = conn.cursor()
 
         # Fetch data from the studentReport table
-        cursor.execute('SELECT * FROM studentReport')  # Select all data from table
+        cursor.execute('''
+                    -- Example query to join users and studentReport
+                        SELECT 
+                            ur.id AS user_id,
+                            ur.fname AS user_first_name,
+                            ur.lname AS user_last_name,
+                            ur.email AS user_email,
+                            sr.id AS report_id,
+                            sr.date AS report_date,
+                            sr.description AS report_description,
+                            sr.media AS report_media,
+                            sr.status AS report_status
+                        FROM 
+                            studentReport sr
+                        JOIN 
+                            users ur
+                        ON 
+                            sr.student_id = ur.id;
+        ''')  # Select all data from table
         rows = cursor.fetchall()
 
         # Get column names from the cursor description
@@ -238,3 +258,4 @@ class StudentReport(Database):
 #     TrashLogs().createTableTrashLogs()
 #     TrashCount().createTableTrashCount()
 #     StudentReport().get_session('idan@yahoo.com', 'idan')
+    #   StudentReport().createTableStudentReport()
