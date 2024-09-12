@@ -58,13 +58,16 @@ def loginAccount():
         e = data.get('log_password')
         
         data = Accounts().log_account(p,e)
-
+        session_data = StudentReport().get_session(p,e)
+        print(session_data)
         if data == 1:
             session['status'] = data
-            session['email'] = p 
+            # session['email'] = p 
+            session['session_data'] = session_data  # Store the session data
         elif data == 0:
             session['status'] = data
-            session['email'] = p 
+            # session['email'] = p 
+            session['session_data'] = session_data  # Store the session data
 
         # Optionally, you can perform additional processing here
 
@@ -243,6 +246,12 @@ def insertReport():
 def getReport():
     data = StudentReport().getStudentReport()
     return jsonify(data)
+
+@app.route('/getSession', methods=['GET'])
+def getSession():
+    session_data = session.get('session_data')
+    return jsonify(session_data)
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

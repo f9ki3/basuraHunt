@@ -195,9 +195,46 @@ class StudentReport(Database):
         # Return the data as JSON
         return json.dumps(data, indent=4)  # Convert Python data to JSON format
 
+    def get_session(self, email, password):
+        # Data to be used in the query
+        data = (email, password)
+        
+        # Get database connection
+        conn = self.conn
+        cursor = conn.cursor()
+        
+        # Execute query
+        cursor.execute('''
+            SELECT * FROM users WHERE email = ? AND password = ?
+        ''', data)
+        
+        # Fetch one result
+        result = cursor.fetchone()
+        
+        # Close the connection properly
+        conn.close()
+        
+        # Check if result is found
+        if result:
+            print("Student Fetch Session!")
+            
+            # Convert result tuple to dictionary
+            column_names = [description[0] for description in cursor.description]
+            result_dict = dict(zip(column_names, result))
+            
+            # Convert dictionary to JSON
+            result_json = json.dumps(result_dict)
+            
+            print(result_json)
+            return result_json
+        else:
+            print("No matching user found.")
+            return json.dumps({"error": "No matching user found."})
+
 
 # if __name__ == "__main__":
 #     Database()
 #     Accounts().createTableAccounts()
 #     TrashLogs().createTableTrashLogs()
 #     TrashCount().createTableTrashCount()
+#     StudentReport().get_session('idan@yahoo.com', 'idan')

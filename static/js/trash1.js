@@ -37,7 +37,7 @@ setInterval(function() {
                 data: {total: total},
                 dataType: "json",
                 success: function (response) {
-                    console.log(response); 
+                    // console.log(response); 
                 }
             });
         }
