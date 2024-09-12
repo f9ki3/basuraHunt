@@ -10,3 +10,9 @@
 .nav-color{
     background-color: white;
 }
+
+@media (max-width: 767px) {
+    #waste_level1 {
+        display: none;
+    }
+}

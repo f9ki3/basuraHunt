@@ -1,4 +1,5 @@
-import sqlite3, datetime
+import sqlite3, json
+from datetime import datetime
 
 class Database:
     def __init__(self):
@@ -150,16 +151,16 @@ class StudentReport(Database):
     def createTableStudentReport(self):
         conn = self.conn
         cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE your_table_name (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            date DATETIME NOT NULL,
-                            description TEXT NOT NULL,
-                            media TEXT NOT NULL,
-                            status TEXT NOT NULL
-                        );
-
-                           )''')
-        conn.commit()  # Commit the transaction (this was mistakenly on the cursor)
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS  studentReport (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                date DATETIME NOT NULL,
+                description TEXT NOT NULL,
+                media TEXT NOT NULL,
+                status TEXT NOT NULL
+            );
+        ''')
+        conn.commit()  # Commit the transaction
         print("Table Student Report Created!")
         conn.close()   # Close the connection properly
     
@@ -169,16 +170,34 @@ class StudentReport(Database):
         # Insert data into the studentReport table
         cursor.execute('''
             INSERT INTO studentReport (date, description, media, status)
-            VALUES (?, ?, ?, 0)
-        ''', (datetime.now(), description, media, status))
+            VALUES (?, ?, ?, ?)
+        ''', (datetime.now(), description, media, '0'))
         conn.commit()
         print("Student Report inserted!")
         conn.close()  # Close the connection properly
+    
+    def getStudentReport(self):
+        conn = self.conn
+        cursor = conn.cursor()
+
+        # Fetch data from the studentReport table
+        cursor.execute('SELECT * FROM studentReport')  # Select all data from table
+        rows = cursor.fetchall()
+
+        # Get column names from the cursor description
+        column_names = [description[0] for description in cursor.description]
+
+        # Format rows as a list of dictionaries
+        data = [dict(zip(column_names, row)) for row in rows]
+
+        conn.close()  # Close the connection properly
+        
+        # Return the data as JSON
+        return json.dumps(data, indent=4)  # Convert Python data to JSON format
 
 
-if __name__ == "__main__":
-    Database()
-    Accounts().createTableAccounts()
-    TrashLogs().createTableTrashLogs()
-    TrashCount().createTableTrashCount()
-    StudentReport().createTableStudentReport()
+# if __name__ == "__main__":
+#     Database()
+#     Accounts().createTableAccounts()
+#     TrashLogs().createTableTrashLogs()
+#     TrashCount().createTableTrashCount()

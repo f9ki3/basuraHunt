@@ -4,11 +4,14 @@ import os
 from datetime import datetime
 from trashModel import *
 
+
 app = Flask(__name__)
 
-
+# Configure the upload folder and allowed extensions
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = os.urandom(24)
-
 app.config['GOOGLE_CLIENT_ID'] = '323113079361-ig181jaikulgfuluofqqet9o5lhfvmqg.apps.googleusercontent.com'
 app.config['GOOGLE_CLIENT_SECRET'] = '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'
 
@@ -193,10 +196,57 @@ def receive_data():
     }), 200
 
 
+# Configure the upload folder and allowed extensions
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Check if the file has an allowed extension
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/insertReport', methods=['POST'])
+def insertReport():
+    # Get the description from the form data
+    desc = request.form.get('desc')
+
+    # Check if the post request has the file part
+    if 'med' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files['med']
+
+    # If no file is selected
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    # Check if the file has an allowed extension and save it
+    if file and allowed_file(file.filename):
+        filename = file.filename
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+        # Save the file to the upload folder
+        file.save(file_path)
+
+        # Process your form data (desc) here, e.g., save to a database
+        StudentReport().insertStudentReport(desc, filename)
+
+        return jsonify({
+            "message": "Report inserted successfully",
+            "desc": desc,
+            "file": filename
+        }), 200
+    else:
+        return jsonify({"error": "File type not allowed. Only JPG and PNG are accepted."}), 400
+
+@app.route('/getReport', methods=['GET'])
+def getReport():
+    data = StudentReport().getStudentReport()
+    return jsonify(data)
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
-    Database()
-    Accounts().createTableAccounts()
-    TrashLogs().createTableTrashLogs()
-    TrashCount().createTableTrashCount()
-    StudentReport().createTableStudentReport()
+    # Database()
+    # Accounts().createTableAccounts()
+    # TrashLogs().createTableTrashLogs()
+    # TrashCount().createTableTrashCount()
