@@ -70,7 +70,7 @@ function studentReportPost() {
                         </div>
                         <div>
                             <button class="btn border mt-3"><i class="bi bi-reply me-2"></i> Follow Up</button>
-                            <button class="btn border mt-3"><i class="bi bi-repeat me-2"></i> No Action</button>
+                            <button class="btn border mt-3" disabled><i class="bi bi-repeat me-2"></i> Pending</button>
                         </div>
                     </div>
                     `;
