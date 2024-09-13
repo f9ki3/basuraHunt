@@ -33,6 +33,16 @@
     display: none;
 }
 
+.no-outline:focus {
+    outline: none;
+    box-shadow: none;
+    border: 1px solid gray;
+}
+
+.border-none {
+    border: none;
+    box-shadow: none; /* Remove any box-shadow that might be applied */
+}
 
 @media (max-width: 767px) {
     #waste_level1 {
@@ -45,6 +55,10 @@
 
     .burger-menu2 {
         display: block;
+    }
+
+    .nav-admin{
+        display: none;
     }
 
 }

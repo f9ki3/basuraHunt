@@ -190,6 +190,7 @@ class StudentReport(Database):
                             ur.fname AS user_first_name,
                             ur.lname AS user_last_name,
                             ur.email AS user_email,
+                            ur.contact AS user_contact,
                             sr.id AS report_id,
                             sr.date AS report_date,
                             sr.description AS report_description,

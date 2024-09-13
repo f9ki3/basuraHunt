@@ -98,7 +98,7 @@ def authorized():
 
             # return (f'Logged in as: {first_name} {surname}, Email: {email}, '
             #         f'Profile Picture: <img src="{profile_picture}" alt="Profile Picture" />, ')
-            return redirect('/dashboard')
+            return redirect('/student_records')
     except Exception as e:
         return f'Login failed: {str(e)}'
 
@@ -115,12 +115,24 @@ def dashboard():
 
 @app.route('/waste_level')
 def waste_level():
-    return render_template('waste_level.html')
+    status = session.get('status')
+    if status == 0:
+        return render_template('waste_level.html')
+    else:
+        return redirect('/')
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/')
+
+@app.route('/student_records')
+def student_records():
+    status = session.get('status')
+    if status == 0:
+        return render_template('student_record.html')
+    else:
+        return redirect('/')
 
 # Students
 @app.route('/home')

@@ -1,0 +1,72 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasuraHunt</title>
+    {% include 'header_links.html' %}
+</head>
+<body>
+    {% include 'nav-admin.html' %}
+    <div class="container d-flex flex-row">
+        {% include 'header.html' %}
+        <div class="container body-color">
+            <h3 class="fw-bolder">Student Reports</h3>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <input class="w-100 form-control no-outline" placeholder="Search here ..." type="text" id="searchInput">
+                </div>
+                <div class="col-12 col-md-6 d-flex flex-row">
+                    <button class="btn" id="allBtn">All</button>
+                    <button class="btn" id="pendingBtn">Pending</button>
+                    <button class="btn" id="respondingBtn">Responding</button>
+                    <button class="btn" id="resolveBtn">Resolve</button>
+                    <select class="form-select no-outline border-none" aria-label="Default select example">
+                        <option value="10" selected>Show 10 Items</option>
+                        <option value="15">Show 15 Items</option>
+                        <option value="20">Show 20 Items</option>
+                        <option value="100">Show 100 Items</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <table class="table table-hover text-muted mt-3 mb-4">
+                        <thead>
+                          <tr>
+                            <th scope="col" width="15%">User ID</th>
+                            <th scope="col" width="20%">Student</th>
+                            <th scope="col" width="20%">Email</th>
+                            <th scope="col" width="20%">Contact</th>
+                            <th scope="col" width="10%">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody id="reportTable">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link text-muted" href="#">Previous</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link text-muted" href="#">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link text-muted" href="#">2</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link text-muted" href="#">3</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link text-muted" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    {% include 'footer_links.html' %}
+</body>
+</html>

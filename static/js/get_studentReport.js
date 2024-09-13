@@ -54,7 +54,7 @@ function studentReportPost() {
     
             // Check if data is an array
             if (Array.isArray(data)) {
-                console.log(data);
+                // console.log(data);
                 data.reverse().forEach(function(report) {
                     // Determine which status button to show
                     let statusButtons = '';
