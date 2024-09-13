@@ -132,6 +132,39 @@ def home():
     else:
         return redirect('/')
 
+@app.route('/profile')
+def profile():
+    status = session.get('status')
+    if status == 1:
+        return render_template('profile.html')
+    else:
+        return redirect('/')
+
+@app.route('/recycle')
+def recycle():
+    status = session.get('status')
+    if status == 1:
+        return render_template('recycle.html')
+    else:
+        return redirect('/')
+
+@app.route('/report')
+def report():
+    status = session.get('status')
+    if status == 1:
+        return redirect('/home')
+    else:
+        return redirect('/')
+
+@app.route('/settings')
+def settings():
+    status = session.get('status')
+    if status == 1:
+        StudentReport().createTableStudentReport()
+        return render_template('settings.html')
+    else:
+        return redirect('/')
+
 @app.route('/waste_level_user')
 def waste_level_user():
     status = session.get('status')
