@@ -19,30 +19,52 @@
             <div  class="row d-flex justify-content-center">
               
                 <div class="col-12 col-md-6 col-lg-6" style="color: hsl(40, 4%, 14%);">
-                    <div class="border shadow p-4 rounded-4 mb-3" style="height: auto;">
-                        <div id="post_content">
-                            <h1 class="text-start fw-bolder w-100">Hello Idan</h1>
-                            <p>What do you want to report in BasuraHunt?</p>
-                            <div class="border rounded p-2">
-                                <textarea id="desc" placeholder="Write your report here..." style="resize: none; height: 50px; border: none; overflow: hidden; width: 100%; outline: none;" maxlength="300" oninput="updateCharCount(this)"></textarea>                        </textarea>
-                                <div id="char-count" class="text-muted text-end mt-3" style="font-size: 12px;">0 / 300</div>
+                    <div class="border shadow rounded-4 mb-3" style="height: auto;">
+
+                        <div class=" p-3 mb-3" id="profile">
+                            <div class="d-flex flex-column align-items-end">
+                                <div style="width: 100%; height: 200px" class="border rounded">
+                                    <img id="bannerImage" src="../static/uploads/back.webp" style="object-fit: cover; width: 100%; height: 100%" class="rounded" alt="">    
+                                </div>
+                                <button id="changecover" class="btn border btn-sm btn-light" style="position: relative; right: 40px; top: -50px">
+                                    <i class="bi bi-camera-fill"></i> Edit Banner
+                                  </button>
+                                  <input type="file" id="fileCover" accept="image/*" style="display: none;">
                             </div>
-    
-                            <input class="form-control form-control mt-3" id="med" type="file">
-                            <button id="report_student" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #009429; color: white;">
-                                <i class="bi fs-3 bi-reply me-2"></i>Report
-                            </button>
-                        </div>
-                        <div id="loader_post" style="display: none;">
-                            <div class="d-flex justify-content-center pt-5 pb-5">
-                                <div class="spinner-border" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                            <div class="d-flex flex-row align-items-end justify-content-center" style="margin-top: -100px;">
+                                <div style="height: 150px; width: 150px; border-radius: 100%; border: 5px solid white" >
+                                    <img id="profileImage" src="../static/uploads/cat.jpg"  style="height: 100%; width: 100%; border-radius: 100%; object-fit: cover" alt="">
+                                </div>
+                                <button id="changeprofile" class="btn border btn-sm rounded rounded-5 btn-light" style="position: relative; right: 50px"><i class="bi bi-camera-fill"></i></button>
+                                <input type="file" id="fileProfile" accept="image/*" style="display: none;">
+                            </div>
+                            <div id="bannerValidation" style="display: none;" class=" flex-row justify-content-end">
+                                <button id="saveCover" class="btn border me-2 btn-sm">Save</button>
+                                <button id="cancelBanner" class="btn border btn-sm">Cancel</button>
+                            </div>
+                            <div id="profileValidation" style="display: none;" class=" flex-row justify-content-end">
+                                <button id="saveProfile" class="btn border me-2 btn-sm">Save</button>
+                                <button id="cancelProfile" class="btn border btn-sm">Cancel</button>
+                            </div>
+                            <div>
+                                <div>
+                                    <h3>Idan Encinas</h3>
+                                </div>
+                                <div>
+                                    <a class="btn btn-sm border"><i class="bi bi-clock-history me-2"></i>History</a>
+                                    <a class="btn btn-sm border"><i class="bi bi-clipboard2-plus me-2"></i>Report</a>
+                                    <a class="btn btn-sm border"><i class="bi bi-pencil me-2"></i>Edit Profile</a>
                                 </div>
                             </div>
+                            
+                            
                         </div>
+                        <!-- <div>
+                            <img src="../static/uploads/back.webp" alt="">
+                        </div> -->
                         
                     </div>
-                    <div id="reportContainer"></div>
+                    
                     
                 </div> 
                 <div class="col-12 col-md-6 col-lg-4" style="color: #252422;">
@@ -67,4 +89,5 @@
     {% include 'footer_links.html' %}
 </body>
 </html>
+
 
