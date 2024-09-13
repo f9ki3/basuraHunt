@@ -44,6 +44,14 @@
     box-shadow: none; /* Remove any box-shadow that might be applied */
 }
 
+/* Add this CSS rule to style the active pagination page link */
+.pagination .page-item.active .page-link {
+    background-color: rgb(234, 253, 234);
+    color: black; /* Optional: Adjust text color for better contrast */
+    border: 1px solid lightgreen; /* Optional: Add border to match background */
+}
+
+
 @media (max-width: 767px) {
     #waste_level1 {
         display: none;

@@ -20,7 +20,7 @@
                     <button class="btn" id="pendingBtn">Pending</button>
                     <button class="btn" id="respondingBtn">Responding</button>
                     <button class="btn" id="resolveBtn">Resolve</button>
-                    <select class="form-select no-outline border-none" aria-label="Default select example">
+                    <select class="form-select no-outline border-none" aria-label="Default select example" id="itemsPerPage">
                         <option value="10" selected>Show 10 Items</option>
                         <option value="15">Show 15 Items</option>
                         <option value="20">Show 20 Items</option>
@@ -41,25 +41,12 @@
                         <tbody id="reportTable">
                         </tbody>
                     </table>
+                    <p id="noItemsMessage" class="text-muted" style="display: none;">No items found.</p>
                 </div>
                 <div class="col-12">
                     <nav aria-label="Page navigation example">
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link text-muted" href="#">Previous</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link text-muted" href="#">1</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link text-muted" href="#">2</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link text-muted" href="#">3</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link text-muted" href="#">Next</a>
-                            </li>
+                        <ul class="pagination" id="paginationControls">
+                            <!-- Pagination controls will be dynamically added here -->
                         </ul>
                     </nav>
                 </div>
