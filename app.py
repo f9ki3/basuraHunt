@@ -132,6 +132,14 @@ def home():
     else:
         return redirect('/')
 
+@app.route('/waste_level_user')
+def waste_level_user():
+    status = session.get('status')
+    if status == 1:
+        return render_template('waste_level_user.html')
+    else:
+        return redirect('/')
+
 # Create API that gets and retrieves data from the model
 @app.route('/createAccountManual', methods=['POST'])
 def create_account_manual():

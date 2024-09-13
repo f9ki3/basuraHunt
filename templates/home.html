@@ -8,52 +8,60 @@
 <body>
     {% include 'nav.html' %}
     <div class="container pt-3">
-        <div  class="row d-flex justify-content-center">
+        <div id="loader_spn">
+            <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <div id="content_userwaste" style="display: none;">
+            <div  class="row d-flex justify-content-center">
               
-            <div class="col-12 col-md-6 col-lg-6" style="color: hsl(40, 4%, 14%);">
-
-                <div class="border shadow p-4 rounded-4 mb-3" style="height: auto;">
-                    <div id="post_content">
-                        <h1 class="text-start fw-bolder w-100">Hello Idan</h1>
-                        <p>What do you want to report in BasuraHunt?</p>
-                        <div class="border rounded p-2">
-                            <textarea id="desc" placeholder="Write your report here..." style="resize: none; height: 50px; border: none; overflow: hidden; width: 100%; outline: none;" maxlength="300" oninput="updateCharCount(this)"></textarea>                        </textarea>
-                            <div id="char-count" class="text-muted text-end mt-3" style="font-size: 12px;">0 / 100</div>
+                <div class="col-12 col-md-6 col-lg-6" style="color: hsl(40, 4%, 14%);">
+                    <div class="border shadow p-4 rounded-4 mb-3" style="height: auto;">
+                        <div id="post_content">
+                            <h1 class="text-start fw-bolder w-100">Hello Idan</h1>
+                            <p>What do you want to report in BasuraHunt?</p>
+                            <div class="border rounded p-2">
+                                <textarea id="desc" placeholder="Write your report here..." style="resize: none; height: 50px; border: none; overflow: hidden; width: 100%; outline: none;" maxlength="300" oninput="updateCharCount(this)"></textarea>                        </textarea>
+                                <div id="char-count" class="text-muted text-end mt-3" style="font-size: 12px;">0 / 100</div>
+                            </div>
+    
+                            <input class="form-control form-control mt-3" id="med" type="file">
+                            <button id="report_student" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #009429; color: white;">
+                                <i class="bi fs-3 bi-reply me-2"></i>Report
+                            </button>
                         </div>
-
-                        <input class="form-control form-control mt-3" id="med" type="file">
-                        <button id="report_student" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #009429; color: white;">
-                            <i class="bi fs-3 bi-reply me-2"></i>Report
-                        </button>
-                    </div>
-                    <div id="loader_post" style="display: none;">
-                        <div class="d-flex justify-content-center pt-5 pb-5">
-                            <div class="spinner-border" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                        <div id="loader_post" style="display: none;">
+                            <div class="d-flex justify-content-center pt-5 pb-5">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
                             </div>
                         </div>
+                        
                     </div>
+                    <div id="reportContainer"></div>
                     
-                </div>
-                <div id="reportContainer"></div>
-                
-            </div> 
-            <div class="col-12 col-md-6 col-lg-4" style="color: #252422;">
-                <div id="waste_level1" class="container pt-3" style="position: sticky; top: 50px;">
-                    <div class="row g-4">
-                        <div class="col-12">
-                            <div style="background-color: white;">
-                                {% include 'trash_bin1.html' %}
+                </div> 
+                <div class="col-12 col-md-6 col-lg-4" style="color: #252422;">
+                    <div id="waste_level1" class="container pt-3" style="position: sticky; top: 50px;">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div style="background-color: white;">
+                                    {% include 'trash_bin1.html' %}
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-12">
-                            <div style="background-color: white;">
-                                {% include 'trash_bin2.html' %}
+                            <div class="col-12">
+                                <div style="background-color: white;">
+                                    {% include 'trash_bin2.html' %}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>         
+                </div>         
+            </div>
         </div>
     </div>
     {% include 'footer_links.html' %}

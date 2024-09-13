@@ -1,0 +1,39 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasuraHunt</title>
+    {% include 'header_links.html' %}
+</head>
+<body>
+    {% include 'nav.html' %}
+    <div class="container">
+        <div id="loader_spn">
+            <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <div id="content_userwaste" style="display: none;">
+            <div class="row g-4">
+                <!-- Left Column -->
+                <div class="col-12 col-md-6">
+                    <div class="bg-white p-3"> <!-- Use Bootstrap classes for background and padding -->
+                        {% include 'trash_bin1.html' %}
+                    </div>
+                </div>
+                <!-- Right Column -->
+                <div class="col-12 col-md-6">
+                    <div class="bg-white p-3">
+                        {% include 'trash_bin2.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    {% include 'footer_links.html' %}
+</body>
+</html>
