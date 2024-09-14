@@ -11,6 +11,7 @@ function studentReportTable(statusFilter = '', searchQuery = '', page = 1, perPa
         dataType: "json",
         success: function (data) {
             data = JSON.parse(data);
+            console.log(data)
             reports = data; // Store reports for later use
             itemsPerPage = perPage; // Update items per page
             currentPage = page; // Update current page
@@ -181,6 +182,52 @@ function renderPaginationControls() {
         </li>
     `);
 }
+
+// Function to render detailed view
+function renderStudentRecord(record) {
+    const viewStudentRecord = $('#viewStudentRecord');
+    viewStudentRecord.empty(); // Clear previous details
+
+    // Append the details to the container
+    const recordHtml = `
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Report Details</h5>
+                <p><strong>Report ID:</strong> ${record.report_id}</p>
+                <p><strong>Date:</strong> ${record.report_date}</p>
+                <p><strong>Description:</strong> ${record.report_description}</p>
+                <p><strong>Email:</strong> ${record.user_email}</p>
+                <p><strong>Contact:</strong> ${record.user_contact || 'N/A'}</p>
+                <p><strong>Status:</strong> ${reportStatusLabel(record.report_status)}</p>
+                <p><strong>Media:</strong> <a href="/path/to/media/${record.report_media}" target="_blank">${record.report_media}</a></p>
+            </div>
+        </div>
+    `;
+    viewStudentRecord.append(recordHtml);
+}
+
+// Function to return a human-readable status
+function reportStatusLabel(status) {
+    switch (status) {
+        case '0': return 'Pending';
+        case '1': return 'Responding';
+        case '2': return 'Resolved';
+        default: return 'Unknown';
+    }
+}
+
+// Event listener for table row clicks
+$('#reportTable').on('click', 'tr', function() {
+    const row = $(this);
+    const reportId = row.find('td').first().text(); // Assuming the first cell contains the report ID
+
+    // Find the corresponding report data
+    const report = reports.find(r => r.report_id == reportId);
+
+    if (report) {
+        renderStudentRecord(report);
+    }
+});
 
 // Initial load
 studentReportTable();

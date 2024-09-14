@@ -251,6 +251,43 @@ class StudentReport(Database):
         else:
             print("No matching user found.")
             return json.dumps({"error": "No matching user found."})
+        
+    def deleteReport(self, id):
+        conn = self.conn
+        cursor = conn.cursor()
+        
+        # Corrected SQL syntax
+        cursor.execute('''
+            DELETE FROM studentReport WHERE id = ?
+        ''', (id,))  # id should be passed as a tuple
+        print('Deleted Report Succes')
+        conn.commit()
+    
+    def updateStudentReport(self, report_id, report_desc, media_filename):
+        conn = self.conn
+        cursor = conn.cursor()
+        
+        # Corrected SQL query
+        cursor.execute('''
+            UPDATE studentReport SET description = ?, media = ? WHERE id = ?
+        ''', (report_desc, media_filename, report_id))  # Pass the correct variables in the tuple
+        
+        print('Updated Report Success')
+        conn.commit()
+    
+    def updateStudentReportMedia(self, report_id, report_desc):
+        conn = self.conn
+        cursor = conn.cursor()
+        
+        # Corrected SQL query to update the description for the given report_id
+        cursor.execute('''
+            UPDATE studentReport SET description = ? WHERE id = ?
+        ''', (report_desc, report_id))  # Correctly pass both description and ID
+        
+        print('Updated Report Success')
+        conn.commit()
+
+
 
 
 # if __name__ == "__main__":

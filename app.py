@@ -185,6 +185,7 @@ def waste_level_user():
     else:
         return redirect('/')
 
+
 # Create API that gets and retrieves data from the model
 @app.route('/createAccountManual', methods=['POST'])
 def create_account_manual():
@@ -305,6 +306,41 @@ def getSession():
     session_data = session.get('session_data')
     return jsonify(session_data)
 
+@app.route('/delete_report', methods=['POST'])
+def delete_report():
+    report_id = request.json.get('id')  # Get 'id' from the JSON request
+    if report_id:
+        StudentReport().deleteReport(report_id)
+
+        return jsonify({"message": "Report deleted successfully", "status": "success"}), 200
+    else:
+        return jsonify({"message": "Report ID not provided", "status": "error"}), 400
+
+@app.route('/edit_report', methods=['POST'])
+def edit_report():
+    report_id = request.form.get('id')  # Get the report ID
+    report_desc = request.form.get('desc')  # Get the updated description
+    report_media = request.files.get('med')  # Get the media file if it exists
+
+    # Your logic to update the description in the database goes here
+    # Example: Update the description of the report in the database
+    # update_report_in_db(report_id, report_desc)
+
+    # Check if a new media file was uploaded
+    if report_media:
+        # Define the path to save the media file (you can customize the path as needed)
+        media_filename = report_media.filename
+        media_path = os.path.join('static/uploads', media_filename)
+        
+        # Save the file to the defined path
+        report_media.save(media_path)
+        
+        StudentReport().updateStudentReport(report_id, report_desc, media_filename)
+    else:
+        StudentReport().updateStudentReportMedia(report_id, report_desc)
+    
+    # Respond with a success message
+    return jsonify({'message': 'Report successfully updated'}), 200
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
