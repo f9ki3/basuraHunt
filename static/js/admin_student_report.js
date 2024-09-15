@@ -70,38 +70,6 @@ function renderReports(statusFilter, searchQuery) {
     }
 }
 
-// Render pagination controls
-function renderPaginationControls() {
-    const paginationControls = $('#paginationControls');
-    paginationControls.empty();
-
-    if (totalPages <= 1) return;
-
-    const prevDisabled = currentPage === 1 ? 'disabled' : '';
-    const nextDisabled = currentPage === totalPages ? 'disabled' : '';
-
-    paginationControls.append(`
-        <li class="page-item ${prevDisabled}">
-            <a class="page-link text-muted" href="#" id="prevPage">Previous</a>
-        </li>
-    `);
-
-    for (let i = 1; i <= totalPages; i++) {
-        const active = i === currentPage ? 'active' : '';
-        paginationControls.append(`
-            <li class="page-item ${active}">
-                <a class="page-link text-muted" href="#" data-page="${i}">${i}</a>
-            </li>
-        `);
-    }
-
-    paginationControls.append(`
-        <li class="page-item ${nextDisabled}">
-            <a class="page-link text-muted" href="#" id="nextPage">Next</a>
-        </li>
-    `);
-}
-
 // Event listeners for status buttons
 $('#allBtn').on('click', function() {
     studentReportTable('', $('#searchInput').val(), 1, itemsPerPage);
@@ -183,28 +151,119 @@ function renderPaginationControls() {
     `);
 }
 
-// Function to render detailed view
 function renderStudentRecord(record) {
+    $('#viewStudentRecordsTable').hide();
     const viewStudentRecord = $('#viewStudentRecord');
     viewStudentRecord.empty(); // Clear previous details
 
+    // Determine status and style
+    let statusHtml = '';
+    if (record.report_status == 0) {
+        statusHtml = `
+            <div class="alert alert-warning" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
+                <p style="margin: 0;"><i class="bi bi-arrow-repeat me-2"></i>Pending</p>
+            </div>`;
+    } else {
+        statusHtml = `
+            <div class="alert alert-success" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
+                <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Verified</p>
+            </div>`;
+    }
+
     // Append the details to the container
     const recordHtml = `
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Report Details</h5>
-                <p><strong>Report ID:</strong> ${record.report_id}</p>
-                <p><strong>Date:</strong> ${record.report_date}</p>
-                <p><strong>Description:</strong> ${record.report_description}</p>
-                <p><strong>Email:</strong> ${record.user_email}</p>
-                <p><strong>Contact:</strong> ${record.user_contact || 'N/A'}</p>
-                <p><strong>Status:</strong> ${reportStatusLabel(record.report_status)}</p>
-                <p><strong>Media:</strong> <a href="/path/to/media/${record.report_media}" target="_blank">${record.report_media}</a></p>
+        <div class="m-0 p-0">
+            <div style="font-size: 12px">
+                <div class="row mb-3">
+                    <div class="col-12 d-flex flex-row justify-content-between align-items-start">
+                        <h4>Report Details</h4>
+                        <button onclick="close_report_details()" class="btn btn-sm border"><i class="bi bi-arrow-90deg-left me-2"></i>Back</button>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <p>Fullname:</p>
+                    </div>
+                    <div class="col-8">
+                        <p>${record.user_first_name + " " +record.user_last_name}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <p>Report ID:</p>
+                    </div>
+                    <div class="col-8">
+                        <p>${record.report_id}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <p>Date:</p>
+                    </div>
+                    <div class="col-8">
+                        <p>${record.report_date}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <p>Email:</p>
+                    </div>
+                    <div class="col-8">
+                        <p>${record.user_email}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <p>Contact:</p>
+                    </div>
+                    <div class="col-8">
+                        <p>${record.user_contact || 'N/A'}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <p>Status:</p>
+                    </div>
+                    <div class="col-8">
+                        ${statusHtml}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <p>Media:</p>
+                    </div>
+                    <div class="col-8">
+                        <div style="width: 10rem; height: 10rem;">
+                            <a href="../static/uploads/${record.report_media}" target="_blank">
+                                <img class="rounded-4" style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/${record.report_media}" alt="Media Upload">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <p>Description:</p>
+                    </div>
+                    <div class="col-8">
+                        <p>${record.report_description}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <p>Action:</p>
+                    </div>
+                    <div class="col-8">
+                        <button class="btn btn-sm me-2" style="background-color: #009429; color: white"><i class="bi bi-hand-thumbs-up me-2"></i>Accept</button>
+                        <button class="btn btn-sm" style="background-color: rgb(228, 249, 227); border: 1px solid #009429; color: #009429"><i class="bi bi-hand-thumbs-down me-2"></i>Decline</button>
+                        <button style="display: none" class="btn btn-sm" style="background-color: #009429; color: white"><i class="bi bi-check-circle me-2"></i>Resolve</button>
+                    </div>
+                </div>
             </div>
         </div>
     `;
     viewStudentRecord.append(recordHtml);
 }
+
 
 // Function to return a human-readable status
 function reportStatusLabel(status) {
@@ -228,6 +287,11 @@ $('#reportTable').on('click', 'tr', function() {
         renderStudentRecord(report);
     }
 });
+
+function close_report_details(){
+    $('#viewStudentRecord').empty()
+    $('#viewStudentRecordsTable').show()
+}
 
 // Initial load
 studentReportTable();
