@@ -64,10 +64,20 @@ function renderReports(statusFilter, searchQuery = '') {
                     <div class="alert alert-warning" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
                         <p style="margin: 0;"><i class="bi bi-arrow-repeat me-2"></i>Pending</p>
                     </div>`;
-            } else {
+            } else if (report.report_status == 1) {
+                statusHtml = `
+                    <div class="alert alert-primary" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
+                        <p style="margin: 0;"><i class="bi bi-arrow-repeat me-2"></i>Responding</p>
+                    </div>`;
+            } else if (report.report_status == 2){
                 statusHtml = `
                     <div class="alert alert-success" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
-                        <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Verified</p>
+                        <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Resolve</p>
+                    </div>`;
+            } else {
+                statusHtml = `
+                    <div class="alert alert-danger" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
+                        <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Declined</p>
                     </div>`;
             }
 
@@ -169,8 +179,6 @@ function renderPaginationControls() {
     `);
 }
 
-
-
 function renderStudentRecord(record) {
     $('#viewStudentRecordsTable').hide(); // Ensure this element is visible
     const viewStudentRecord = $('#viewStudentRecord');
@@ -183,11 +191,39 @@ function renderStudentRecord(record) {
             <div class="alert alert-warning" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
                 <p style="margin: 0;"><i class="bi bi-arrow-repeat me-2"></i>Pending</p>
             </div>`;
-    } else {
+    } else if (record.report_status == 1) {
+        statusHtml = `
+            <div class="alert alert-primary" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
+                <p style="margin: 0;"><i class="bi bi-arrow-repeat me-2"></i>Responding</p>
+            </div>`;
+    } else if (record.report_status == 2){
         statusHtml = `
             <div class="alert alert-success" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
-                <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Verified</p>
+                <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Resolved</p>
             </div>`;
+    } else {
+        statusHtml = `
+            <div class="alert alert-danger" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
+                <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Declined</p>
+            </div>`;
+    }
+
+
+    // Determine buttons based on report_status
+    let actionButtons = '';
+    if (record.report_status == 0) {
+        actionButtons = `
+            <button onclick="accept_report()" class="btn btn-sm me-2" style="background-color: #009429; color: white"><i class="bi bi-hand-thumbs-up me-2"></i>Accept</button>
+            <button onclick="decline_report()" class="btn btn-sm" style="background-color: rgb(228, 249, 227); border: 1px solid #009429; color: #009429"><i class="bi bi-hand-thumbs-down me-2"></i>Decline</button>`;
+    } else if (record.report_status == 1) {
+        actionButtons = `
+            <button onclick="resolve_report()" class="btn btn-sm" style="background-color: #009429; color: white"><i class="bi bi-check-circle me-2"></i>Resolve</button>`;
+    } else if (record.report_status == 2) {
+        actionButtons = `
+            <button disabled class="btn btn-sm" style="background-color: #009429; color: white"><i class="bi bi-check-circle me-2"></i>Completed</button>`;
+    } else {
+        actionButtons = `
+            <button disabled class="btn btn-sm" style="background-color: #009429; color: white"><i class="bi bi-check-circle me-2"></i>Declined</button>`;
     }
 
     // Append the details to the container
@@ -273,9 +309,7 @@ function renderStudentRecord(record) {
                         <p>Action:</p>
                     </div>
                     <div class="col-8">
-                        <button onclick="accept_report()" class="btn btn-sm me-2" style="background-color: #009429; color: white"><i class="bi bi-hand-thumbs-up me-2"></i>Accept</button>
-                        <button class="btn btn-sm" style="background-color: rgb(228, 249, 227); border: 1px solid #009429; color: #009429"><i class="bi bi-hand-thumbs-down me-2"></i>Decline</button>
-                        <button style="display: none" class="btn btn-sm" style="background-color: #009429; color: white"><i class="bi bi-check-circle me-2"></i>Resolve</button>
+                        ${actionButtons}
                     </div>
                 </div>
             </div>
@@ -283,6 +317,7 @@ function renderStudentRecord(record) {
     `;
     viewStudentRecord.append(recordHtml);
 }
+
 
 
 // Event listener for the search input
@@ -328,3 +363,50 @@ function accept_report() {
         }
     });
 }
+
+function resolve_report() {
+    const id = $('#id_report').text();
+
+    // Make an AJAX request to update the report status
+    $.ajax({
+        url: '/update_report_status_resolve', // Replace with the actual API route
+        method: 'POST',
+        data: JSON.stringify({ report_id: id, status: 2 }), // Send data as JSON
+        contentType: 'application/json', // Specify content type as JSON
+        success: function(response) {
+            if (response.success) {
+                // Reload the record after successful update
+                location.reload(); // Reload the page to show the updated status
+            } else {
+                alert('Error updating report status');
+            }
+        },
+        error: function() {
+            alert('Failed to update report status');
+        }
+    });
+}
+
+function decline_report() {
+    const id = $('#id_report').text();
+
+    // Make an AJAX request to update the report status
+    $.ajax({
+        url: '/update_report_status_resolve', // Replace with the actual API route
+        method: 'POST',
+        data: JSON.stringify({ report_id: id, status: 3 }), // Send data as JSON
+        contentType: 'application/json', // Specify content type as JSON
+        success: function(response) {
+            if (response.success) {
+                // Reload the record after successful update
+                location.reload(); // Reload the page to show the updated status
+            } else {
+                alert('Error updating report status');
+            }
+        },
+        error: function() {
+            alert('Failed to update report status');
+        }
+    });
+}
+
