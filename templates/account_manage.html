@@ -1,0 +1,62 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasuraHunt</title>
+    {% include 'header_links.html' %}
+</head>
+<body>
+    {% include 'nav-admin.html' %}
+    <div class="container d-flex flex-row">
+        {% include 'header.html' %}
+        <div class="container body-color">
+            
+            <div id="viewStudentRecord">
+            </div>
+            <div class="row" id="viewStudentRecordsTable">
+                <h4 >Account Manage</h4>
+                <div class="col-12 col-md-6">
+                    <input class="w-100 form-control form-control-sm no-outline" placeholder="Search here ..." type="text" id="searchInput">
+                </div>
+                <div class="col-12 col-md-6 d-flex flex-row">
+                    <button class="btn btn-sm" id="createUsersnBtn">Create</button>
+                    <button class="btn btn-sm" id="allUsersBtn">All</button>
+                    <button class="btn btn-sm" id="adminBtn">Administrator</button>
+                    <button class="btn btn-sm" id="studentBtn">Students</button>
+                    <select class="form-select form-select-sm no-outline border-none" aria-label="Default select example" id="Account">
+                        <option value="10" selected>Show 10 Items</option>
+                        <option value="15">Show 15 Items</option>
+                        <option value="20">Show 20 Items</option>
+                        <option value="100">Show 100 Items</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <table class="table table-hover text-muted mt-3 mb-4" style="font-size: 12px;">
+                        <thead>
+                          <tr>
+                            <th scope="col" width="5%">User ID</th>
+                            <th scope="col" width="35%">Report Description</th>
+                            <th scope="col" width="15%">Student</th>
+                            <th scope="col" width="15%">Email</th>
+                            <th scope="col" width="10%">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody id="reportTable">
+                        </tbody>
+                    </table>
+                    <p id="noItemsMessage" class="text-muted" style="display: none;">No items found.</p>
+                </div>
+                <div class="col-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination pagination-sm" id="paginationControls">
+                            <!-- Pagination controls will be dynamically added here -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    {% include 'footer_links.html' %}
+</body>
+</html>

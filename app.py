@@ -134,6 +134,14 @@ def student_records():
     else:
         return redirect('/')
 
+@app.route('/account_manage')
+def account_manage():
+    status = session.get('status')
+    if status == 0:
+        return render_template('account_manage.html')
+    else:
+        return redirect('/')
+
 # Students
 @app.route('/home')
 def home():
