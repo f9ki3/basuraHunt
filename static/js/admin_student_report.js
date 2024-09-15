@@ -11,7 +11,7 @@ function studentReportTable(statusFilter = '', page = 1, perPage = 10) {
         dataType: "json",
         success: function (data) {
             data = JSON.parse(data);
-            console.log(data);
+            // console.log(data);
             reports = data; // Store reports for later use
             itemsPerPage = perPage; // Update items per page
             currentPage = page; // Update current page
@@ -77,16 +77,16 @@ function renderReports(statusFilter, searchQuery = '') {
             } else {
                 statusHtml = `
                     <div class="alert alert-danger" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
-                        <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Declined</p>
+                        <p style="margin: 0;"><i class="bi bi-send-x me-2"></i>Declined</p> 
                     </div>`;
             }
 
             let reportHtml = `
             <tr onclick="showReportDetails(${report.report_id})">
                 <td class="text-muted">${report.report_id}</td>
+                <td class="text-muted">${report.report_description}</td>
                 <td class="text-muted">${report.user_first_name} ${report.user_last_name}</td>
                 <td class="text-muted">${report.user_email}</td>
-                <td class="text-muted">${report.report_description}</td>
                 <td class="text-muted">${statusHtml}</td>
             </tr>
             `;
@@ -119,6 +119,11 @@ $('#respondingBtn').on('click', function () {
 $('#resolveBtn').on('click', function () {
     studentReportTable('2', 1, itemsPerPage);
 });
+
+$('#declinedBtn').on('click', function () {
+    studentReportTable('3', 1, itemsPerPage);
+});
+
 
 // Event listener for items per page selection
 $('#itemsPerPage').on('change', function () {
@@ -204,7 +209,7 @@ function renderStudentRecord(record) {
     } else {
         statusHtml = `
             <div class="alert alert-danger" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
-                <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Declined</p>
+                <p style="margin: 0;"><i class="bi bi-send-x me-2"></i>Declined</p>
             </div>`;
     }
 
@@ -223,7 +228,7 @@ function renderStudentRecord(record) {
             <button disabled class="btn btn-sm" style="background-color: #009429; color: white"><i class="bi bi-check-circle me-2"></i>Completed</button>`;
     } else {
         actionButtons = `
-            <button disabled class="btn btn-sm" style="background-color: #009429; color: white"><i class="bi bi-check-circle me-2"></i>Declined</button>`;
+            <button disabled class="btn btn-sm" style="background-color: #009429; color: white"><i class="bi bi-send-x me-2"></i>Declined</button>`;
     }
 
     // Append the details to the container
