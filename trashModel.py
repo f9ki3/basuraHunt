@@ -286,6 +286,18 @@ class StudentReport(Database):
         
         print('Updated Report Success')
         conn.commit()
+    
+    def updateStudentReportStatusResponding(self, report_id, status):
+        conn = self.conn
+        cursor = conn.cursor()
+        
+        # Corrected SQL query to update the description for the given report_id
+        cursor.execute('''
+            UPDATE studentReport SET status = ? WHERE id = ?
+        ''', (status, report_id))  # Correctly pass both description and ID
+        
+        print('Updated Report Status Responding')
+        conn.commit()
 
 
 

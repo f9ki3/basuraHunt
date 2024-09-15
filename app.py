@@ -349,6 +349,36 @@ def edit_report():
     # Respond with a success message
     return jsonify({'message': 'Report successfully updated'}), 200
 
+@app.route('/update_report_status', methods=['POST'])
+def update_report_status():
+    try:
+        # Get data from the POST request (assuming it's sent as JSON)
+        data = request.get_json()
+
+        report_id = data.get('report_id')
+        status = data.get('status')
+
+        # Ensure both `report_id` and `status` are provided
+        if not report_id or status is None:
+            return jsonify({"success": False, "error": "Missing report ID or status"}), 400
+
+        # Logic to update the report status in the database (example)
+        # Assuming you have a function or ORM query to update the status:
+        StudentReport().updateStudentReportStatusResponding(report_id, status) 
+
+        # Example: Assume the update is successful
+        # Replace this with actual database logic
+        update_success = True  # Change based on your actual logic
+
+        if update_success:
+            return jsonify({"success": True}), 200
+        else:
+            return jsonify({"success": False, "error": "Failed to update report status"}), 500
+
+    except Exception as e:
+        # Log the exception (optional)
+        return jsonify({"success": False, "error": str(e)}), 500
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
     # Database()

@@ -4,19 +4,19 @@ let itemsPerPage = 10;
 let totalPages = 1;
 
 // Fetch and render reports with optional filters and pagination
-function studentReportTable(statusFilter = '', searchQuery = '', page = 1, perPage = 10) {
+function studentReportTable(statusFilter = '', page = 1, perPage = 10) {
     $.ajax({
         type: "GET",
         url: "/getReport",
         dataType: "json",
         success: function (data) {
             data = JSON.parse(data);
-            console.log(data)
+            console.log(data);
             reports = data; // Store reports for later use
             itemsPerPage = perPage; // Update items per page
             currentPage = page; // Update current page
             totalPages = Math.ceil(reports.length / itemsPerPage); // Calculate total pages
-            renderReports(statusFilter, searchQuery);
+            renderReports(statusFilter, $('#searchInput').val()); // Pass search input value
         },
         error: function (xhr, status, error) {
             console.error('Error fetching reports:', error);
@@ -24,8 +24,8 @@ function studentReportTable(statusFilter = '', searchQuery = '', page = 1, perPa
     });
 }
 
-// Render reports based on status, search query, and pagination
-function renderReports(statusFilter, searchQuery) {
+// Render reports based on status filter, search filter, and pagination
+function renderReports(statusFilter, searchQuery = '') {
     $('#reportTable').empty(); // Clear the container before appending new data
     let filteredReports = reports;
 
@@ -36,13 +36,16 @@ function renderReports(statusFilter, searchQuery) {
 
     // Filter by search query
     if (searchQuery) {
+        const query = searchQuery.toLowerCase();
         filteredReports = filteredReports.filter(report => 
-            report.report_first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            report.report_last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            report.user_email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            report.user_contact.includes(searchQuery)
+            (report.user_first_name + " " + report.user_last_name).toLowerCase().includes(query) ||
+            report.user_email.toLowerCase().includes(query) ||
+            report.report_id.toString().includes(query)
         );
     }
+
+    // Sort reports by date in descending order (most recent first)
+    filteredReports.sort((a, b) => new Date(b.report_date) - new Date(a.report_date));
 
     // Paginate the filtered reports
     const start = (currentPage - 1) * itemsPerPage;
@@ -54,68 +57,83 @@ function renderReports(statusFilter, searchQuery) {
         $('#noItemsMessage').show();
     } else {
         $('#noItemsMessage').hide();
-        paginatedReports.forEach(function(report) {
+        paginatedReports.forEach(function (report) {
+            let statusHtml = '';
+            if (report.report_status == 0) {
+                statusHtml = `
+                    <div class="alert alert-warning" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
+                        <p style="margin: 0;"><i class="bi bi-arrow-repeat me-2"></i>Pending</p>
+                    </div>`;
+            } else {
+                statusHtml = `
+                    <div class="alert alert-success" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
+                        <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Verified</p>
+                    </div>`;
+            }
+
             let reportHtml = `
-            <tr>
+            <tr onclick="showReportDetails(${report.report_id})">
                 <td class="text-muted">${report.report_id}</td>
-                <td class="text-muted">${report.user_first_name + ' ' + report.user_last_name}</td>
+                <td class="text-muted">${report.user_first_name} ${report.user_last_name}</td>
                 <td class="text-muted">${report.user_email}</td>
-                <td class="text-muted">${report.user_contact}</td>
-                <td class="text-muted">${report.report_status}</td>
+                <td class="text-muted">${report.report_description}</td>
+                <td class="text-muted">${statusHtml}</td>
             </tr>
             `;
             $('#reportTable').append(reportHtml);
         });
+
         renderPaginationControls();
+    }
+}// Show report details when a row is clicked
+function showReportDetails(reportId) {
+    const report = reports.find(r => r.report_id === reportId);
+    if (report) {
+        renderStudentRecord(report);
     }
 }
 
 // Event listeners for status buttons
-$('#allBtn').on('click', function() {
-    studentReportTable('', $('#searchInput').val(), 1, itemsPerPage);
+$('#allBtn').on('click', function () {
+    studentReportTable('', 1, itemsPerPage);
 });
 
-$('#pendingBtn').on('click', function() {
-    studentReportTable('Pending', $('#searchInput').val(), 1, itemsPerPage);
+$('#pendingBtn').on('click', function () {
+    studentReportTable('0', 1, itemsPerPage);
 });
 
-$('#respondingBtn').on('click', function() {
-    studentReportTable('Responding', $('#searchInput').val(), 1, itemsPerPage);
+$('#respondingBtn').on('click', function () {
+    studentReportTable('1', 1, itemsPerPage);
 });
 
-$('#resolveBtn').on('click', function() {
-    studentReportTable('Resolve', $('#searchInput').val(), 1, itemsPerPage);
-});
-
-// Event listener for search input
-$('#searchInput').on('input', function() {
-    studentReportTable($('.btn.active').attr('id') || '', $(this).val(), 1, itemsPerPage);
+$('#resolveBtn').on('click', function () {
+    studentReportTable('2', 1, itemsPerPage);
 });
 
 // Event listener for items per page selection
-$('#itemsPerPage').on('change', function() {
+$('#itemsPerPage').on('change', function () {
     itemsPerPage = parseInt($(this).val(), 10);
-    studentReportTable($('.btn.active').attr('id') || '', $('#searchInput').val(), 1, itemsPerPage);
+    studentReportTable($('.btn.active').attr('id') || '', 1, itemsPerPage);
 });
 
 // Event listener for pagination controls
-$('#paginationControls').on('click', 'a[data-page]', function(e) {
+$('#paginationControls').on('click', 'a[data-page]', function (e) {
     e.preventDefault();
     const page = $(this).data('page');
-    studentReportTable($('.btn.active').attr('id') || '', $('#searchInput').val(), page, itemsPerPage);
+    studentReportTable($('.btn.active').attr('id') || '', page, itemsPerPage);
 });
 
-$('#paginationControls').on('click', '#prevPage', function(e) {
+$('#paginationControls').on('click', '#prevPage', function (e) {
     e.preventDefault();
     if (currentPage > 1) {
-        studentReportTable($('.btn.active').attr('id') || '', $('#searchInput').val(), currentPage - 1, itemsPerPage);
+        studentReportTable($('.btn.active').attr('id') || '', currentPage - 1, itemsPerPage);
     }
 });
 
-$('#paginationControls').on('click', '#nextPage', function(e) {
+$('#paginationControls').on('click', '#nextPage', function (e) {
     e.preventDefault();
     if (currentPage < totalPages) {
-        studentReportTable($('.btn.active').attr('id') || '', $('#searchInput').val(), currentPage + 1, itemsPerPage);
+        studentReportTable($('.btn.active').attr('id') || '', currentPage + 1, itemsPerPage);
     }
 });
 
@@ -151,8 +169,10 @@ function renderPaginationControls() {
     `);
 }
 
+
+
 function renderStudentRecord(record) {
-    $('#viewStudentRecordsTable').hide();
+    $('#viewStudentRecordsTable').hide(); // Ensure this element is visible
     const viewStudentRecord = $('#viewStudentRecord');
     viewStudentRecord.empty(); // Clear previous details
 
@@ -185,7 +205,7 @@ function renderStudentRecord(record) {
                         <p>Fullname:</p>
                     </div>
                     <div class="col-8">
-                        <p>${record.user_first_name + " " +record.user_last_name}</p>
+                        <p>${record.user_first_name} ${record.user_last_name}</p>
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -193,7 +213,7 @@ function renderStudentRecord(record) {
                         <p>Report ID:</p>
                     </div>
                     <div class="col-8">
-                        <p>${record.report_id}</p>
+                        <p id="id_report">${record.report_id}</p>
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -253,7 +273,7 @@ function renderStudentRecord(record) {
                         <p>Action:</p>
                     </div>
                     <div class="col-8">
-                        <button class="btn btn-sm me-2" style="background-color: #009429; color: white"><i class="bi bi-hand-thumbs-up me-2"></i>Accept</button>
+                        <button onclick="accept_report()" class="btn btn-sm me-2" style="background-color: #009429; color: white"><i class="bi bi-hand-thumbs-up me-2"></i>Accept</button>
                         <button class="btn btn-sm" style="background-color: rgb(228, 249, 227); border: 1px solid #009429; color: #009429"><i class="bi bi-hand-thumbs-down me-2"></i>Decline</button>
                         <button style="display: none" class="btn btn-sm" style="background-color: #009429; color: white"><i class="bi bi-check-circle me-2"></i>Resolve</button>
                     </div>
@@ -265,33 +285,46 @@ function renderStudentRecord(record) {
 }
 
 
-// Function to return a human-readable status
-function reportStatusLabel(status) {
-    switch (status) {
-        case '0': return 'Pending';
-        case '1': return 'Responding';
-        case '2': return 'Resolved';
-        default: return 'Unknown';
-    }
+// Event listener for the search input
+$('#searchInput').on('input', function () {
+    const searchQuery = $(this).val();
+    studentReportTable($('.btn.active').attr('id') || '', currentPage, itemsPerPage);
+});
+
+
+function close_report_details() {
+    $('#viewStudentRecord').hide(); // Hide the details view
 }
 
-// Event listener for table row clicks
-$('#reportTable').on('click', 'tr', function() {
-    const row = $(this);
-    const reportId = row.find('td').first().text(); // Assuming the first cell contains the report ID
+// Initial load
+studentReportTable();
 
-    // Find the corresponding report data
-    const report = reports.find(r => r.report_id == reportId);
 
-    if (report) {
-        renderStudentRecord(report);
-    }
-});
 
 function close_report_details(){
     $('#viewStudentRecord').empty()
     $('#viewStudentRecordsTable').show()
 }
 
-// Initial load
-studentReportTable();
+function accept_report() {
+    const id = $('#id_report').text();
+
+    // Make an AJAX request to update the report status
+    $.ajax({
+        url: '/update_report_status', // Replace with the actual API route
+        method: 'POST',
+        data: JSON.stringify({ report_id: id, status: 1 }), // Send data as JSON
+        contentType: 'application/json', // Specify content type as JSON
+        success: function(response) {
+            if (response.success) {
+                // Reload the record after successful update
+                location.reload(); // Reload the page to show the updated status
+            } else {
+                alert('Error updating report status');
+            }
+        },
+        error: function() {
+            alert('Failed to update report status');
+        }
+    });
+}
