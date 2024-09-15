@@ -82,12 +82,12 @@ function renderReports(statusFilter, searchQuery = '') {
             }
 
             let reportHtml = `
-            <tr onclick="showReportDetails(${report.report_id})">
-                <td class="text-muted">${report.report_id}</td>
-                <td class="text-muted">${report.report_description}</td>
-                <td class="text-muted">${report.user_first_name} ${report.user_last_name}</td>
-                <td class="text-muted">${report.user_email}</td>
-                <td class="text-muted">${statusHtml}</td>
+            <tr  onclick="showReportDetails(${report.report_id})">
+                <td style="padding-top: 20px; padding-bottom: 15px">${report.report_id}</td>
+                <td style="padding-top: 20px; padding-bottom: 15px">${report.report_description}</td>
+                <td style="padding-top: 20px; padding-bottom: 15px">${report.user_first_name} ${report.user_last_name}</td>
+                <td style="padding-top: 20px; padding-bottom: 15px">${report.user_email}</td>
+                <td style="padding-top: 20px; padding-bottom: 15px">${statusHtml}</td>
             </tr>
             `;
             $('#reportTable').append(reportHtml);
