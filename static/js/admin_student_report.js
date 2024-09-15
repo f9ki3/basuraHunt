@@ -58,7 +58,7 @@ function renderReports(statusFilter, searchQuery) {
             let reportHtml = `
             <tr>
                 <td class="text-muted">${report.report_id}</td>
-                <td class="text-muted">${report.report_first_name + ' ' + report.report_last_name}</td>
+                <td class="text-muted">${report.user_first_name + ' ' + report.user_last_name}</td>
                 <td class="text-muted">${report.user_email}</td>
                 <td class="text-muted">${report.user_contact}</td>
                 <td class="text-muted">${report.report_status}</td>

@@ -194,13 +194,20 @@ def create_account_manual():
     email = data.get('email')
     student_id = data.get('student_id')
     password = data.get('password')
-    data = Accounts().insertAccounts(student_id, email, password)
-    # Prepare a response (this is where you send a response back to the client)
+    fname = data.get('fname')  # Extracting first name
+    lname = data.get('lname')  # Extracting last name
+
+    # Insert the data into the database (assuming insertAccounts now takes fname and lname)
+    account_data = Accounts().insertAccounts(student_id, email, password, fname, lname)
+
+    # Prepare a response
     response = {
         'status': 'success',
-        'data': data
+        'data': account_data
     }
-    print(response)
+
+    print(response)  # Optional: log the response
+
     return jsonify(response)  # Return JSON response
 
 @app.route('/getCount', methods=['GET'])

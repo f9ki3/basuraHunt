@@ -14,16 +14,16 @@
             <div id="viewStudentRecord">
             </div>
             <div class="row">
-                <h3 class="fw-bolder">Student Reports</h3>
+                <h4 >Student Reports</h4>
                 <div class="col-12 col-md-6">
-                    <input class="w-100 form-control no-outline" placeholder="Search here ..." type="text" id="searchInput">
+                    <input class="w-100 form-control form-control-sm no-outline" placeholder="Search here ..." type="text" id="searchInput">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-row">
-                    <button class="btn" id="allBtn">All</button>
-                    <button class="btn" id="pendingBtn">Pending</button>
-                    <button class="btn" id="respondingBtn">Responding</button>
-                    <button class="btn" id="resolveBtn">Resolve</button>
-                    <select class="form-select no-outline border-none" aria-label="Default select example" id="itemsPerPage">
+                    <button class="btn btn-sm" id="allBtn">All</button>
+                    <button class="btn btn-sm" id="pendingBtn">Pending</button>
+                    <button class="btn btn-sm" id="respondingBtn">Responding</button>
+                    <button class="btn btn-sm" id="resolveBtn">Resolve</button>
+                    <select class="form-select form-select-sm no-outline border-none" aria-label="Default select example" id="itemsPerPage">
                         <option value="10" selected>Show 10 Items</option>
                         <option value="15">Show 15 Items</option>
                         <option value="20">Show 20 Items</option>
@@ -31,7 +31,7 @@
                     </select>
                 </div>
                 <div class="col-12">
-                    <table class="table table-hover text-muted mt-3 mb-4">
+                    <table class="table table-hover text-muted mt-3 mb-4" style="font-size: 12px;">
                         <thead>
                           <tr>
                             <th scope="col" width="15%">User ID</th>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="col-12">
                     <nav aria-label="Page navigation example">
-                        <ul class="pagination" id="paginationControls">
+                        <ul class="pagination pagination-sm" id="paginationControls">
                             <!-- Pagination controls will be dynamically added here -->
                         </ul>
                     </nav>

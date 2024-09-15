@@ -91,7 +91,7 @@ class Accounts(Database):
         print("Table Account Created!")
         conn.close()
 
-    def insertAccounts(self, student_no, email, password, fname=None, lname=None, contact=None, address=None, profile=None, status=1):
+    def insertAccounts(self, student_no, email, password, fname, lname, contact=None, address=None, profile='profile.png', status=1):
         conn = self.conn
         cursor = conn.cursor()
         

@@ -29,6 +29,10 @@ $('#auth').html(`
         </div>
 
         <div id="prm">
+            <div class="d-flex">
+                <input autocomplete="off" id="fname" type="text" placeholder="First Name" class="ps-4 me-1 form-control mb-3 fs-6 form-control-lg">
+                <input autocomplete="off" id="lname" type="text" placeholder="Last Name" class="ps-4 ms-1 form-control mb-3 fs-6 form-control-lg">
+            </div>
             <input autocomplete="off" id="email" type="email" placeholder="Enter your Email" class="ps-4 form-control mb-3 fs-6 form-control-lg">
             <input autocomplete="off" id="student_id" type="text" placeholder="Enter your Student No" class="ps-4 form-control mb-3 fs-6 form-control-lg">
         </div>
@@ -103,12 +107,17 @@ $('#auth').html(`
 
 
     // create account
-    $('#email, #student_id').on('input', function() {  
+    $('#email, #student_id, #fname, #lname').on('input', function() {  
         let email = $('#email').val().trim();  // Trim to avoid empty spaces
         let student_id = $('#student_id').val().trim();
+        let fname = $('#fname').val().trim();
+        let lname = $('#lname').val().trim();
         
         // Email validation regex
         let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        // Name validation regex (only alphabetic characters)
+        let namePattern = /^[A-Za-z]+$/;
         
         // Validate email
         if (emailPattern.test(email)) {
@@ -123,15 +132,31 @@ $('#auth').html(`
         } else {
             $('#student_id').removeClass('is-valid').addClass('is-invalid');
         }
+
+        // Validate first name (must not be empty and only contain letters)
+        if (namePattern.test(fname)) {
+            $('#fname').removeClass('is-invalid').addClass('is-valid');
+        } else {
+            $('#fname').removeClass('is-valid').addClass('is-invalid');
+        }
+
+        // Validate last name (must not be empty and only contain letters)
+        if (namePattern.test(lname)) {
+            $('#lname').removeClass('is-invalid').addClass('is-valid');
+        } else {
+            $('#lname').removeClass('is-valid').addClass('is-invalid');
+        }
         
-        // Enable/Disable the button based on both validations
-        if ($('#email').hasClass('is-valid') && $('#student_id').hasClass('is-valid')) {
+        // Enable/Disable the button based on all validations
+        if ($('#email').hasClass('is-valid') && 
+            $('#student_id').hasClass('is-valid') && 
+            $('#fname').hasClass('is-valid') && 
+            $('#lname').hasClass('is-valid')) {
             $('#continue').prop('disabled', false);  // Enable the button
         } else {
             $('#continue').prop('disabled', true);  // Disable the button
         }
     });
-    
 
     $('#continue').on('click', function() {  
         $(this).hide();
@@ -143,6 +168,7 @@ $('#auth').html(`
         $('#prm, #continue').show();
         $('#create, #pass, #back').hide();
     });
+
     
 
     $('#vpassword, #cpassword').on('input', function() {  
@@ -176,13 +202,17 @@ $('#auth').html(`
         let email = $('#email').val();
         let student_id = $('#student_id').val();
         let vpassword = $('#vpassword').val();
+        let fname = $('#fname').val();
+        let lname = $('#lname').val();
     
         let data = {
             'email': email,
             'student_id': student_id,
-            'password': vpassword
+            'password': vpassword,
+            'fname': fname,
+            'lname': lname
         };
-        
+    
         // Introduce a delay of 3 seconds (3000 milliseconds) before making the request
         setTimeout(function() {
             $.ajax({
@@ -219,6 +249,7 @@ $('#auth').html(`
             });
         }, 3000); // Delay in milliseconds
     });
+    
     
     
     
