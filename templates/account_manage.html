@@ -11,9 +11,9 @@
         {% include 'header.html' %}
         <div class="container body-color">
             
-            <div id="viewStudentRecord">
+            <div id="viewAccountRecord">
             </div>
-            <div class="row" id="viewStudentRecordsTable">
+            <div class="row" id="viewStudentAccountTable">
                 <h4 >Account Manage</h4>
                 <div class="col-12 col-md-6">
                     <input class="w-100 form-control form-control-sm no-outline" placeholder="Search here ..." type="text" id="searchInput">
@@ -34,21 +34,23 @@
                     <table class="table table-hover text-muted mt-3 mb-4" style="font-size: 12px;">
                         <thead>
                           <tr>
-                            <th scope="col" width="5%">User ID</th>
-                            <th scope="col" width="35%">Report Description</th>
-                            <th scope="col" width="15%">Student</th>
-                            <th scope="col" width="15%">Email</th>
-                            <th scope="col" width="10%">Status</th>
+                            <th scope="col" width="5%"> ID</th>
+                            <th scope="col" width="10%">Profile</th>
+                            <th scope="col" width="10%">Student No.</th>
+                            <th scope="col" width="20%">Name</th>
+                            <th scope="col" width="20%">Email</th>
+                            <th scope="col" width="15%">Address</th>
+                            <th scope="col" width="10%">Account Type</th>
                           </tr>
                         </thead>
-                        <tbody id="reportTable">
+                        <tbody id="reportTableAccounts">
                         </tbody>
                     </table>
                     <p id="noItemsMessage" class="text-muted" style="display: none;">No items found.</p>
                 </div>
                 <div class="col-12">
                     <nav aria-label="Page navigation example">
-                        <ul class="pagination pagination-sm" id="paginationControls">
+                        <ul class="pagination pagination-sm" id="paginationControlsAccounts">
                             <!-- Pagination controls will be dynamically added here -->
                         </ul>
                     </nav>

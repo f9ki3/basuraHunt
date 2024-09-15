@@ -146,6 +146,27 @@ class Accounts(Database):
             return 2
         
         conn.close()
+    
+    def getAccounts(self):
+        conn = self.conn
+        cursor = conn.cursor()
+
+        try:
+            # Fetch data from the users table
+            cursor.execute('SELECT * FROM users;')  # Select all data from the table
+            rows = cursor.fetchall()
+
+            # Get column names from the cursor description
+            column_names = [description[0] for description in cursor.description]
+
+            # Format rows as a list of dictionaries
+            data = [dict(zip(column_names, row)) for row in rows]
+
+        finally:
+            conn.close()  # Ensure the connection is closed properly
+        
+        # Return the data as JSON
+        return json.dumps(data, indent=4)  
 
 class StudentReport(Database):
     def createTableStudentReport(self):
