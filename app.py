@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
+from flask_socketio import SocketIO, emit
 from authlib.integrations.flask_client import OAuth
 import os
 from datetime import datetime
@@ -10,14 +11,17 @@ from student_report import *
 
 
 app = Flask(__name__)
-
+socketio = SocketIO(app)
 # Configure the upload folder and allowed extensions
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SECRET_KEY'] = 'basurahunt12345*'
 app.secret_key = os.urandom(24)
 app.config['GOOGLE_CLIENT_ID'] = '323113079361-ig181jaikulgfuluofqqet9o5lhfvmqg.apps.googleusercontent.com'
 app.config['GOOGLE_CLIENT_SECRET'] = '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'
+
+current_trash_count = 0
 
 oauth = OAuth(app)
 google = oauth.register(
@@ -224,8 +228,7 @@ def create_account_manual():
 
 @app.route('/getCount', methods=['GET'])
 def getCount():
-    data = TrashCount().getTrashCount()
-    return jsonify(data)
+    return jsonify(current_trash_count)  # Return the current trash count
 
 @app.route('/updateCount', methods=['POST'])
 def update_count():
@@ -258,14 +261,16 @@ def update_count2():
 
 @app.route('/data', methods=['POST'])
 def receive_data():
-    # Get the distance from the request
+    global current_trash_count
     data = request.json
-    distance = int(data.get('distance', 0))  
-    TrashCount().updateTrashCount(distance)
-    # Print the distance and percentage for debugging purposes
-    print(f"Dstance: {distance}")
+    distance = int(data.get('distance', 0))
+    current_trash_count = distance  # Update the global variable with new data
+    
+    # Broadcast the updated trash count via WebSocket
+    socketio.emit('updateTrash', {'count': current_trash_count})
+    
+    print(f"Distance: {distance}")
 
-    # Return the distance and percentage as a JSON response
     return jsonify({
         "status": "success",
         "distance": distance
@@ -429,6 +434,7 @@ def get_accounts():
     
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
+    socketio.run(app)
     # Database()
     # Accounts().createTableAccounts()
     # TrashLogs().createTableTrashLogs()
