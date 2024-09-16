@@ -1,5 +1,6 @@
 $(document).ready(function() {
     const itemsPerPage = 10; // Number of items per page
+    let currentData = []; // Store the current data
 
     // Function to handle pagination logic and rendering
     function renderTable(data, page = 1) {
@@ -85,12 +86,32 @@ $(document).ready(function() {
             e.preventDefault();
             const newPage = $(this).data('page');
             if (!$(this).parent().hasClass('disabled')) {
-                renderTable(currentData, newPage);
+                renderTable(filteredData, newPage);
             }
         });
     }
 
-    let currentData = []; // Store the current data
+    // Function to filter data based on the search query
+    function filterData(query) {
+        const filtered = currentData.filter(item => {
+            return (
+                item.fname.toLowerCase().includes(query.toLowerCase()) ||
+                item.lname.toLowerCase().includes(query.toLowerCase()) ||
+                item.email.toLowerCase().includes(query.toLowerCase()) ||
+                item.student_no.toLowerCase().includes(query.toLowerCase())
+            );
+        });
+        return filtered;
+    }
+
+    // Search input event listener
+    $('#searchInput').on('input', function() {
+        const query = $(this).val();
+        filteredData = filterData(query);
+        renderTable(filteredData, 1); // Render filtered data on page 1
+    });
+
+    let filteredData = []; // Store filtered data
 
     // Fetch the data via AJAX
     $.ajax({
@@ -99,29 +120,31 @@ $(document).ready(function() {
         dataType: 'json',
         success: function(response) {
             currentData = response; // Store the response data
+            filteredData = currentData; // Initialize filtered data
 
             // Initial render with page 1
-            renderTable(currentData, 1);
+            renderTable(filteredData, 1);
 
             // Filter and render data when "All" button is clicked
             $('#allUsersBtn').on('click', function() {
-                renderTable(currentData, 1); // Show all records
+                filteredData = currentData; // Show all records
+                renderTable(filteredData, 1);
             });
 
             // Filter and render data when "Administrator" button is clicked
             $('#adminBtn').on('click', function() {
-                const admins = currentData.filter(function(item) {
+                filteredData = currentData.filter(function(item) {
                     return item.status === 0; // Only administrators
                 });
-                renderTable(admins, 1); // Render admins on page 1
+                renderTable(filteredData, 1); // Render admins on page 1
             });
 
             // Filter and render data when "Students" button is clicked
             $('#studentBtn').on('click', function() {
-                const students = currentData.filter(function(item) {
+                filteredData = currentData.filter(function(item) {
                     return item.status === 1; // Only students
                 });
-                renderTable(students, 1); // Render students on page 1
+                renderTable(filteredData, 1); // Render students on page 1
             });
         },
         error: function(xhr, status, error) {

@@ -2,7 +2,11 @@ from flask import Flask, render_template, jsonify, request, session, redirect, u
 from authlib.integrations.flask_client import OAuth
 import os
 from datetime import datetime
-from trashModel import *
+from database import *
+from accounts import *
+from trash_count import *
+from trash_logs import *
+from student_report import *
 
 
 app = Flask(__name__)
