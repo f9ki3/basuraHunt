@@ -52,6 +52,20 @@
 }
 
 
+/* vibrate */
+@keyframes vibrate {
+    0% { transform: translate(1px, 0); }
+    20% { transform: translate(-1px, 0); }
+    40% { transform: translate(1px, 0); }
+    60% { transform: translate(-1px, 0); }
+    80% { transform: translate(1px, 0); }
+    100% { transform: translate(0, 0); }
+}
+
+.vibrate {
+    animation: vibrate 0.5s ease forwards;
+}
+
 @media (max-width: 767px) {
     #waste_level1 {
         display: none;

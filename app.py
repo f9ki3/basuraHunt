@@ -1,14 +1,14 @@
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 from flask_socketio import SocketIO, emit
 from authlib.integrations.flask_client import OAuth
-import os
+import os, threading
 from datetime import datetime
 from database import *
 from accounts import *
 from trash_count import *
 from trash_logs import *
 from student_report import *
-
+from trash_dispose import *
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -21,7 +21,10 @@ app.secret_key = os.urandom(24)
 app.config['GOOGLE_CLIENT_ID'] = '323113079361-ig181jaikulgfuluofqqet9o5lhfvmqg.apps.googleusercontent.com'
 app.config['GOOGLE_CLIENT_SECRET'] = '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'
 
+# Global variables
+data_requested = False
 current_trash_count = 0
+reset_timer = None  # Timer object to track timeout
 
 oauth = OAuth(app)
 google = oauth.register(
@@ -230,6 +233,7 @@ def create_account_manual():
 def getCount():
     return jsonify(current_trash_count)  # Return the current trash count
 
+
 @app.route('/updateCount', methods=['POST'])
 def update_count():
     total = request.form.get('total')
@@ -259,22 +263,56 @@ def update_count2():
 
     return jsonify(response)
 
+# Route to receive data
+# Function to reset the status of the microcontroller to 'off'
+def reset_data_requested():
+    global data_requested
+    print("Microcontroller has not sent data recently. Marking it as 'off'.")
+    data_requested = False
+
+# Route to receive data from the microcontroller
 @app.route('/data', methods=['POST'])
 def receive_data():
-    global current_trash_count
+    global current_trash_count, data_requested, reset_timer
+
+    # Cancel the previous reset timer
+    if reset_timer:
+        reset_timer.cancel()
+
+    # Mark data_requested as True (microcontroller is "on")
+    data_requested = True
+    print("Data received from microcontroller.")
+    
+    # Start a new timer to reset the flag after 30 seconds if no new data is received
+    reset_timer = threading.Timer(10.0, reset_data_requested)  # Timeout of 30 seconds
+    reset_timer.start()
+
     data = request.json
+    if data is None or 'distance' not in data:
+        current_trash_count = 404
+        return jsonify({"status": "error", "message": "Invalid data"}), 400
+    
     distance = int(data.get('distance', 0))
     current_trash_count = distance  # Update the global variable with new data
     
     # Broadcast the updated trash count via WebSocket
     socketio.emit('updateTrash', {'count': current_trash_count})
     
-    print(f"Distance: {distance}")
+    print(f"Distance: {distance}")  # Log the distance received
 
     return jsonify({
         "status": "success",
         "distance": distance
     }), 200
+
+# Route to check if the microcontroller is currently sending data
+@app.route('/check_status', methods=['GET'])
+def check_status():
+    if data_requested:
+        return jsonify({"status": "on", "message": "Microcontroller is on and sending data."}), 200
+    else:
+        return jsonify({"status": "off", "message": "Microcontroller is off or not sending data."}), 200
+
 
 
 # Configure the upload folder and allowed extensions
@@ -431,7 +469,27 @@ def get_accounts():
     data = Accounts().getAccounts()  # Call the method to get accounts
     return jsonify(json.loads(data))  # Convert JSON string to a Python object and return as JSON response
 
+@app.route('/process_trash', methods=['POST'])
+def process_trash():
+    data = request.get_json()  # Get JSON data from the request
+    dispose_value = data.get('dispose')  # Extract the 'dispose' value
     
+    # Get the current date and time
+    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Format as a string
+
+    # Insert into the database (you would define this function)
+    TrashDispose().insertTrashDispose(current_date, dispose_value)
+
+    # Return a response
+    return jsonify({"status": "success", "dispose": dispose_value, "date": current_date})
+
+#Route to get the total of dispose
+@app.route('/get_dispose', methods=['GET'])
+def getDisposeCount():
+    data = TrashDispose().getDisposeCount()
+    return jsonify({'response': data})
+
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
     socketio.run(app)
