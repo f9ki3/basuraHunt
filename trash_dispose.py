@@ -32,6 +32,16 @@ class TrashDispose(Database):
         ''', (today_date + '%',))  # Use LIKE to match any time on that date
         result = cursor.fetchone()
         return result[0] if result and result[0] is not None else 0  # Return 0 if no disposals for today
+    
+    
+    def getDisposeALL(self):
+        conn = self.conn
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM trashDispose')
+        rows = cursor.fetchall()
+        column_names = [desc[0] for desc in cursor.description]
+        result = [dict(zip(column_names, row)) for row in rows]
+        return result
 
 # if __name__ == "__main__":
 #     # Create table

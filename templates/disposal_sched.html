@@ -1,0 +1,42 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasuraHunt</title>
+    {% include 'header_links.html' %}
+</head>
+<body>
+    {% include 'nav-admin.html' %}
+    <div class="container d-flex flex-row">
+        {% include 'header.html' %}
+        <div class="container body-color">
+            
+            <div id="viewStudentRecord">
+            </div>
+            <div class="row" id="viewStudentRecordsTable">
+                <h4 >Schedule Collection Logs</h4>
+                <div class="col-12 col-md-12">
+                    <div class="table-container" style="height: 350px;">
+                        <table id="disposeTable" class="table">
+                            <thead>
+                                <tr>
+                                    <th width="20%">ID</th>
+                                    <th width="50%">Description</th>
+                                    <th width="30%">Dispose Status</th>
+                                    <!-- Add other relevant columns -->
+                                </tr>
+                            </thead>
+                            <tbody id="disposeAll" style="font-size: 12px;">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    {% include 'footer_links.html' %}
+</body>
+</html>

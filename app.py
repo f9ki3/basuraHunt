@@ -153,6 +153,14 @@ def account_manage():
     else:
         return redirect('/')
 
+@app.route('/disposal_sched')
+def disposal_sched():
+    status = session.get('status')
+    if status == 0:
+        return render_template('disposal_sched.html')
+    else:
+        return redirect('/')
+
 # Students
 @app.route('/home')
 def home():
@@ -488,6 +496,11 @@ def process_trash():
 def getDisposeCount():
     data = TrashDispose().getDisposeCount()
     return jsonify({'response': data})
+
+@app.route('/get_dispose_all', methods=['GET'])
+def getDisposeAll():
+    data = TrashDispose().getDisposeALL()
+    return jsonify(data)
 
 
 if __name__ == "__main__":
