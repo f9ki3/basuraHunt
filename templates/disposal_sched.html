@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,20 +11,31 @@
     <div class="container d-flex flex-row">
         {% include 'header.html' %}
         <div class="container body-color">
-            
-            <div id="viewStudentRecord">
-            </div>
+            <div id="viewStudentRecord"></div>
             <div class="row" id="viewStudentRecordsTable">
-                <h4 >Schedule Collection Logs</h4>
-                <div class="col-12 col-md-12">
-                    <div class="table-container" style="height: 350px;">
-                        <table id="disposeTable" class="table">
+                <h4>Disposal Schedule Logs</h4>
+                <div class="col-12 col-md-6">
+                    <input class="w-100 form-control form-control-sm no-outline" placeholder="Search here ..." type="text" id="searchInput">
+                </div>
+                <div class="col-12 col-md-6 d-flex flex-row">
+                    <button class="btn btn-sm" id="allBtn">Bin1</button>
+                    <button class="btn btn-sm" id="pendingBtn">Bin2</button>
+                    <select class="form-select form-select-sm no-outline border-none" aria-label="Default select example" id="itemsPerPageDispose">
+                        <option value="10" selected>Show 10 Items</option>
+                        <option value="15">Show 15 Items</option>
+                        <option value="20">Show 20 Items</option>
+                        <option value="100">Show 100 Items</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-12 mt-3">
+                    <div class="table-container">
+                        <table id="disposeTable" class="table" style="font-size: 12px;">
                             <thead>
                                 <tr>
                                     <th width="20%">ID</th>
-                                    <th width="50%">Description</th>
+                                    <th width="30%">Dispose Date</th>
+                                    <th width="20%">Bin Type</th>
                                     <th width="30%">Dispose Status</th>
-                                    <!-- Add other relevant columns -->
                                 </tr>
                             </thead>
                             <tbody id="disposeAll" style="font-size: 12px;">
@@ -32,8 +44,28 @@
                         </table>
                     </div>
                 </div>
-                
+                <div class="col-12">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination pagination-sm">
+                            <li class="page-item">
+                                <button id="prev-page" class="page-link text-muted" aria-label="Previous">
+                                    <span aria-hidden="true">Previous</span> <!-- Use icons or arrows for a cleaner look -->
+                                </button>
+                            </li>
+                            <li class="page-item" disabled>
+                                <span id="pagination-info" class="page-link text-muted"></span>
+                            </li>
+                            <li class="page-item">
+                                <button id="next-page" class="page-link text-muted" aria-label="Next">
+                                    <span aria-hidden="true">Next</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                    
+                </div>
             </div>
+            
         </div>
     </div>
     
