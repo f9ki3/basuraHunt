@@ -9,6 +9,7 @@ from trash_count import *
 from trash_logs import *
 from student_report import *
 from trash_dispose import *
+from dashboard import *
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -502,6 +503,10 @@ def getDisposeAll():
     data = TrashDispose().getDisposeALL()
     return jsonify(data)
 
+@app.route('/get_dashboard', methods=['GET'])
+def get_dashboard():
+    data = Dashboard().getDashboard()
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
