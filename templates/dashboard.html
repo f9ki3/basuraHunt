@@ -14,14 +14,121 @@
             <div id="viewStudentRecord">
             </div>
             <div class="row">
-                <h4 >Dashboards</h4>
-                <div class="row">
+                <h4 class="m-0">Dashboards</h4>
+                <div class="row g-3 m-0">
                     <div class="col-6 col-md-3">
-                        <div class="border rounded p-3">
-                            <h1>10</h1>
-                            <h5>Admin</h5>
+                        <div class="border rounded-4 p-3"  style="background: linear-gradient(135deg, #f6d0e3, #f9c4e1, #ce3d8c)">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div style="width: 70px;">
+                                        <img style="object-fit: cover; width: 100%; height: 100%" src="../static/img/admin.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <h1 class="fw-bolder">10</h1>
+                                    <h5>Admin</h5>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <div class="col-6 col-md-3">
+                        <div class="border rounded-4 p-3"  style="background: linear-gradient(135deg, #f6d0e3, #dfc1f5, #9530c8)">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div style="width: 70px;">
+                                        <img style="object-fit: cover; width: 100%; height: 100%" src="../static/img/student.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <h1 class="fw-bolder">190</h1>
+                                    <h5>Student</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="border rounded-4 p-3"  style="background: linear-gradient(135deg, #f6d0d0, #fccbcb, #c73434)">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div style="width: 70px;">
+                                        <img style="object-fit: cover; width: 100%; height: 100%" src="../static/img/trash.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <h1 class="fw-bolder">8</h1>
+                                    <h5>Today Dispose</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="border rounded-4 p-3"  style="background: linear-gradient(135deg, #d0f2f6, #b9e1fc, #358dcf)">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div style="width: 90px;">
+                                        <img style="object-fit: cover; width: 100%; height: 100%" src="../static/img/rocket.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <h1 class="fw-bolder">340</h1>
+                                    <h5>Total Dispose</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="border rounded-4 p-3" >
+                            <div class="row">
+                                <div class="col-2">
+                                    <div style="width: 90px;">
+                                        <img style="object-fit: cover; width: 100%; height: 100%" src="../static/img/clock.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-8 ps-5">
+                                    <h6 class="m-0 p-0">Good Morning, Administrator</h6>
+                                    <h1 class="fw-bolder m-0 p-0">10:50 am</h1>
+                                    <h6 class="m-0 p-0">January 1, 2024</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="border rounded-4 p-3" >
+                            <div class="row">
+                                <div class="col-4">
+                                    <div style="width: 90px; height: 90px">
+                                        <img style="object-fit: cover; width: 80%; height: 90%" src="../static/img/trashbin.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-8 text-muted">
+                                    <h1 class="fw-bolder">10%</h1>
+                                    <h5>Trash Bin 1</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="border rounded-4 p-3" >
+                            <div class="row">
+                                <div class="col-4">
+                                    <div style="width: 90px; height: 90px">
+                                        <img style="object-fit: cover; width: 80%; height: 90%" src="../static/img/trashbin.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-8 text-muted">
+                                    <h1 class="fw-bolder">10%</h1>
+                                    <h5>Trash Bin 2</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="border rounded-4 p-3" >
+                            <h5 class="ms-3">Daily Dispose Forecast</h5>
+                            <div id="dailyDispose"></div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
