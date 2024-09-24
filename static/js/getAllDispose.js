@@ -54,8 +54,8 @@ $(document).ready(function() {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
 
-        // Slice the filtered data for the current page and reverse it for latest-first order
-        const currentItems = filteredData.slice(startIndex, endIndex).reverse();
+        // Slice the filtered data for the current page
+        const currentItems = filteredData.slice(startIndex, endIndex);
 
         if (currentItems.length === 0) {
             tbody.append('<tr><td colspan="3">No records found.</td></tr>');
