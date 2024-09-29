@@ -51,6 +51,36 @@
     border: 1px solid lightgreen; /* Optional: Add border to match background */
 }
 
+.image-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-top: 15px;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: none;
+    cursor: pointer;
+    background-color: rgba(255, 152, 152, 0.7);
+    color: rgb(214, 36, 36);
+    border: none;
+    padding: 2px 5px;
+    border-radius: 5px;
+}
+
+.image-container:hover .remove-btn {
+    display: block;
+}
+
+img {
+    object-fit: cover;
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+}
 
 /* vibrate */
 @keyframes vibrate {
