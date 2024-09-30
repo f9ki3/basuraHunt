@@ -79,14 +79,59 @@ function studentReportPost() {
                         updateImage();
                         updateNavigationButtons();
                     });
-
+                    
                     // Handle edit button click
                     $(document).on('click', '.edit-btn', function() {
                         const reportID = $(this).data('id');
                         const reportDescription = $(this).data('description');
+                        const reportMedia = $(this).data('media');
+                    
+                        // Populate the edit fields
                         $('#editReportID').val(reportID);
                         $('#desc2').val(reportDescription);
+                    
+                        // Clear previous images in the preview area
+                        $('#edit-upload-preview').empty();
+                    
+                        // Populate images in the edit upload preview
+                        let mediaArray = reportMedia.split(',');
+                        mediaArray.forEach(image => {
+                            const imageElement = `
+                                <div class="position-relative d-inline-block me-2">
+                                    <img src="../static/uploads/${image}" alt="Image" class="img-thumbnail" style="width: 80px; height: 80px;">
+                                </div>
+                            `;
+                    
+                            // Create the remove button
+                            const removeButton = $('<button>')
+                                .addClass('remove-btn btn btn-danger')
+                                .html('<i class="bi bi-trash3"></i>')
+                                .css({
+                                    'position': 'absolute',
+                                    'top': '5px',
+                                    'right': '5px',
+                                    'z-index': '10',
+                                    'display': 'none'
+                                });
+                    
+                            // Append image element and remove button to the preview area
+                            $('#edit-upload-preview').append(imageElement);
+                            $('#edit-upload-preview').children().last().append(removeButton);
+                        });
+                    
+                        // Show remove button on hover
+                        $('#edit-upload-preview').on('mouseenter', '.position-relative', function() {
+                            $(this).find('.remove-btn').show();
+                        }).on('mouseleave', '.position-relative', function() {
+                            $(this).find('.remove-btn').hide();
+                        });
+                    
+                        // Remove image on click of the remove button
+                        $('#edit-upload-preview').on('click', '.remove-btn', function() {
+                            $(this).closest('.position-relative').remove(); // Remove the entire image div
+                        });
                     });
+                    
 
                     // Add event listener to pass report_id to #delete_id
                     $(document).on('click', '.delete-btn', function() {
