@@ -333,39 +333,56 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Helper function to check for allowed file extensions
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ['jpg', 'jpeg', 'png']
+
 @app.route('/insertReport', methods=['POST'])
 def insertReport():
     # Get the description from the form data
     desc = request.form.get('desc')
 
-    # Check if the post request has the file part
-    if 'med' not in request.files:
+    # Check if the post request has the images part
+    if 'images[]' not in request.files:
         return jsonify({"error": "No file part"}), 400
 
-    file = request.files['med']
+    files = request.files.getlist('images[]')  # Get all files from 'images[]'
+    
+    if len(files) == 0:
+        return jsonify({"error": "No selected files"}), 400
 
-    # If no file is selected
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
+    saved_files = []  # List to store successfully saved file names
 
-    # Check if the file has an allowed extension and save it
-    if file and allowed_file(file.filename):
-        filename = file.filename
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    for file in files:
+        # If no file is selected or the file name is empty
+        if file.filename == '':
+            return jsonify({"error": "One of the selected files has no filename"}), 400
 
-        # Save the file to the upload folder
-        file.save(file_path)
-        student_id = json.loads(session.get('session_data', '{}')).get('id')
-        # Process your form data (desc) here, e.g., save to a database
-        StudentReport().insertStudentReport(student_id, desc, filename)
+        # Check if the file has an allowed extension and save it
+        if file and allowed_file(file.filename):
+            filename = file.filename
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-        return jsonify({
-            "message": "Report inserted successfully",
-            "desc": desc,
-            "file": filename
-        }), 200
-    else:
-        return jsonify({"error": "File type not allowed. Only JPG and PNG are accepted."}), 400
+            # Save the file to the upload folder
+            file.save(file_path)
+            saved_files.append(filename)
+        else:
+            return jsonify({"error": f"File '{file.filename}' type not allowed. Only JPG and PNG are accepted."}), 400
+
+    # Implode (join) all filenames into a single string, separated by commas
+    files_string = ','.join(saved_files)
+
+    # Process your form data (desc) here, e.g., save to a database
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+
+    # Insert the report with the imploded filenames (all in one field)
+    StudentReport().insertStudentReport(student_id, desc, files_string)
+
+    return jsonify({
+        "message": "Report inserted successfully",
+        "desc": desc,
+        "files": saved_files
+    }), 200
 
 @app.route('/getReport', methods=['GET'])
 def getReport():

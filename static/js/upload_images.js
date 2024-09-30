@@ -1,5 +1,6 @@
 $(document).ready(function () {
     let maxFiles = 3;
+    let selectedImages = []; // Array to store selected images
 
     // Trigger file input when clicking the icon box
     $('#uploadBtn').on('click', function () {
@@ -31,14 +32,33 @@ $(document).ready(function () {
                 });
 
                 // Create the image element
-                let imgElement = $('<img>').attr('src', e.target.result);
+                let imgElement = $('<img>').attr('src', e.target.result).css({
+                    'width': '100%',
+                    'height': '100%',
+                    'object-fit': 'cover'
+                });
 
                 // Create the remove button
-                let removeBtn = $('<button>').addClass('remove-btn').html('<i class="bi bi-trash3"></i>');
+                let removeBtn = $('<button>').addClass('remove-btn btn btn-danger').html('<i class="bi bi-trash3"></i>').css({
+                    'position': 'absolute',
+                    'top': '5px',
+                    'right': '5px',
+                    'z-index': '10',
+                    'display': 'none'
+                });
+
+                // Show remove button on hover
+                newDiv.hover(function () {
+                    removeBtn.show();
+                }, function () {
+                    removeBtn.hide();
+                });
 
                 // Remove image on click
                 removeBtn.on('click', function () {
                     newDiv.remove();
+                    // Remove the file from the array
+                    selectedImages = selectedImages.filter(img => img !== file);
                     // Re-enable upload button if we are below max files
                     if ($('#upload-preview').children().length < maxFiles) {
                         $('#fileUpload').prop('disabled', false);
@@ -52,6 +72,9 @@ $(document).ready(function () {
 
                 // Append the new div to the preview div
                 previewDiv.append(newDiv);
+
+                // Append the selected file to the array
+                selectedImages.push(file);
             };
 
             reader.readAsDataURL(file);
@@ -62,5 +85,53 @@ $(document).ready(function () {
             $('#fileUpload').prop('disabled', true);
             $('#uploadBtn').css('pointer-events', 'none').css('opacity', '0.5');
         }
+    });
+
+    // Handle report submission and pass the selected images
+    $('#report_student').on('click', function () {
+        let desc = $('#desc').val();
+        
+        if (selectedImages.length === 0) {
+            alert('Please upload at least one image.');
+            return;
+        }
+
+        // Create FormData object to send the form data
+        let formData = new FormData();
+        formData.append('desc', desc);
+
+        // Append each selected image to the FormData
+        for (let i = 0; i < selectedImages.length; i++) {
+            formData.append('images[]', selectedImages[i]); // Append each image with the name 'images[]'
+        }
+
+        // Log FormData content
+        for (let pair of formData.entries()) {
+            console.log(pair[0]+ ': ' + pair[1]); // Logs each key-value pair
+        }
+
+        $('#post_content').hide();
+        $('#loader_post').show();
+        
+        setTimeout(() => {
+            $.ajax({
+                type: "POST",
+                url: "/insertReport",
+                data: formData,
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false, // Prevent jQuery from setting content type
+                success: function (response) {
+                    studentReportPost();
+                    $('#post_content').show();
+                    $('#loader_post').hide();
+                    $('#desc').val(''); // Reset the description
+                    $('#upload-preview').empty(); // Clear the preview
+                    selectedImages = []; // Clear the selected images array
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }, 3000);
     });
 });
