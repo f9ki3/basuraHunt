@@ -21,7 +21,7 @@
                 <div class="col-12 col-md-6 col-lg-6" style="color: hsl(40, 4%, 14%);">
                     <div class="border shadow p-4 rounded-4 mb-3" style="height: auto;">
                         <div id="post_content">
-                            <h1 class="text-start fw-bolder w-100">Hello Idan</h1>
+                            <h1 id="fname_home" class="text-start fw-bolder w-100"></p></h1>
                             <p>What do you want to report in BasuraHunt?</p>
                             <div class="border rounded p-2">
                                 <textarea id="desc" placeholder="Write your report here..." style="resize: none; height: 50px; border: none; overflow: hidden; width: 100%; outline: none;" maxlength="300" oninput="updateCharCount(this)"></textarea>                        </textarea>
@@ -70,7 +70,16 @@
                                     <div id="char-count2" class="text-muted text-end mt-3" style="font-size: 12px;">0 / 300</div>
                                 </div>
         
-                                <input class="form-control form-control mt-3" id="med2" type="file">
+                                <div class="d-flex">
+                                    <!-- Upload icon area -->
+                                    <div id="edit-uploadBtn" class="border mt-3 rounded d-flex flex-row justify-content-center align-items-center p-4" style="width: 100%; height: 120px; cursor: pointer;">
+                                        <i class="bi bi-cloud-upload fs-1"></i>
+                                    </div>
+                                    <!-- Hidden file input (separated from the div) -->
+                                    <input type="file" id="fileUpload" multiple class="d-none">
+                                    <!-- Div where uploaded pictures will be displayed -->
+                                    <div id="edit-upload-preview" class="d-flex flex-row"></div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                             <button id="cancelEditReport" type="button" style="background-color: #ccf3d7; color: #009429" class="btn" data-bs-dismiss="modal">Close</button>

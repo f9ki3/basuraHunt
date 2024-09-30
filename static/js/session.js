@@ -5,7 +5,10 @@ function session() {
         url: "/getSession",
         dataType: "json", // Automatically parses JSON
         success: function (data) {
-            console.log(data)
+            data = JSON.parse(data)
+            // console.log(data)
+            $('#fname_home').text("Hello " + data.fname)
+
             
         },
         error: function (xhr, status, error) {
