@@ -343,6 +343,16 @@ $('#auth').html(`
     
 
 
-
+    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default action (like form submission)
+                const loginButton = document.getElementById('login');
+                if (loginButton) {
+                    loginButton.click(); // Trigger click on the login button
+                }
+            }
+        });
+    });
 
     
