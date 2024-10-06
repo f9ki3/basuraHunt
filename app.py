@@ -26,6 +26,9 @@ app.config['GOOGLE_CLIENT_SECRET'] = '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'
 data_requested = False
 current_trash_count = 0
 reset_timer = None  # Timer object to track timeout
+data_requested2 = False
+current_trash_count2 = 0
+reset_timer2 = None  # Timer object to track timeout
 
 oauth = OAuth(app)
 google = oauth.register(
@@ -275,11 +278,13 @@ def update_count2():
 # Route to receive data
 # Function to reset the status of the microcontroller to 'off'
 def reset_data_requested():
-    global data_requested
+    global data_requested, data_requested2
     print("Microcontroller has not sent data recently. Marking it as 'off'.")
     data_requested = False
+    data_requested2 = False
 
 # Route to receive data from the microcontroller
+# Route to receive data from the first microcontroller
 @app.route('/data', methods=['POST'])
 def receive_data():
     global current_trash_count, data_requested, reset_timer
@@ -293,7 +298,7 @@ def receive_data():
     print("Data received from microcontroller.")
     
     # Start a new timer to reset the flag after 30 seconds if no new data is received
-    reset_timer = threading.Timer(10.0, reset_data_requested)  # Timeout of 30 seconds
+    reset_timer = threading.Timer(30.0, reset_data_requested)  # Timeout of 30 seconds
     reset_timer.start()
 
     data = request.json
@@ -314,7 +319,42 @@ def receive_data():
         "distance": distance
     }), 200
 
-# Route to check if the microcontroller is currently sending data
+# Route to receive data from the second microcontroller
+@app.route('/data2', methods=['POST'])
+def receive_data2():
+    global current_trash_count2, data_requested2, reset_timer2
+
+    # Cancel the previous reset timer
+    if reset_timer2:
+        reset_timer2.cancel()
+
+    # Mark data_requested2 as True (microcontroller is "on")
+    data_requested2 = True
+    print("Data received from second microcontroller.")
+    
+    # Start a new timer to reset the flag after 30 seconds if no new data is received
+    reset_timer2 = threading.Timer(30.0, reset_data_requested)  # Timeout of 30 seconds
+    reset_timer2.start()
+
+    data = request.json
+    if data is None or 'distance' not in data:
+        current_trash_count2 = 404
+        return jsonify({"status": "error", "message": "Invalid data"}), 400
+    
+    distance = int(data.get('distance', 0))
+    current_trash_count2 = distance  # Update the global variable with new data
+    
+    # Broadcast the updated trash count via WebSocket
+    socketio.emit('updateTrash', {'count': current_trash_count2})
+    
+    print(f"Distance: {distance}")  # Log the distance received
+
+    return jsonify({
+        "status": "success",
+        "distance": distance
+    }), 200
+
+# Route to check if the first microcontroller is currently sending data
 @app.route('/check_status', methods=['GET'])
 def check_status():
     if data_requested:
@@ -322,7 +362,13 @@ def check_status():
     else:
         return jsonify({"status": "off", "message": "Microcontroller is off or not sending data."}), 200
 
-
+# Route to check if the second microcontroller is currently sending data
+@app.route('/check_status2', methods=['GET'])
+def check_status2():
+    if data_requested2:
+        return jsonify({"status": "on", "message": "Second microcontroller is on and sending data."}), 200
+    else:
+        return jsonify({"status": "off", "message": "Second microcontroller is off or not sending data."}), 200
 
 # Configure the upload folder and allowed extensions
 UPLOAD_FOLDER = 'static/uploads'
