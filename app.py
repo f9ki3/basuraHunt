@@ -609,7 +609,7 @@ def create_student():
     password = data.get('password')
 
     # Here you would typically save the student data to a database
-    status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address)
+    status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address, profile=None, strand=1)
     if status == 1:
         return jsonify({'message': 'Student created successfully'}), 201
     # Respond with a success message
@@ -632,12 +632,21 @@ def create_admin():
     strand = None
     section = None
     
-    status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address)
+    status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address, profile=None, strand=0)
 
     if status == 1:
         return jsonify({'message': 'Student created successfully'}), 201
     # Respond with a success message
     return jsonify({'message': 'Internal Server Error'}), 500
+
+@app.route('/delete_account/<int:id>', methods=['DELETE'])
+def delete_account(id):
+    status = Accounts().deleteAccount(id)
+    if status == 1:
+        return jsonify({'message': 'Student created successfully'}), 201
+    # Respond with a success message
+    return jsonify({'message': 'Internal Server Error'}), 500
+    
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

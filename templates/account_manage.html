@@ -42,7 +42,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content mt-5">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Create Account</h1>
+                                <h1 class="modal-title fw-bolder fs-5" id="exampleModalLabel">Create Account</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -158,6 +158,40 @@
                         <div>
                             <div id="account_success" style="display: none; z-index: 100; position: fixed; bottom: 0; right: 20" class="alert alert-success" role="alert">
                                 <i class="bi bi-bookmark-check-fill me-2"></i>Success Added Account!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="delete_account" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content mt-5">
+                            <div class="modal-header">
+                                <h1 class="modal-title fw-bolder fs-5" id="exampleModalLabel">Delete Account</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <input id="delete_id" type="hidden">
+                                    <h5 class="text-center">Are you sure you want to delete?</h5>
+                                    <div class="modal-footer">
+                                        <button id="cancelDeleteAccount" type="button" style="background-color: #f3cccc; color: #940000" class="btn" data-bs-dismiss="modal">Cancel</button>
+                                        <button onclick="delete_account()" type="button" style="background-color: #940000; color: white" class="btn">
+                                            <p id="text_add_admin" class="m-0 p-0">Confirm</p>
+                                            <div id="load_add_admin" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                              </div>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                            
+                        </div>
+                        <div>
+                            <div id="delete_success" style="display: none; z-index: 100; position: fixed; bottom: 0; right: 20" class="alert alert-danger" role="alert">
+                                <i class="bi bi-bookmark-check-fill me-2"></i>Deleted!
                             </div>
                         </div>
                     </div>

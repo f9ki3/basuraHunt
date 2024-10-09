@@ -44,7 +44,7 @@ $(document).ready(function() {
                     <td>${item.address ? item.address : 'N/A'}</td>
                     <td>${item.status === 1 ? 'Student' : 'Administrator'}</td>
                     <td>
-                        <button style="background: transparent; border: none; font-size: 20px"><i class="bi text-muted bi-trash"></i></button>
+                        <button data-del_id="${item.id}" data-bs-toggle="modal" data-bs-target="#delete_account" class="btn-delete" style="background: transparent; border: none; font-size: 20px"><i class="bi text-muted bi-trash"></i></button>
                         <button style="background: transparent; border: none; font-size: 20px"><i class="bi text-muted bi-pencil"></i></button>
                     </td>
                 </tr>
@@ -54,6 +54,12 @@ $(document).ready(function() {
 
         // Call function to create pagination controls
         renderPaginationControls(page, totalPages);
+
+        // Add event listener for delete buttons
+        $('.btn-delete').off('click').on('click', function() {
+            const delId = $(this).data('del_id'); // Get the del_id
+            $('#delete_id').val(delId)
+        });
     }
 
     // Function to render pagination controls
@@ -175,3 +181,27 @@ $(document).ready(function() {
     // Event listener for items per page dropdown
     $('#accountShowsItems').on('change', updateItemsPerPage);
 });
+
+
+
+function delete_account() {
+    const id = $('#delete_id').val(); // Get the ID of the account to be deleted
+
+    $.ajax({
+        url: `/delete_account/${id}`, // Your Flask endpoint for deletion
+        type: 'DELETE', // Using DELETE HTTP method
+        success: function(response) {
+            // Handle success response
+            console.log('Account deleted:', response);
+            $('#delete_success').show()
+            setTimeout(() => {
+                location.reload()
+            }, 3000);
+        },
+        error: function(xhr, status, error) {
+            // Handle error response
+            console.error('Error deleting account:', error);
+            alert('An error occurred while trying to delete the account.'); // Show error message
+        }
+    });
+}

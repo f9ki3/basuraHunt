@@ -24,7 +24,7 @@ class Accounts(Database):
         print("Table Account Created!")
         conn.close()
 
-    def insertAccounts(self, student_no, email, password, fname, lname, year, strand, section, contact=None, address=None, profile='profile.png', status=1):
+    def insertAccounts(self, student_no, email, password, fname, lname, year, strand, section, contact=None, address=None, profile='profile.png', status=None):
         conn = self.conn
         cursor = conn.cursor()
         
@@ -47,6 +47,37 @@ class Accounts(Database):
                 conn.commit()
                 return 1
         
+        except Exception as e:
+            conn.rollback()  # Rollback in case of error
+            return f"An error occurred: {str(e)}"
+        
+        finally:
+            cursor.close()
+            # conn.close() - Uncomment if managing connection closure here.
+    
+    def deleteAccount(self, account_id):
+        conn = self.conn
+        cursor = conn.cursor()
+        
+        try:
+            # Check if the account exists
+            cursor.execute('''
+                SELECT COUNT(*) FROM users WHERE id = ?
+            ''', (account_id,))
+            
+            account_exists = cursor.fetchone()[0] > 0
+            
+            if not account_exists:
+                return 0  # Account does not exist
+            
+            # Delete the account
+            cursor.execute('''
+                DELETE FROM users WHERE id = ?
+            ''', (account_id,))
+            
+            conn.commit()
+            return 1  # Account deleted successfully
+            
         except Exception as e:
             conn.rollback()  # Rollback in case of error
             return f"An error occurred: {str(e)}"
@@ -104,26 +135,26 @@ class Accounts(Database):
         # Return the data as JSON
         return json.dumps(data, indent=4)
 
-if __name__ == "__main__":
-    Accounts().createTableAccounts()
-    insert_result = Accounts().insertAccounts(
-        student_no="00000",
-        email="admin",
-        password="admin",
-        fname="Juan",
-        lname="Dela Cruz",
-        year=None,
-        strand=None,
-        section=None,
-        contact=None,
-        address=None,
-        profile="profile.png",
-        status=0
-    )
+# if __name__ == "__main__":
+#     Accounts().createTableAccounts()
+#     insert_result = Accounts().insertAccounts(
+#         student_no="00000",
+#         email="admin",
+#         password="admin",
+#         fname="Juan",
+#         lname="Dela Cruz",
+#         year=None,
+#         strand=None,
+#         section=None,
+#         contact=None,
+#         address=None,
+#         profile="profile.png",
+#         status=0
+#     )
 
-    if insert_result == 1:
-        print("User inserted successfully!")
-    elif insert_result == 0:
-        print("Email already exists.")
-    else:
-        print(f"Error: {insert_result}")
+#     if insert_result == 1:
+#         print("User inserted successfully!")
+#     elif insert_result == 0:
+#         print("Email already exists.")
+#     else:
+#         print(f"Error: {insert_result}")
