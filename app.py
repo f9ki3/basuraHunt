@@ -458,7 +458,10 @@ def getReport():
 @app.route('/getSession', methods=['GET'])
 def getSession():
     session_data = session.get('session_data')
-    return jsonify(session_data)
+    data = json.loads(session_data)
+    id = data['id']
+    dats = Accounts().getAccountOne(id)
+    return jsonify(dats)
 
 @app.route('/delete_report', methods=['POST'])
 def delete_report():

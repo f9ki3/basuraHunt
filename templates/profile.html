@@ -65,25 +65,26 @@
                         
                     </div>
 
-                    <div class="border shadow rounded-4 mb-3 p-3 pt-4" style="height: auto;">
+                    <div class="border mb-5 shadow rounded-4 mb-3 p-3 pt-4" style="height: auto;">
+                        <input type="hidden" class="profile_student_id" id="profile_student_id">
                         <!-- Grade and Strand Selection -->
                         <div class="d-flex align-items-center justify-content-center flex-row mb-3">
                             <div class="flex-fill me-2">
                                 <p class="m-0 mb-1" style="font-size: 12px">Grade Level</p>
-                                <select id="student_grade" class="student_grade text-muted form-select form-select-sm">
+                                <select id="profile_student_grade" class="profile_student_grade text-muted form-select form-select-sm">
                                     <option disabled>Select Grade</option>
-                                    <option value="Grade 11" ${response.year === 'Grade 11' ? 'selected' : ''}>Grade 11</option>
-                                    <option value="Grade 12" ${response.year === 'Grade 12' ? 'selected' : ''}>Grade 12</option>
+                                    <option value="Grade 11">Grade 11</option>
+                                    <option value="Grade 12">Grade 12</option>
                                 </select>
                             </div>
                             <div class="flex-fill">
                                 <p class="m-0 mb-1" style="font-size: 12px">Strand</p>
-                                <select id="student_strand" class="student_strand text-muted form-select form-select-sm">
+                                <select id="profile_student_strand" class="profile_student_strand text-muted form-select form-select-sm">
                                     <option disabled>Select Strand</option>
-                                    <option value="GAS" ${response.strand === 'GAS' ? 'selected' : ''}>GAS</option>
-                                    <option value="STEM" ${response.strand === 'STEM' ? 'selected' : ''}>STEM</option>
-                                    <option value="TVL" ${response.strand === 'TVL' ? 'selected' : ''}>TVL</option>
-                                    <option value="ICT" ${response.strand === 'ICT' ? 'selected' : ''}>ICT</option>
+                                    <option value="GAS">GAS</option>
+                                    <option value="STEM">STEM</option>
+                                    <option value="TVL">TVL</option>
+                                    <option value="ICT">ICT</option>
                                 </select>
                             </div>
                         </div>
@@ -92,11 +93,11 @@
                         <div class="d-flex align-items-center justify-content-center flex-row mb-3">
                             <div class="flex-fill me-1">
                                 <p class="m-0 mb-1" style="font-size: 12px">Section</p>
-                                <input autocomplete="off" id="student_section" class="student_section form-control form-control-sm" type="text" placeholder="Section" value="${response.section}">
+                                <input autocomplete="off" id="profile_student_section" class="profile_student_section form-control form-control-sm" type="text" placeholder="Section">
                             </div>
                             <div class="flex-fill ms-1">
                                 <p class="m-0 mb-1" style="font-size: 12px">Student ID</p>
-                                <input autocomplete="off" id="student_id" class="student_id form-control form-control-sm" type="text" placeholder="Student No" value="${response.student_no}">
+                                <input autocomplete="off" id="profile_student_no" class="profile_student_no form-control form-control-sm" type="text" placeholder="Student No">
                             </div>
                         </div>
                     
@@ -104,41 +105,47 @@
                         <div class="d-flex">
                             <div class="d-flex flex-column w-50 me-1">
                                 <p class="m-0 mb-1" style="font-size: 12px">First Name</p>
-                                <input autocomplete="off" id="student_fname" class="student_fname form-control mb-3 form-control-sm" type="text" placeholder="First Name" value="${response.fname}">
+                                <input autocomplete="off" id="profile_student_fname" class="profile_student_fname form-control mb-3 form-control-sm" type="text" placeholder="First Name">
                             </div>
-                           <div class="d-flex flex-column w-50 ms-1">
+                            <div class="d-flex flex-column w-50 ms-1">
                                 <p class="m-0 mb-1" style="font-size: 12px">Last Name</p>
-                                <input autocomplete="off" id="student_lname" class="student_lname form-control mb-3 form-control-sm" type="text" placeholder="Last Name" value="${response.lname}">
-                           </div>
+                                <input autocomplete="off" id="profile_student_lname" class="profile_student_lname form-control mb-3 form-control-sm" type="text" placeholder="Last Name">
+                            </div>
                         </div>
                     
                         <!-- Email and Contact Fields -->
                         <div class="d-flex">
                             <div class="d-flex flex-column w-50 me-1">
                                 <p class="m-0 mb-1" style="font-size: 12px">Email</p>
-                                <input autocomplete="off" id="student_email" class="student_email me-1 form-control mb-3 form-control-sm" type="email" placeholder="Enter your Email" value="${response.email}">
+                                <input autocomplete="off" id="profile_student_email" class="profile_student_email me-1 form-control mb-3 form-control-sm" type="email" placeholder="Enter your Email">
                             </div>
-                           <div class="d-flex flex-column w-50 ms-1">
+                            <div class="d-flex flex-column w-50 ms-1">
                                 <p class="m-0 mb-1" style="font-size: 12px">Contact</p>
-                                <input autocomplete="off" id="student_contact" class="student_contact ms-1 form-control mb-3 form-control-sm" type="text" placeholder="Enter your contact" value="${response.contact}">
-                           </div>
+                                <input autocomplete="off" id="profile_student_contact" class="profile_student_contact ms-1 form-control mb-3 form-control-sm" type="text" placeholder="Enter your contact">
+                            </div>
                         </div>
                     
                         <!-- Address -->
                         <div class="d-flex">
-                            <textarea id="student_address" class="student_address form-control mb-3" placeholder="Enter your Address" style="font-size: 14px;">${response.address}</textarea>
+                            <textarea id="profile_student_address" class="profile_student_address form-control mb-3" placeholder="Enter your Address" style="font-size: 14px;"></textarea>
                         </div>
                     
                         <div class="modal-footer">
-                            
-                            <button onclick="updateStudentInfo()" type="button" style="background-color: #009429; color: white" class="btn">
-                                <p id="text_update_admin" class="m-0 p-0">Update Student</p>
-                                <div id="load_update_admin" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
+                            <button onclick="updateStudentProfile()" type="button" style="background-color: #009429; color: white" class="btn">
+                                <p id="profile_text_update_admin" class="m-0 p-0">Update Student</p>
+                                <div id="profile_load_update_admin" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
                             </button>
                         </div>
+                        <div>
+                            <div id="update_success" style="display: none; z-index: 100; position: fixed; bottom: 0; right: 20" class="alert alert-success" role="alert">
+                                <i class="bi bi-bookmark-check-fill me-2"></i>Success Updated Account!
+                            </div>
+                        </div>
                     </div>
+                    
+                    
                     
                 </div> 
                 <div class="col-12 col-md-6 col-lg-4" style="color: #252422;">
