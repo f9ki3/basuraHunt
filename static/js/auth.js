@@ -34,23 +34,23 @@ $('#auth').html(`
                 <input autocomplete="off" id="lname" type="text" placeholder="Last Name" class="ps-4 ms-1 form-control mb-3 fs-6 form-control-lg">
             </div>
             <input autocomplete="off" id="email" type="email" placeholder="Enter your Email" class="ps-4 form-control mb-3 fs-6 form-control-lg">
-            <input autocomplete="off" id="contact" type="number" placeholder="Enter your Contact No." class="ps-4 form-control mb-3 fs-6 form-control-lg">
+            <input autocomplete="off"  maxlength="11" id="contact" type="number" placeholder="Enter your Contact No." class="ps-4 form-control mb-3 fs-6 form-control-lg">
             <input autocomplete="off" id="student_id" type="text" placeholder="Enter your Student No" class="ps-4 form-control mb-3 fs-6 form-control-lg">
         </div>
     
         <div id="pass" style="display: none;">
             <div class="d-flex mb-3">
-                <select class="form-select me-1">
-                    <option>Select Grade</option>
-                    <option>Grade 11</option>
-                    <option>Grade 12</option>
+                <select id="grade" class="form-select me-1">
+                    <option disabled selected>Select Grade</option>
+                    <option value="Grade 11">Grade 11</option>
+                    <option value="Grade 12">Grade 12</option>
                 </select>   
-                <select class="form-select ms-1">
-                    <option>Select Strand</option>
-                    <option>GAS</option>
-                    <option>STEM</option>
-                    <option>TVL</option>
-                    <option>ICT</option>
+                <select id="strand" class="form-select ms-1">
+                    <option disabled selected>Select Strand</option>
+                    <option value="GAS">GAS</option>
+                    <option value="STEM">STEM</option>
+                    <option value="TVL">TVL</option>
+                    <option value="ICT">ICT</option>
                 </select>    
             </div>
             <input autocomplete="off" id="section" type="text" placeholder="Enter your section" class="ps-4 form-control mb-3 fs-6 form-control-lg">
@@ -123,17 +123,24 @@ $('#auth').html(`
 
 
     // create account
-    $('#email, #student_id, #fname, #lname').on('input', function() {  
+    $('#email, #student_id, #fname, #lname, #contact').on('input', function() {  
         let email = $('#email').val().trim();  // Trim to avoid empty spaces
         let student_id = $('#student_id').val().trim();
         let fname = $('#fname').val().trim();
         let lname = $('#lname').val().trim();
-        
+        let contact = $('#contact').val().trim();  // Add contact field
+    
         // Email validation regex
         let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         
         // Name validation regex (only alphabetic characters)
         let namePattern = /^[A-Za-z]+$/;
+        
+        // Student ID validation regex (exactly 5 digits)
+        let studentIdPattern = /^\d{5}$/;
+    
+        // Contact number validation (10-15 numeric characters)
+        let contactPattern = /^\d{10,15}$/;
         
         // Validate email
         if (emailPattern.test(email)) {
@@ -142,37 +149,46 @@ $('#auth').html(`
             $('#email').removeClass('is-valid').addClass('is-invalid');
         }
         
-        // Validate student_id (must be exactly 5 characters)
-        if (student_id.length === 5) {
+        // Validate student_id (must be exactly 5 numeric characters)
+        if (studentIdPattern.test(student_id)) {
             $('#student_id').removeClass('is-invalid').addClass('is-valid');
         } else {
             $('#student_id').removeClass('is-valid').addClass('is-invalid');
         }
-
+    
         // Validate first name (must not be empty and only contain letters)
-        if (namePattern.test(fname)) {
+        if (namePattern.test(fname) && fname !== '') {
             $('#fname').removeClass('is-invalid').addClass('is-valid');
         } else {
             $('#fname').removeClass('is-valid').addClass('is-invalid');
         }
-
+    
         // Validate last name (must not be empty and only contain letters)
-        if (namePattern.test(lname)) {
+        if (namePattern.test(lname) && lname !== '') {
             $('#lname').removeClass('is-invalid').addClass('is-valid');
         } else {
             $('#lname').removeClass('is-valid').addClass('is-invalid');
+        }
+        
+        // Validate contact number (must be between 10-15 digits)
+        if (contactPattern.test(contact)) {
+            $('#contact').removeClass('is-invalid').addClass('is-valid');
+        } else {
+            $('#contact').removeClass('is-valid').addClass('is-invalid');
         }
         
         // Enable/Disable the button based on all validations
         if ($('#email').hasClass('is-valid') && 
             $('#student_id').hasClass('is-valid') && 
             $('#fname').hasClass('is-valid') && 
-            $('#lname').hasClass('is-valid')) {
+            $('#lname').hasClass('is-valid') && 
+            $('#contact').hasClass('is-valid')) {
             $('#continue').prop('disabled', false);  // Enable the button
         } else {
             $('#continue').prop('disabled', true);  // Disable the button
         }
     });
+    
 
     $('#continue').on('click', function() {  
         $(this).hide();
@@ -187,21 +203,53 @@ $('#auth').html(`
 
     
 
-    $('#vpassword, #cpassword').on('input', function() {  
+    $('#vpassword, #cpassword, #grade, #strand, #section').on('input change', function() {  
         let vpassword = $('#vpassword').val().trim();  // Trim to avoid empty spaces
         let cpassword = $('#cpassword').val().trim();
         
+        // Validate Grade selection
+        let gradeValid = $('#grade').val() !== null; // Ensure a grade is selected
+        
+        // Validate Strand selection
+        let strandValid = $('#strand').val() !== null; // Ensure a strand is selected
+    
+        // Validate Section (must not be empty)
+        let section = $('#section').val().trim();
+        let sectionValid = section !== '';
+    
         // Validate if the passwords match
         if (vpassword && cpassword && vpassword === cpassword) {
             $('#vpassword, #cpassword').removeClass('is-invalid').addClass('is-valid');
-            // console.log('Passwords match');
         } else {
             $('#vpassword, #cpassword').removeClass('is-valid').addClass('is-invalid');
-            // console.log('Passwords do not match');
         }
-
-        // Enable/Disable the button based on both validations
-        if ($('#vpassword').hasClass('is-valid') && $('#cpassword').hasClass('is-valid')) {
+    
+        // Update validation classes for Grade and Strand
+        if (gradeValid) {
+            $('#grade').removeClass('is-invalid').addClass('is-valid');
+        } else {
+            $('#grade').removeClass('is-valid').addClass('is-invalid');
+        }
+    
+        if (strandValid) {
+            $('#strand').removeClass('is-invalid').addClass('is-valid');
+        } else {
+            $('#strand').removeClass('is-valid').addClass('is-invalid');
+        }
+    
+        // Update validation class for Section
+        if (sectionValid) {
+            $('#section').removeClass('is-invalid').addClass('is-valid');
+        } else {
+            $('#section').removeClass('is-valid').addClass('is-invalid');
+        }
+    
+        // Enable/Disable the button based on all validations
+        if ($('#vpassword').hasClass('is-valid') && 
+            $('#cpassword').hasClass('is-valid') &&
+            gradeValid &&
+            strandValid &&
+            sectionValid) {
             $('#create').prop('disabled', false);  // Enable the button
             $('#back').prop('disabled', true);
         } else {
@@ -209,62 +257,61 @@ $('#auth').html(`
             $('#back').prop('disabled', false);
         }
     });
+    
 
     $('#create').on('click', function() {  
         $('#create_text').hide();
         $('#create_loader').show();
         $('#create').prop('disabled', true);
     
+        // Get values from input fields
         let email = $('#email').val();
         let student_id = $('#student_id').val();
         let vpassword = $('#vpassword').val();
         let fname = $('#fname').val();
         let lname = $('#lname').val();
+        let contact = $('#contact').val(); // Get value from the contact field
+        let grade = $('#grade').val(); // Get value from the grade select
+        let strand = $('#strand').val(); // Get value from the strand select
+        let section = $('#section').val(); // Get value from the section field
     
+        // Prepare data object
         let data = {
             'email': email,
             'student_id': student_id,
             'password': vpassword,
             'fname': fname,
-            'lname': lname
+            'lname': lname,
+            'contact': contact, // Add contact to the data object
+            'grade': grade, // Add grade to the data object
+            'strand': strand, // Add strand to the data object
+            'section': section // Add section to the data object
         };
     
-        // Introduce a delay of 3 seconds (3000 milliseconds) before making the request
-        setTimeout(function() {
-            $.ajax({
-                type: "POST",
-                url: "/createAccountManual",
-                data: JSON.stringify(data), // Convert data to JSON string
-                contentType: "application/json", // Set the content type to JSON
-                dataType: "json",
-                success: function(response) {
-                    let responseData = response.data;
+        // Proceed with your AJAX request or other operations with the data
+        console.log(data); // For debugging purposes
     
-                    if (responseData == 1) {
-                        window.location.href = '/success_create';
-                    } else if (responseData == 0) {
-                        $('#message_alert').hide();
-                        $('#warn_create').show();
-                        $('#back').click();
-                        $('#email').val('').removeClass('is-valid').addClass('is-invalid');
-                    } else {
-                        $('#message_alert').hide();
-                        $('#warn_server').show();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                    $('#message_alert').hide();
-                    $('#warn_server').show();
-                },
-                complete: function() {
-                    $('#create_text').show();
-                    $('#create_loader').hide();
-                    $('#create').prop('disabled', false);
-                }
-            });
-        }, 3000); // Delay in milliseconds
+        // Example of an AJAX request (adjust as necessary)
+        $.ajax({
+            type: 'POST',
+            url: 'createAccountManual', // Replace with your server endpoint
+            data: data,
+            success: function(response) {
+                // Handle success (e.g., show a success message)
+                console.log('Success:', response);
+            },
+            error: function(xhr, status, error) {
+                // Handle error (e.g., show an error message)
+                console.log('Error:', error);
+            },
+            complete: function() {
+                $('#create_loader').hide();
+                $('#create_text').show();
+                $('#create').prop('disabled', false); // Re-enable the button
+            }
+        });
     });
+    
     
     
     

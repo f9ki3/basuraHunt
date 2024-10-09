@@ -222,14 +222,26 @@ def waste_level_user():
 def create_account_manual():
     # Extract data from the request
     data = request.json  # Assuming you're sending JSON data
+
+    # Extracting fields from the incoming data
     email = data.get('email')
     student_id = data.get('student_id')
     password = data.get('password')
     fname = data.get('fname')  # Extracting first name
     lname = data.get('lname')  # Extracting last name
+    contact = data.get('contact')  # Extracting contact number
+    grade = data.get('grade')      # Extracting grade
+    strand = data.get('strand')    # Extracting strand
+    section = data.get('section')  # Extracting section
 
-    # Insert the data into the database (assuming insertAccounts now takes fname and lname)
-    account_data = Accounts().insertAccounts(student_id, email, password, fname, lname)
+    # Validate the data (you can add more validation as needed)
+    if not all([email, student_id, password, fname, lname, contact, grade, strand, section]):
+        return jsonify({'status': 'error', 'message': 'All fields are required.'}), 400
+
+    # Insert the data into the database (update insertAccounts to handle new fields)
+    account_data = Accounts().insertAccounts(
+        student_id, email, password, fname, lname, contact, grade, strand, section
+    )
 
     # Prepare a response
     response = {

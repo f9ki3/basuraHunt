@@ -26,7 +26,7 @@ $(document).ready(function() {
             var row = `
                 <tr>
                     <td>${item.id}</td>
-                    <td><div style="width: 35px; height: 35px"><img style="border-radius: 100%; object-fit: cover; width: 100%; height: 100%" src="../static/img/${item.profle}" alt="Profile Image"></div></td>
+                    <td><div style="width: 35px; height: 35px"><img style="border-radius: 100%; object-fit: cover; width: 100%; height: 100%" src="../static/img/${item.profile}" alt="Profile Image"></div></td>
                     <td>${item.student_no}</td>
                     <td>${item.fname + " " + item.lname}</td>
                     <td>${item.email}</td>

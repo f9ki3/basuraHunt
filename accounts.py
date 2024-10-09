@@ -13,7 +13,7 @@ class Accounts(Database):
                         lname TEXT NULL,
                         contact TEXT NULL,
                         address TEXT NULL,
-                        profle TEXT NULL,
+                        profile TEXT NULL,
                         year TEXT NULL,
                         strand TEXT NULL,
                         section TEXT NULL,
@@ -41,7 +41,7 @@ class Accounts(Database):
             else:
                 # Insert the new record
                 cursor.execute('''
-                    INSERT INTO users (student_no, email, password, fname, lname, year, strand, section, contact, address, profle, status)
+                    INSERT INTO users (student_no, email, password, fname, lname, year, strand, section, contact, address, profile, status)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (student_no, email, password, fname, lname, year, strand, section, contact, address, profile, status))
                 conn.commit()
@@ -103,3 +103,27 @@ class Accounts(Database):
         
         # Return the data as JSON
         return json.dumps(data, indent=4)
+
+if __name__ == "__main__":
+    Accounts().createTableAccounts()
+    insert_result = Accounts().insertAccounts(
+        student_no="00000",
+        email="admin",
+        password="admin",
+        fname="Juan",
+        lname="Dela Cruz",
+        year=None,
+        strand=None,
+        section=None,
+        contact=None,
+        address=None,
+        profile="profile.png",
+        status=0
+    )
+
+    if insert_result == 1:
+        print("User inserted successfully!")
+    elif insert_result == 0:
+        print("Email already exists.")
+    else:
+        print(f"Error: {insert_result}")
