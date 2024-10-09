@@ -24,7 +24,7 @@ class Accounts(Database):
         print("Table Account Created!")
         conn.close()
 
-    def insertAccounts(self, student_no, email, password, fname, lname, year, strand, section, contact=None, address=None, profile='profile.png', status=None):
+    def insertAccounts(self, student_no, email, password, fname, lname, year, strand, section, contact=None, address=None, profile=None, status=None):
         conn = self.conn
         cursor = conn.cursor()
         
@@ -37,16 +37,16 @@ class Accounts(Database):
             email_exists = cursor.fetchone()[0] > 0
             
             if email_exists:
-                return 0
+                return 0  # Email already exists
             else:
                 # Insert the new record
                 cursor.execute('''
                     INSERT INTO users (student_no, email, password, fname, lname, year, strand, section, contact, address, profile, status)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (student_no, email, password, fname, lname, year, strand, section, contact, address, profile, status))
-                conn.commit()
-                return 1
-        
+                conn.commit()  # Commit the changes
+                return 1  # Insertion successful
+            
         except Exception as e:
             conn.rollback()  # Rollback in case of error
             return f"An error occurred: {str(e)}"
@@ -54,6 +54,7 @@ class Accounts(Database):
         finally:
             cursor.close()
             # conn.close() - Uncomment if managing connection closure here.
+
     
     def deleteAccount(self, account_id):
         conn = self.conn

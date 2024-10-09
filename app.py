@@ -607,9 +607,11 @@ def create_student():
     contact = data.get('contact')
     address = data.get('address')
     password = data.get('password')
+    profile = 'profile.png'
+    status = 1
 
     # Here you would typically save the student data to a database
-    status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address, profile=None, strand=1)
+    status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address, profile, status)
     if status == 1:
         return jsonify({'message': 'Student created successfully'}), 201
     # Respond with a success message
@@ -631,8 +633,10 @@ def create_admin():
     year = None
     strand = None
     section = None
+    profile = 'profile.png'
+    status = 0
     
-    status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address, profile=None, strand=0)
+    status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address, profile, status)
 
     if status == 1:
         return jsonify({'message': 'Student created successfully'}), 201
