@@ -1,13 +1,19 @@
 let chart;
+let responseData; // Define responseData in a higher scope
 
 function changeChartType(type) {
+    // Prepare the data from the response
+    const bin1Data = responseData.bin1.value;
+    const bin2Data = responseData.bin2.value;
+    const dates = responseData.bin1.date; // Assuming both bins have the same dates
+
     const options = {
         series: [{
             name: 'Trash Bin 1',
-            data: [50, 40, 100, 51, 42, 109, 100, 60, 70, 90]
+            data: bin1Data
         }, {
             name: 'Trash Bin 2',
-            data: [11, 32, 45, 32, 120, 52, 41, 80, 75, 65]
+            data: bin2Data
         }],
         chart: {
             height: 350,
@@ -29,18 +35,7 @@ function changeChartType(type) {
         },
         xaxis: {
             type: 'datetime',
-            categories: [
-                "2024-09-01T00:00:00.000Z",
-                "2024-09-02T00:00:00.000Z",
-                "2024-09-03T00:00:00.000Z",
-                "2024-09-04T00:00:00.000Z",
-                "2024-09-05T00:00:00.000Z",
-                "2024-09-06T00:00:00.000Z",
-                "2024-09-07T00:00:00.000Z",
-                "2024-09-08T00:00:00.000Z",
-                "2024-09-09T00:00:00.000Z",
-                "2024-09-10T00:00:00.000Z"
-            ]
+            categories: dates // Use the dates from the response
         },
         tooltip: {
             x: {
@@ -59,8 +54,19 @@ function changeChartType(type) {
     chart.render();
 }
 
-// Initial render with area chart
-changeChartType('area');
+// Initial AJAX call to fetch data
+$.ajax({
+    url: '/getDisposeDashboardsAnalytics', // Replace with your API endpoint
+    method: 'GET',
+    success: function(data) {
+        responseData = data; // Store response data in the higher scope variable
+        // Call changeChartType with initial chart type
+        changeChartType('area');
+    },
+    error: function(xhr, status, error) {
+        console.error('Error fetching data:', error);
+    }
+});
 
 // Set up click event handlers for buttons
 $('#area').click(function() {
