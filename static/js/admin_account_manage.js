@@ -45,7 +45,7 @@ $(document).ready(function() {
                     <td>${item.status === 1 ? 'Student' : 'Administrator'}</td>
                     <td>
                         <button data-del_id="${item.id}" data-bs-toggle="modal" data-bs-target="#delete_account" class="btn-delete" style="background: transparent; border: none; font-size: 20px"><i class="bi text-muted bi-trash"></i></button>
-                        <button style="background: transparent; border: none; font-size: 20px"><i class="bi text-muted bi-pencil"></i></button>
+                        <button data-del_id="${item.id}" data-bs-toggle="modal" data-bs-target="#edit_account" style="background: transparent; border: none; font-size: 20px"><i class="bi text-muted bi-pencil"></i></button>
                     </td>
                 </tr>
             `;
