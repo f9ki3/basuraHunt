@@ -9,7 +9,7 @@ $('#auth').html(`
 
         <div>
             <div id="message_alert" style="display: none" class="alert ps-4 alert-primary alert-dismissible fade show" role="alert">
-            <strong>Note:</strong> You should use strong password containing numbers or specal characters.
+            <strong>Note:</strong> You should use strong password containing numbers or special characters.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
@@ -34,10 +34,26 @@ $('#auth').html(`
                 <input autocomplete="off" id="lname" type="text" placeholder="Last Name" class="ps-4 ms-1 form-control mb-3 fs-6 form-control-lg">
             </div>
             <input autocomplete="off" id="email" type="email" placeholder="Enter your Email" class="ps-4 form-control mb-3 fs-6 form-control-lg">
+            <input autocomplete="off" id="contact" type="number" placeholder="Enter your Contact No." class="ps-4 form-control mb-3 fs-6 form-control-lg">
             <input autocomplete="off" id="student_id" type="text" placeholder="Enter your Student No" class="ps-4 form-control mb-3 fs-6 form-control-lg">
         </div>
     
         <div id="pass" style="display: none;">
+            <div class="d-flex mb-3">
+                <select class="form-select me-1">
+                    <option>Select Grade</option>
+                    <option>Grade 11</option>
+                    <option>Grade 12</option>
+                </select>   
+                <select class="form-select ms-1">
+                    <option>Select Strand</option>
+                    <option>GAS</option>
+                    <option>STEM</option>
+                    <option>TVL</option>
+                    <option>ICT</option>
+                </select>    
+            </div>
+            <input autocomplete="off" id="section" type="text" placeholder="Enter your section" class="ps-4 form-control mb-3 fs-6 form-control-lg">
             <input autocomplete="off" id="vpassword" type="password" placeholder="Enter Password" class="ps-4 form-control mb-3 fs-6 form-control-lg">
             <input autocomplete="off" id="cpassword" type="password" placeholder="Confirm Password" class="ps-4 form-control fs-6 form-control-lg">
         </div>
