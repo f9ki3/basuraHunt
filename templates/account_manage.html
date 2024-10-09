@@ -16,7 +16,14 @@
             <div class="row" id="viewStudentAccountTable">
                 <h4 >Account Manage</h4>
                 <div class="col-12 col-md-6">
-                    <input class="w-100 form-control form-control-sm no-outline" placeholder="Search here ..." type="text" id="searchInput">
+                    <input 
+                        aria-autocomplete="off" 
+                        autocomplete="off" 
+                        class="w-100 form-control form-control-sm no-outline" 
+                        placeholder="Search here ..." 
+                        type="text" 
+                        id="searchInputAccount">
+
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-row">
                     <button class="btn btn-sm" id="createUsersnBtn" data-bs-toggle="modal" data-bs-target="#create_account">Create</button>
@@ -24,7 +31,7 @@
                     <button class="btn btn-sm" id="adminBtn">Administrator</button>
                     <button class="btn btn-sm" id="studentBtn">Students</button>
 
-                    <select class="form-select form-select-sm no-outline border-none" aria-label="Default select example" id="Account">
+                    <select class="form-select form-select-sm no-outline border-none" aria-label="Default select example" id="accountShowsItems">
                         <option value="10" selected>Show 10 Items</option>
                         <option value="15">Show 15 Items</option>
                         <option value="20">Show 20 Items</option>
@@ -163,9 +170,9 @@
                           <tr>
                             <th scope="col" width="5%"> ID</th>
                             <th scope="col" width="10%">Profile</th>
-                            <th scope="col" width="10%">Student No.</th>
-                            <th scope="col" width="20%">Name</th>
+                            <th scope="col" width="10%">Contact</th>
                             <th scope="col" width="20%">Email</th>
+                            <th scope="col" width="20%">Name</th>
                             <th scope="col" width="15%">Address</th>
                             <th scope="col" width="10%">Account Type</th>
                             <th scope="col" width="10%">Action</th>
