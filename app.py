@@ -218,8 +218,6 @@ def waste_level_user():
 
 
 # Create API that gets and retrieves data from the model
-from flask import jsonify, request
-
 @app.route('/createAccountManual', methods=['POST'])
 def create_account_manual():
     # Extract data from the request
@@ -592,6 +590,30 @@ def getDisposeAll():
 def get_dashboard():
     data = Dashboard().getDashboard()
     return jsonify(data)
+
+@app.route('/create_student', methods=['POST'])
+def create_student():
+    # Get the JSON data from the request
+    data = request.get_json()
+
+    # Extract student information
+    year = data.get('grade')
+    strand = data.get('strand')
+    section = data.get('section')
+    student_no = data.get('student_id')
+    fname = data.get('first_name')
+    lname = data.get('last_name')
+    email = data.get('email')
+    contact = data.get('contact')
+    address = data.get('address')
+    password = data.get('password')
+
+    # Here you would typically save the student data to a database
+    status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address)
+    if status == 1:
+        return jsonify({'message': 'Student created successfully'}), 201
+    # Respond with a success message
+    return jsonify({'message': 'Internal Server Error'}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -39,23 +39,23 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <select class="form-control form-control-sm mb-3" name="" id="">
-                                    <option value="" selected disabled>Select Account Type</option>
-                                    <option value="">Administrator</option>
-                                    <option value="">Student</option>
+                                <select id="acc_type" class="form-control form-control-sm mb-3" name="" id="">
+                                    <option selected disabled>Select Account Type</option>
+                                    <option value="admin">Administrator</option>
+                                    <option value="student">Student</option>
                                 </select>
                                 <div id="student_page" style="display: none;">
-                                    <!-- First Name and Last Name Fields -->
+                                    <!-- Grade and Strand Selection -->
                                     <div class="d-flex align-items-center justify-content-center flex-row mb-3">
                                         <div class="flex-fill me-2">
-                                            <select id="grade" class="text-muted form-select form-select-sm">
+                                            <select id="student_grade" class="text-muted form-select form-select-sm">
                                                 <option disabled selected>Select Grade</option>
                                                 <option value="Grade 11">Grade 11</option>
                                                 <option value="Grade 12">Grade 12</option>
                                             </select>
                                         </div>
                                         <div class="flex-fill">
-                                            <select id="strand" class="text-muted form-select form-select-sm">
+                                            <select id="student_strand" class="text-muted form-select form-select-sm">
                                                 <option disabled selected>Select Strand</option>
                                                 <option value="GAS">GAS</option>
                                                 <option value="STEM">STEM</option>
@@ -64,59 +64,89 @@
                                             </select>
                                         </div>
                                     </div>
-
+                                
+                                    <!-- Section and Student ID Fields -->
                                     <div class="d-flex align-items-center justify-content-center flex-row mb-3">
-
-                                        <div class="flex-fill me-2">
-                                            <input 
-                                                autocomplete="off" 
-                                                id="section" 
-                                                type="text" 
-                                                placeholder="Section" 
-                                                class="form-control form-control-sm"
-                                            >
+                                        <div class="flex-fill me-1">
+                                            <input autocomplete="off" id="student_section" type="text" placeholder="Section" class="form-control form-control-sm">
                                         </div>
-                                        <div class="flex-fill me-2">
-                                            <input 
-                                                autocomplete="off" 
-                                                id="student_id" 
-                                                type="text" 
-                                                placeholder="Student No" 
-                                                class="form-control form-control-sm"
-                                            >
+                                        <div class="flex-fill ms-1">
+                                            <input autocomplete="off" id="student_id" type="text" placeholder="Student No" class="form-control form-control-sm">
                                         </div>
+                                    </div>
+                                    
+                                    <!-- First Name and Last Name Fields -->
+                                    <div class="d-flex">
+                                        <input autocomplete="off" id="student_fname" type="text" placeholder="First Name" class="me-1 form-control mb-3 form-control-sm">
+                                        <input autocomplete="off" id="student_lname" type="text" placeholder="Last Name" class="ms-1 form-control mb-3 form-control-sm">
                                     </div>
                                 
-                                    
-
+                                    <!-- Email and Contact Fields -->
                                     <div class="d-flex">
-                                        <input autocomplete="off" id="fname" type="text" placeholder="First Name" class="me-1 form-control mb-3 form-control-sm">
-                                        <input autocomplete="off" id="lname" type="text" placeholder="Last Name" class="ms-1 form-control mb-3 form-control-sm">
+                                        <input autocomplete="off" id="student_email" type="email" placeholder="Enter your Email" class="me-1 form-control mb-3 form-control-sm">
+                                        <input autocomplete="off" id="student_contact" type="number" placeholder="Enter your contact" class="ms-1 form-control mb-3 form-control-sm">
                                     </div>
-                
-                                    <!-- Email Field and Student ID Field -->
-                                    <div class="d-flex">
-                                        <input autocomplete="off" id="email" type="email" placeholder="Enter your Email" class="me-1 form-control mb-3 form-control-sm">
-                                        <input autocomplete="off" id="contact" type="number" placeholder="Enter your contact" class="me-1 form-control mb-3 form-control-sm">
-                                    </div>
-
+                                
                                     <!-- Address -->
                                     <div class="d-flex">
-                                        <textarea name="" id="address" class="form-control mb-3" placeholder="Enter your Address" style="font-size: 14px;"></textarea>
+                                        <textarea id="student_address" class="form-control mb-3" placeholder="Enter your Address" style="font-size: 14px;"></textarea>
                                     </div>
-                
+                                
                                     <!-- Password Fields -->
-                                    <div class="d-flex">
-                                        <input autocomplete="off" id="vpassword" type="password" placeholder="Enter Password" class="me-1 form-control form-control-sm">
-                                        <input autocomplete="off" id="cpassword" type="password" placeholder="Confirm Password" class="ms-1 form-control form-control-sm">
+                                    <div class="d-flex mb-3">
+                                        <input autocomplete="off" id="student_password" type="password" placeholder="Enter Password" class="me-1 form-control form-control-sm">
+                                        <input autocomplete="off" id="student_confirm_password" type="password" placeholder="Confirm Password" class="ms-1 form-control form-control-sm">
                                     </div>
+                                
                                     <div class="modal-footer">
-                                        <button id="cancelEditReport" type="button" style="background-color: #ccf3d7; color: #009429" class="btn" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="button" style="background-color: #009429; color: white" class="btn">Create Account</button>
+                                        <button id="cancelAddStudent" type="button" style="background-color: #ccf3d7; color: #009429" class="btn" data-bs-dismiss="modal">Cancel</button>
+                                        <button disabled id="createAddStudent" type="button" style="background-color: #009429; color: white" class="btn">
+                                            <p id="text_add_student" class="m-0 p-0">Create Student</p>
+                                            <div id="load_add_student" style="display: none;" class="spinner-grow spinner-grow-sm m-0" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                              </div>
+                                        </button>
                                     </div>
                                 </div>
+                                
+                                <div id="admin_page" style="display: none;">
+                                    <!-- First Name and Last Name Fields -->
+                                    <div class="d-flex">
+                                        <input autocomplete="off" id="admin_fname" type="text" placeholder="First Name" class="me-1 form-control mb-3 form-control-sm">
+                                        <input autocomplete="off" id="admin_lname" type="text" placeholder="Last Name" class="ms-1 form-control mb-3 form-control-sm">
+                                    </div>
+                                
+                                    <!-- Email and Contact Fields -->
+                                    <div class="d-flex">
+                                        <input autocomplete="off" id="admin_email" type="text" placeholder="Enter your Email" class="me-1 form-control mb-3 form-control-sm">
+                                        <input autocomplete="off" id="admin_contact" type="number" placeholder="Enter your contact" class="ms-1 form-control mb-3 form-control-sm">
+                                    </div>
+                                
+                                    <!-- Address -->
+                                    <div class="d-flex">
+                                        <textarea id="admin_address" class="form-control mb-3" placeholder="Enter your Address" style="font-size: 14px;"></textarea>
+                                    </div>
+                                
+                                    <!-- Password Fields -->
+                                    <div class="d-flex mb-3">
+                                        <input autocomplete="off" id="admin_password" type="password" placeholder="Enter Password" class="me-1 form-control form-control-sm">
+                                        <input autocomplete="off" id="admin_confirm_password" type="password" placeholder="Confirm Password" class="ms-1 form-control form-control-sm">
+                                    </div>
+                                
+                                    <div class="modal-footer">
+                                        <button id="cancelAddAdmin" type="button" style="background-color: #ccf3d7; color: #009429" class="btn" data-bs-dismiss="modal">Cancel</button>
+                                        <button id="createAddStudent" type="button" style="background-color: #009429; color: white" class="btn">Create Admin</button>
+                                    </div>
+                                </div>
+                                
+                                
                             </div>
                             
+                        </div>
+                        <div>
+                            <div id="account_success" style="display: none; z-index: 100; position: fixed; bottom: 0; right: 20" class="alert alert-success" role="alert">
+                                <i class="bi bi-bookmark-check-fill me-2"></i>Success Added Account!
+                            </div>
                         </div>
                     </div>
                 </div>
