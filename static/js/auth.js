@@ -259,7 +259,7 @@ $('#auth').html(`
     });
     
 
-    $('#create').on('click', function() {  
+    $('#create').on('click', function() {
         $('#create_text').hide();
         $('#create_loader').show();
         $('#create').prop('disabled', true);
@@ -288,29 +288,46 @@ $('#auth').html(`
             'section': section // Add section to the data object
         };
     
-        // Proceed with your AJAX request or other operations with the data
-        console.log(data); // For debugging purposes
+        // Log the data for debugging
+        console.log(data); 
     
-        // Example of an AJAX request (adjust as necessary)
-        $.ajax({
-            type: 'POST',
-            url: 'createAccountManual', // Replace with your server endpoint
-            data: data,
-            success: function(response) {
-                // Handle success (e.g., show a success message)
-                console.log('Success:', response);
-            },
-            error: function(xhr, status, error) {
-                // Handle error (e.g., show an error message)
-                console.log('Error:', error);
-            },
-            complete: function() {
-                $('#create_loader').hide();
-                $('#create_text').show();
-                $('#create').prop('disabled', false); // Re-enable the button
-            }
-        });
+        // AJAX request to the server
+        setTimeout(function() {
+            $.ajax({
+                type: "POST",
+                url: "/createAccountManual",
+                data: JSON.stringify(data), // Convert data to JSON string
+                contentType: "application/json", // Set the content type to JSON
+                dataType: "json",
+                success: function(response) {
+                    let responseData = response.data;
+    
+                    if (responseData == 1) {
+                        window.location.href = '/success_create';
+                    } else if (responseData == 0) {
+                        $('#message_alert').hide();
+                        $('#warn_create').show();
+                        $('#back').click();
+                        $('#email').val('').removeClass('is-valid').addClass('is-invalid');
+                    } else {
+                        $('#message_alert').hide();
+                        $('#warn_server').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    $('#message_alert').hide();
+                    $('#warn_server').show();
+                },
+                complete: function() {
+                    $('#create_text').show();
+                    $('#create_loader').hide();
+                    $('#create').prop('disabled', false);
+                }
+            });
+        }, 3000); // Delay in milliseconds
     });
+        
     
     
     

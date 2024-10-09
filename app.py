@@ -218,6 +218,8 @@ def waste_level_user():
 
 
 # Create API that gets and retrieves data from the model
+from flask import jsonify, request
+
 @app.route('/createAccountManual', methods=['POST'])
 def create_account_manual():
     # Extract data from the request
@@ -234,24 +236,32 @@ def create_account_manual():
     strand = data.get('strand')    # Extracting strand
     section = data.get('section')  # Extracting section
 
-    # Validate the data (you can add more validation as needed)
+    # Validate the data
     if not all([email, student_id, password, fname, lname, contact, grade, strand, section]):
         return jsonify({'status': 'error', 'message': 'All fields are required.'}), 400
 
-    # Insert the data into the database (update insertAccounts to handle new fields)
+    # Insert the data into the database
     account_data = Accounts().insertAccounts(
         student_id, email, password, fname, lname, contact, grade, strand, section
     )
 
     # Prepare a response
+    if account_data == 0:
+        return jsonify({'status': 'error', 'message': 'Email already exists.'}), 409
+    elif isinstance(account_data, str):  # Check if an error message is returned
+        return jsonify({'status': 'error', 'message': account_data}), 500
+
     response = {
-        'status': 'success',
-        'data': account_data
+        'data': account_data,
+        'message': 'Account created successfully.',
+        'status': 'success'  # You can add a status key for clarity
     }
 
     print(response)  # Optional: log the response
 
     return jsonify(response)  # Return JSON response
+
+
 
 @app.route('/getCount', methods=['GET'])
 def getCount():
