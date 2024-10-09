@@ -225,22 +225,22 @@ def create_account_manual():
 
     # Extracting fields from the incoming data
     email = data.get('email')
-    student_id = data.get('student_id')
+    student_no = data.get('student_id')
     password = data.get('password')
     fname = data.get('fname')  # Extracting first name
     lname = data.get('lname')  # Extracting last name
     contact = data.get('contact')  # Extracting contact number
-    grade = data.get('grade')      # Extracting grade
+    year = data.get('grade')      # Extracting grade
     strand = data.get('strand')    # Extracting strand
     section = data.get('section')  # Extracting section
 
     # Validate the data
-    if not all([email, student_id, password, fname, lname, contact, grade, strand, section]):
+    if not all([email, student_no, password, fname, lname, contact, year, strand, section]):
         return jsonify({'status': 'error', 'message': 'All fields are required.'}), 400
 
     # Insert the data into the database
     account_data = Accounts().insertAccounts(
-        student_id, email, password, fname, lname, contact, grade, strand, section
+        student_no, email, password, fname, lname, year, strand, section, contact,
     )
 
     # Prepare a response
@@ -610,6 +610,30 @@ def create_student():
 
     # Here you would typically save the student data to a database
     status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address)
+    if status == 1:
+        return jsonify({'message': 'Student created successfully'}), 201
+    # Respond with a success message
+    return jsonify({'message': 'Internal Server Error'}), 500
+
+@app.route('/create_admin', methods=['POST'])
+def create_admin():
+    # Get the JSON data from the request
+    data = request.get_json()
+
+    # Extract admin information from the request
+    fname = data.get('first_name')
+    lname = data.get('last_name')
+    email = data.get('email')
+    contact = data.get('contact')
+    address = data.get('address')
+    password = data.get('password')
+    student_no = None
+    year = None
+    strand = None
+    section = None
+    
+    status = Accounts().insertAccounts(student_no, email, password, fname, lname, year, strand, section, contact, address)
+
     if status == 1:
         return jsonify({'message': 'Student created successfully'}), 201
     # Respond with a success message

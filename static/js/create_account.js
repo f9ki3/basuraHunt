@@ -200,15 +200,12 @@ $(document).ready(function () {
         });
     
         // Enable or disable the button based on overall validity
-        $('#createAddStudent').prop('disabled', !allValid);
+        $('#createAddAdmin').prop('disabled', !allValid);
     }
     
     // Attach input events for real-time validation for admins
     $('#admin_fname, #admin_lname, #admin_email, #admin_contact, #admin_address, #admin_password, #admin_confirm_password').on('input', validateAdminInput);
     
-
-
-
 
 
 
@@ -253,6 +250,46 @@ $(document).ready(function () {
                 error: function(error) {
                     // Handle error response
                     console.error('Error creating student:', error);
+                }
+            });
+        }, 3000);
+    });
+
+
+
+    $('#createAddAdmin').on('click', function() {
+        // Get the form data
+        let adminData = {
+            'first_name': $('#admin_fname').val(),
+            'last_name': $('#admin_lname').val(),
+            'email': $('#admin_email').val(),
+            'contact': $('#admin_contact').val(),
+            'address': $('#admin_address').val(),
+            'password': $('#admin_password').val(),
+            'confirm_password': $('#admin_confirm_password').val()
+        };
+
+        $('#text_add_admin').hide()
+        $('#load_add_admin').show()
+
+        setTimeout(() => {
+            // Perform AJAX request
+            $.ajax({
+                url: '/create_admin', // Flask endpoint
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(adminData),
+                success: function(response) {
+                    $('#account_success').show()
+                    $('#text_add_admin').show()
+                    $('#load_add_admin').hide()
+                    setTimeout(() => {
+                        location.reload()
+                    }, 2000);
+                    // Optionally, close the modal or reset the form
+                },
+                error: function(error) {
+                    alert('Error creating admin');
                 }
             });
         }, 3000);
