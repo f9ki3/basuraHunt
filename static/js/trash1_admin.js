@@ -120,7 +120,7 @@ setInterval(checkMicrocontrollerStatus, 5000);
 $('#pickTrashAdmin1').click(function (e) {
     e.preventDefault();
     $.ajax({
-        url: '/process_trash',
+        url: '/process_trash1',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ dispose: 1 })

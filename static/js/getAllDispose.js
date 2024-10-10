@@ -7,6 +7,23 @@ $(document).ready(function() {
     // Fetch the disposal data
     fetchDisposeAll();
 
+    // Event listener for sorting by bin type
+    $('#bin1').on('click', function() {
+        filterByBinType('Trash Bin 1');
+    });
+
+    $('#bin2').on('click', function() {
+        filterByBinType('Trash Bin 2');
+    });
+
+    // Filter the data based on the selected bin type
+    function filterByBinType(binType) {
+        filteredData = disposeData.filter(item => item.bintype === binType);
+        currentPage = 1; // Reset to the first page after filtering
+        updateTable(); // Update the table with filtered results
+        updatePaginationInfo(); // Update pagination info with filtered results
+    }
+
     // Listen for changes in the itemsPerPage dropdown
     $('#itemsPerPageDispose').on('change', function() {
         itemsPerPage = parseInt($(this).val()); // Update itemsPerPage based on the dropdown selection
@@ -66,7 +83,7 @@ $(document).ready(function() {
             const row = `<tr>
                 <td style="padding-top: 20px; padding-bottom: 15px">${item.id}</td>
                 <td style="padding-top: 20px; padding-bottom: 15px">${item.date}</td>
-                <td style="padding-top: 20px; padding-bottom: 15px">Bin 1</td>
+                <td style="padding-top: 20px; padding-bottom: 15px">${item.bintype}</td>
                 <td style="padding-top: 20px; padding-bottom: 15px">Collect Trash</td>
             </tr>`;
             tbody.append(row);
