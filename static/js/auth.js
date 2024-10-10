@@ -396,7 +396,7 @@ $('#auth').html(`
                         $('#login_text').show();
                         $('#login_loader').hide();
                         $('#login').prop('disabled', false);
-                        window.location.href='/student_records'
+                        window.location.href='/dashboard'
                     } else if (response.data == 1) {
                         $('#login_text').show();
                         $('#login_loader').hide();

@@ -594,9 +594,14 @@ def process_trash2():
     return jsonify({"status": "success", "dispose": dispose_value, "date": current_date})
 
 #Route to get the total of dispose
-@app.route('/get_dispose', methods=['GET'])
-def getDisposeCount():
-    data = TrashDispose().getDisposeCount()
+@app.route('/get_dispose2', methods=['GET'])
+def getDisposeCount2():
+    data = TrashDispose().getDisposeCount2()
+    return jsonify({'response': data})
+
+@app.route('/get_dispose1', methods=['GET'])
+def getDisposeCount1():
+    data = TrashDispose().getDisposeCount1()
     return jsonify({'response': data})
 
 @app.route('/get_dispose_all', methods=['GET'])

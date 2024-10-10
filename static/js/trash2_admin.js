@@ -130,7 +130,7 @@ $('#pickTrashAdmin2').click(function (e) {
 function fetchdisposeCount2() {
     $.ajax({
         type: "GET",
-        url: "/get_dispose",
+        url: "/get_dispose2",
         dataType: "json",
         success: function (response) {
             $('#disposeCount2').text(response.response);

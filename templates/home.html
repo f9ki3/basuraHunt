@@ -135,13 +135,33 @@
                     <div id="waste_level1" class="container pt-3" style="position: sticky; top: 50px;">
                         <div class="row g-4">
                             <div class="col-12">
-                                <div style="background-color: white;">
-                                    {% include 'trash_bin1.html' %}
+                                <div id="trash" style="display: none;">
+                                    <div style="background-color: white;">
+                                        {% include 'trash_bin1.html' %}
+                                    </div>
+                                </div>
+                                <div id="wifi">
+                                    <div class="col-12">
+                                        <div class=" justify-content-center align-items-center d-flex flex-column" style="height: 400px;">
+                                            <i id="wifi-icon" class="bi bi-wifi-2 text-muted" style="font-size: 100px;"></i>
+                                            <p>Connecting to Bin 1</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12">
-                                <div style="background-color: white;">
-                                    {% include 'trash_bin2.html' %}
+                                <div id="trash2" style="display: none;">
+                                    <div style="background-color: white;">
+                                        {% include 'trash_bin2.html' %}
+                                    </div>
+                                </div>
+                                <div id="wifi2">
+                                    <div class="col-12">
+                                        <div class=" justify-content-center align-items-center d-flex flex-column" style="height: 400px;">
+                                            <i id="wifi-icon2" class="bi bi-wifi-2 text-muted" style="font-size: 100px;"></i>
+                                            <p>Connecting to Bin 2</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

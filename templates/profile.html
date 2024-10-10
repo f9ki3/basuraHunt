@@ -52,7 +52,7 @@
                                 </div>
                                 <div>
                                     <a class="btn btn-sm border"><i class="bi bi-clock-history me-2"></i>History</a>
-                                    <a class="btn btn-sm border"><i class="bi bi-clipboard2-plus me-2"></i>Report</a>
+                                    <a href="/home" class="btn btn-sm border"><i class="bi bi-clipboard2-plus me-2"></i>Report</a>
                                     <a class="btn btn-sm border"><i class="bi bi-pencil me-2"></i>Edit Profile</a>
                                 </div>
                             </div>
@@ -64,20 +64,114 @@
                         </div> -->
                         
                     </div>
+
+                    <div class="border shadow rounded-4 mb-3 p-3 pt-4" style="height: auto;">
+                        <!-- Grade and Strand Selection -->
+                        <div class="d-flex align-items-center justify-content-center flex-row mb-3">
+                            <div class="flex-fill me-2">
+                                <p class="m-0 mb-1" style="font-size: 12px">Grade Level</p>
+                                <select id="student_grade" class="student_grade text-muted form-select form-select-sm">
+                                    <option disabled>Select Grade</option>
+                                    <option value="Grade 11" ${response.year === 'Grade 11' ? 'selected' : ''}>Grade 11</option>
+                                    <option value="Grade 12" ${response.year === 'Grade 12' ? 'selected' : ''}>Grade 12</option>
+                                </select>
+                            </div>
+                            <div class="flex-fill">
+                                <p class="m-0 mb-1" style="font-size: 12px">Strand</p>
+                                <select id="student_strand" class="student_strand text-muted form-select form-select-sm">
+                                    <option disabled>Select Strand</option>
+                                    <option value="GAS" ${response.strand === 'GAS' ? 'selected' : ''}>GAS</option>
+                                    <option value="STEM" ${response.strand === 'STEM' ? 'selected' : ''}>STEM</option>
+                                    <option value="TVL" ${response.strand === 'TVL' ? 'selected' : ''}>TVL</option>
+                                    <option value="ICT" ${response.strand === 'ICT' ? 'selected' : ''}>ICT</option>
+                                </select>
+                            </div>
+                        </div>
                     
+                        <!-- Section and Student ID Fields -->
+                        <div class="d-flex align-items-center justify-content-center flex-row mb-3">
+                            <div class="flex-fill me-1">
+                                <p class="m-0 mb-1" style="font-size: 12px">Section</p>
+                                <input autocomplete="off" id="student_section" class="student_section form-control form-control-sm" type="text" placeholder="Section" value="${response.section}">
+                            </div>
+                            <div class="flex-fill ms-1">
+                                <p class="m-0 mb-1" style="font-size: 12px">Student ID</p>
+                                <input autocomplete="off" id="student_id" class="student_id form-control form-control-sm" type="text" placeholder="Student No" value="${response.student_no}">
+                            </div>
+                        </div>
+                    
+                        <!-- First Name and Last Name Fields -->
+                        <div class="d-flex">
+                            <div class="d-flex flex-column w-50 me-1">
+                                <p class="m-0 mb-1" style="font-size: 12px">First Name</p>
+                                <input autocomplete="off" id="student_fname" class="student_fname form-control mb-3 form-control-sm" type="text" placeholder="First Name" value="${response.fname}">
+                            </div>
+                           <div class="d-flex flex-column w-50 ms-1">
+                                <p class="m-0 mb-1" style="font-size: 12px">Last Name</p>
+                                <input autocomplete="off" id="student_lname" class="student_lname form-control mb-3 form-control-sm" type="text" placeholder="Last Name" value="${response.lname}">
+                           </div>
+                        </div>
+                    
+                        <!-- Email and Contact Fields -->
+                        <div class="d-flex">
+                            <div class="d-flex flex-column w-50 me-1">
+                                <p class="m-0 mb-1" style="font-size: 12px">Email</p>
+                                <input autocomplete="off" id="student_email" class="student_email me-1 form-control mb-3 form-control-sm" type="email" placeholder="Enter your Email" value="${response.email}">
+                            </div>
+                           <div class="d-flex flex-column w-50 ms-1">
+                                <p class="m-0 mb-1" style="font-size: 12px">Contact</p>
+                                <input autocomplete="off" id="student_contact" class="student_contact ms-1 form-control mb-3 form-control-sm" type="text" placeholder="Enter your contact" value="${response.contact}">
+                           </div>
+                        </div>
+                    
+                        <!-- Address -->
+                        <div class="d-flex">
+                            <textarea id="student_address" class="student_address form-control mb-3" placeholder="Enter your Address" style="font-size: 14px;">${response.address}</textarea>
+                        </div>
+                    
+                        <div class="modal-footer">
+                            
+                            <button onclick="updateStudentInfo()" type="button" style="background-color: #009429; color: white" class="btn">
+                                <p id="text_update_admin" class="m-0 p-0">Update Student</p>
+                                <div id="load_update_admin" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
                     
                 </div> 
                 <div class="col-12 col-md-6 col-lg-4" style="color: #252422;">
                     <div id="waste_level1" class="container pt-3" style="position: sticky; top: 50px;">
                         <div class="row g-4">
                             <div class="col-12">
-                                <div style="background-color: white;">
-                                    {% include 'trash_bin1.html' %}
+                                <div id="trash" style="display: none;">
+                                    <div style="background-color: white;">
+                                        {% include 'trash_bin1.html' %}
+                                    </div>
+                                </div>
+                                <div id="wifi">
+                                    <div class="col-12">
+                                        <div class=" justify-content-center align-items-center d-flex flex-column" style="height: 400px;">
+                                            <i id="wifi-icon" class="bi bi-wifi-2 text-muted" style="font-size: 100px;"></i>
+                                            <p>Connecting to Bin 1</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12">
-                                <div style="background-color: white;">
-                                    {% include 'trash_bin2.html' %}
+                                <div id="trash2" style="display: none;">
+                                    <div style="background-color: white;">
+                                        {% include 'trash_bin2.html' %}
+                                    </div>
+                                </div>
+                                <div id="wifi2">
+                                    <div class="col-12">
+                                        <div class=" justify-content-center align-items-center d-flex flex-column" style="height: 400px;">
+                                            <i id="wifi-icon2" class="bi bi-wifi-2 text-muted" style="font-size: 100px;"></i>
+                                            <p>Connecting to Bin 2</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

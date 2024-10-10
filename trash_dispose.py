@@ -35,6 +35,26 @@ class TrashDispose(Database):
         result = cursor.fetchone()
         return result[0] if result and result[0] is not None else 0  # Return 0 if no disposals for today
     
+    def getDisposeCount2(self):
+        conn = self.conn
+        cursor = conn.cursor()
+        today_date = datetime.now().strftime('%Y-%m-%d')  # Get today's date in 'YYYY-MM-DD' format
+        cursor.execute('''
+        SELECT SUM(dispose) FROM trashDispose WHERE date LIKE ? AND bintype = "Trash Bin 2"
+        ''', (today_date + '%',))  # Use LIKE to match any time on that date
+        result = cursor.fetchone()
+        return result[0] if result and result[0] is not None else 0  # Return 0 if no disposals for today
+    
+    def getDisposeCount1(self):
+        conn = self.conn
+        cursor = conn.cursor()
+        today_date = datetime.now().strftime('%Y-%m-%d')  # Get today's date in 'YYYY-MM-DD' format
+        cursor.execute('''
+        SELECT SUM(dispose) FROM trashDispose WHERE date LIKE ? AND bintype = "Trash Bin 1"
+        ''', (today_date + '%',))  # Use LIKE to match any time on that date
+        result = cursor.fetchone()
+        return result[0] if result and result[0] is not None else 0  # Return 0 if no disposals for today
+    
     
     def getDisposeALL(self):
         conn = self.conn
