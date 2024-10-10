@@ -33,6 +33,7 @@ function trashDisplay2(total2) {
     updateMessage2(reversedtotal22);
     updateTrashBinStyles2(total2, displayHeight2);
     $('#trashPercent2').text(total2 <= 5 ? '100%' : reversedtotal22 + '%');
+    $('#trash2percent').text(total2 <= 5 ? '100%' : reversedtotal22 + '%');
 }
 
 function updateTrashBinStyles2(total2, displayHeight2) {
@@ -104,6 +105,8 @@ function checkMicrocontrollerStatus2() {
             const isMicrocontrollerOn = response.status !== "off";
             $('#trash2').toggle(isMicrocontrollerOn);
             $('#wifi2').toggle(!isMicrocontrollerOn);
+            $('#dashtrash2').toggle(isMicrocontrollerOn);
+            $('#wifidash2').toggle(!isMicrocontrollerOn);
         },
         error: function(error) {
             console.error("Error: ", error);

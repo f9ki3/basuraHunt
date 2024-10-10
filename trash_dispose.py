@@ -9,18 +9,19 @@ class TrashDispose(Database):
         CREATE TABLE IF NOT EXISTS trashDispose (
                               id INTEGER PRIMARY KEY AUTOINCREMENT,
                               date TEXT NOT NULL,
-                              dispose INTEGER
+                              dispose INTEGER,
+                              bintype INTEGER
                               );
         ''')
         conn.commit()
 
-    def insertTrashDispose(self, date, dispose):
+    def insertTrashDispose(self, date, dispose, bin_type):
         conn = self.conn
         cursor = conn.cursor()
         cursor.execute('''
-        INSERT INTO trashDispose (date, dispose)
-        VALUES (?, ?);
-        ''', (date, dispose))
+        INSERT INTO trashDispose (date, dispose, bintype)
+        VALUES (?, ?, ?);
+        ''', (date, dispose, bin_type))
         conn.commit()
 
     def getDisposeCount(self):
@@ -43,9 +44,7 @@ class TrashDispose(Database):
         result = [dict(zip(column_names, row)) for row in rows]
         return result
 
-# if __name__ == "__main__":
-#     # Create table
-#     TrashDispose().createTableTrashDispose()
-    
-#     # Insert a record
-#     TrashDispose
+if __name__ == "__main__":
+    # Create table
+    TrashDispose().createTableTrashDispose()
+
