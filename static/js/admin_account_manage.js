@@ -235,15 +235,22 @@ $(document).ready(function() {
     function filterData(query) {
         const filtered = currentData.filter(item => {
             const fullName = `${item.fname || ''} ${item.lname || ''}`.toLowerCase();
-
+            
+            // Check if the query matches the id (as a string) or other fields
             return (
+                // Search by id
+                (item.id && item.id.toString().includes(query)) ||
+                // Search by full name
                 fullName.includes(query.toLowerCase()) ||
+                // Search by email
                 (item.email && item.email.toLowerCase().includes(query.toLowerCase())) ||
-                (item.contact && item.contact.toLowerCase().includes(query.toLowerCase()))
+                // Search by contact
+                (item.contact && item.contact.toString().includes(query)) // Ensure contact is compared as a string
             );
         });
         return filtered;
     }
+
 
     // Function to handle item selection from the dropdown
     function updateItemsPerPage() {
