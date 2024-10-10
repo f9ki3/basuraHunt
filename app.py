@@ -682,6 +682,24 @@ def update_student():
     data = Accounts().updateStudent(student_no, id, email, fname, lname, year, strand, section, contact, address, profile, status)
     return jsonify(data)
 
+@app.route('/update_admin', methods=['POST'])
+def update_admin():
+    # Get JSON data from the request
+    data = request.get_json()
+
+    # Extract data
+    id = data.get('id')
+    fname = data.get('fname')
+    lname = data.get('lname')
+    email = data.get('email')
+    contact = data.get('contact')
+    address = data.get('address')
+
+    data = Accounts().updateAdmin( id, fname, lname, email, contact, address, status=0)
+
+    return jsonify(data)
+
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
     socketio.run(app)

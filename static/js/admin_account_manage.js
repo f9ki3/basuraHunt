@@ -80,7 +80,7 @@ $(document).ready(function() {
                     if (response.status == 1) {
                         // Populate the #edit_form with the student edit form and directly insert values
                         $('#edit_form').html(`
-                            <input autocomplete="off" id="acc_id" class="acc_id me-1 form-control mb-3 form-control-sm" type="text" value="${response.id}">
+                            <input autocomplete="off" id="acc_id" class="acc_id me-1 form-control mb-3 form-control-sm" type="hidden" value="${response.id}">
                         
                             <!-- Grade and Strand Selection -->
                             <div class="d-flex align-items-center justify-content-center flex-row mb-3">
@@ -144,33 +144,33 @@ $(document).ready(function() {
                         $('#edit_form').html(`
                             <!-- First Name and Last Name Fields -->
                             <div class="d-flex">
-                                <input autocomplete="off" id="admin_id" type="text" value="${response.id}" class="me-1 form-control mb-3 form-control-sm">
-                                <input autocomplete="off" id="admin_fname" type="text" placeholder="First Name" value="${response.fname}" class="me-1 form-control mb-3 form-control-sm">
-                                <input autocomplete="off" id="admin_lname" type="text" placeholder="Last Name" value="${response.lname}" class="ms-1 form-control mb-3 form-control-sm">
+                                <input autocomplete="off" id="admin_id" type="hidden" value="${response.id}" class="admin_id me-1 form-control mb-3 form-control-sm">
+                                <input autocomplete="off" id="admin_fname" type="text" placeholder="First Name" value="${response.fname}" class="admin_fname me-1 form-control mb-3 form-control-sm">
+                                <input autocomplete="off" id="admin_lname" type="text" placeholder="Last Name" value="${response.lname}" class="admin_lname ms-1 form-control mb-3 form-control-sm">
                             </div>
-    
+                        
                             <!-- Email and Contact Fields -->
                             <div class="d-flex">
-                                <input autocomplete="off" id="admin_email" type="email" placeholder="Enter your Email" value="${response.email}" class="me-1 form-control mb-3 form-control-sm">
-                                <input autocomplete="off" id="admin_contact" type="number" placeholder="Enter your contact" value="${response.contact}" class="ms-1 form-control mb-3 form-control-sm">
+                                <input autocomplete="off" id="admin_email" type="email" placeholder="Enter your Email" value="${response.email}" class="admin_email me-1 form-control mb-3 form-control-sm">
+                                <input autocomplete="off" id="admin_contact" type="number" placeholder="Enter your contact" value="${response.contact}" class="admin_contact ms-1 form-control mb-3 form-control-sm">
                             </div>
-    
+                        
                             <!-- Address -->
                             <div class="d-flex">
-                                <textarea id="admin_address" class="form-control mb-3" placeholder="Enter your Address" style="font-size: 14px;">${response.address}</textarea>
+                                <textarea id="admin_address" class="admin_address form-control mb-3" placeholder="Enter your Address" style="font-size: 14px;">${response.address}</textarea>
                             </div>
-
+                        
                             <div class="modal-footer">
                                 <button type="button" style="background-color: #ccf3d7; color: #009429" class="btn" data-bs-dismiss="modal">Cancel</button>
-                                <button id="updateAdmin" type="button" style="background-color: #009429; color: white" class="btn">
-                                    <p id="text_add_admin" class="m-0 p-0">Update Admin</p>
-                                    <div id="load_add_admin" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
+                                <button onclick="update_admin()" type="button" style="background-color: #009429; color: white" class="btn">
+                                    <p id="text_update_student" class="m-0 p-0">Update Admin</p>
+                                    <div id="load_update_student" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
                                         <span class="visually-hidden">Loading...</span>
-                                        </div>
+                                    </div>
                                 </button>
                             </div>
-    
                         `);
+                        
                         
                     }
                 },
@@ -385,6 +385,59 @@ function updateStudent() {
                 alert("An error occurred: " + error);
                 $('#load_update_admin').hide();
                 $('#text_update_admin').show();
+            }
+        });
+    }, 3000);
+}
+
+function update_admin() {
+    // Collect data from the input fields using class selectors
+    const id = $('.admin_id').val(); 
+    const fname = $('.admin_fname').val();
+    const lname = $('.admin_lname').val();
+    const email = $('.admin_email').val();
+    const contact = $('.admin_contact').val();
+    const address = $('.admin_address').val();
+    
+    // Show loading spinner
+    $('#load_update_student').show();
+    $('#text_update_student').hide();
+
+    setTimeout(() => {
+        // Make the AJAX request to update the admin
+        $.ajax({
+            url: '/update_admin', // Update the URL to your actual endpoint
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                id: id,
+                fname: fname,
+                lname: lname,
+                email: email,
+                contact: contact,
+                address: address
+            }),
+            success: function(response) {
+                console.log(response);
+                if (response === 1) {
+                    $('#load_update_student').hide();
+                    $('#text_update_student').show();
+                    $('#update_success').show();
+                    setTimeout(() => {
+                        location.reload(); // Reload the page to reflect changes
+                    }, 2000);
+                } else if (response === 0) {
+                    alert("Admin not found.");
+                } else if (response === 2) {
+                    alert("No fields provided for update.");
+                } else {
+                    alert("An error occurred: " + response);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("An error occurred: " + error);
+                $('#load_update_student').hide();
+                $('#text_update_student').show();
             }
         });
     }, 3000);

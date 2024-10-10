@@ -144,6 +144,74 @@ class Accounts(Database):
         finally:
             cursor.close()
             # conn.close() - Uncomment if managing connection closure here.
+
+    def updateAdmin(self, id, fname=None, lname=None, email=None, contact=None, address=None, status=None):
+        conn = self.conn
+        cursor = conn.cursor()
+        
+        try:
+            # Check if the admin exists with the given id
+            cursor.execute('''
+                SELECT COUNT(*) FROM users WHERE id = ?
+            ''', (id,))
+            
+            admin_exists = cursor.fetchone()[0] > 0
+            
+            if not admin_exists:
+                return 0  # Admin not found
+
+            # Prepare the update statement and parameters
+            update_fields = []
+            params = []
+
+            if email is not None:
+                update_fields.append("email = ?")
+                params.append(email)
+
+            if fname is not None:
+                update_fields.append("fname = ?")
+                params.append(fname)
+
+            if lname is not None:
+                update_fields.append("lname = ?")
+                params.append(lname)
+
+            if contact is not None:
+                update_fields.append("contact = ?")
+                params.append(contact)
+
+            if address is not None:
+                update_fields.append("address = ?")
+                params.append(address)
+
+            if status is not None:
+                update_fields.append("status = ?")
+                params.append(status)
+
+            # If there are no fields to update
+            if not update_fields:
+                return 2  # No fields provided for update
+
+            # Build the update query
+            update_query = f'''
+                UPDATE users
+                SET {', '.join(update_fields)}
+                WHERE id = ?
+            '''
+            
+            # Execute the update statement
+            cursor.execute(update_query, params + [id])  # Add id to the parameters
+            conn.commit()  # Commit the changes
+            return 1  # Update successful
+            
+        except Exception as e:
+            conn.rollback()  # Rollback in case of error
+            return f"An error occurred: {str(e)}"
+            
+        finally:
+            cursor.close()
+            # conn.close() - Uncomment if managing connection closure here.
+
     
     def deleteAccount(self, account_id):
         conn = self.conn
