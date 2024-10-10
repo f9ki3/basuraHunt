@@ -24,23 +24,23 @@ function vibrateButton2() {
     setTimeout(() => button.removeClass('vibrate'), 500);
 }
 
-function trashDisplay2(total) {
-    total = Math.max(0, Math.min(total, 100));
+function trashDisplay2(total2) {
+    total2 = Math.max(0, Math.min(total2, 100));
     $('#pickTrashAdmin2').prop('disabled', true);
-    const reversedTotal = 100 - total;
-    const displayHeight = total <= 5 ? '100%' : reversedTotal + '%';
+    const reversedtotal22 = 100 - total2;
+    const displayHeight2 = total2 <= 5 ? '100%' : reversedtotal22 + '%';
 
-    updateMessage2(reversedTotal);
-    updateTrashBinStyles2(total, displayHeight);
-    $('#trashPercent2').text(total <= 5 ? '100%' : reversedTotal + '%');
+    updateMessage2(reversedtotal22);
+    updateTrashBinStyles2(total2, displayHeight2);
+    $('#trashPercent2').text(total2 <= 5 ? '100%' : reversedtotal22 + '%');
 }
 
-function updateTrashBinStyles2(total, displayHeight) {
-    const colorContent = getColorByTotal2(total);
+function updateTrashBinStyles2(total2, displayHeight2) {
+    const colorContent = getColorBytotal22(total2);
 
     $('.trashBinContent2').css({
         'width': '100%',
-        'height': displayHeight,
+        'height': displayHeight2,
         'background-color': colorContent,
         'position': 'absolute',
         'border-radius': '0 0 13px 13px',
@@ -71,12 +71,12 @@ function updateTrashBinStyles2(total, displayHeight) {
     });
 }
 
-function getColorByTotal2(total) {
-    if (total <= 20) return '#fa8c8c'; // Light red
-    if (total <= 30) return '#fab78c'; // Light orange
-    if (total <= 50) return '#faf38c'; // Pale yellow
-    if (total <= 70) return '#e3fa8c'; // Even lighter green
-    if (total <= 80) return '#c5fa8c'; // Lighter green
+function getColorBytotal22(total2) {
+    if (total2 <= 20) return '#fa8c8c'; // Light red
+    if (total2 <= 30) return '#fab78c'; // Light orange
+    if (total2 <= 50) return '#faf38c'; // Pale yellow
+    if (total2 <= 70) return '#e3fa8c'; // Even lighter green
+    if (total2 <= 80) return '#c5fa8c'; // Lighter green
     return '#a5fa8c'; // Light green
 }
 
@@ -94,28 +94,6 @@ $('#throwTrash').on('click', function () {
         data: JSON.stringify({ distance: 1 })
     });
 });
-
-// Initial setup to fetch current count
-function initialize2() {
-    $.ajax({
-        type: "GET",
-        url: "/getCount2",
-        dataType: "json",
-        success: function (response) {
-            if (response !== 400) {
-                trashDisplay2(Number(response.distance));
-            } else {
-                console.log('Disconnected');
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error("AJAX error:", status, error);
-        }
-    });
-}
-
-// Call initialize2 function to set up the initial state
-initialize2();
 
 // Periodically check the status of the microcontroller
 function checkMicrocontrollerStatus2() {

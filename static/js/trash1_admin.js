@@ -95,27 +95,6 @@ $('#throwTrash').on('click', function () {
     });
 });
 
-// Initial setup to fetch current count
-function initialize() {
-    $.ajax({
-        type: "GET",
-        url: "/getCount",
-        dataType: "json",
-        success: function (response) {
-            if (response !== 400) {
-                trashDisplay(Number(response.distance));
-            } else {
-                console.log('Disconnected');
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error("AJAX error:", status, error);
-        }
-    });
-}
-
-// Call initialize function to set up the initial state
-initialize();
 
 // Periodically check the status of the microcontroller
 function checkMicrocontrollerStatus() {
