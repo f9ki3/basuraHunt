@@ -45,7 +45,7 @@ $(document).ready(function() {
                     <td>${item.status === 1 ? 'Student' : 'Administrator'}</td>
                     <td>
                         <button data-del_id="${item.id}" data-bs-toggle="modal" data-bs-target="#delete_account" class="btn-delete" style="background: transparent; border: none; font-size: 20px"><i class="bi text-muted bi-trash"></i></button>
-                        <button data-del_id="${item.id}" data-bs-toggle="modal" data-bs-target="#edit_account" style="background: transparent; border: none; font-size: 20px"><i class="bi text-muted bi-pencil"></i></button>
+                        <button data-ed_id="${item.id}" data-bs-toggle="modal" data-bs-target="#edit_account" class="btn-edit" style="background: transparent; border: none; font-size: 20px"><i class="bi text-muted bi-pencil"></i></button>
                     </td>
                 </tr>
             `;
@@ -60,6 +60,129 @@ $(document).ready(function() {
             const delId = $(this).data('del_id'); // Get the del_id
             $('#delete_id').val(delId)
         });
+
+        // Add event listener for edit buttons
+        $('.btn-edit').off('click').on('click', function() {
+            const ed_id = $(this).data('ed_id'); // Get the ed_id from the button's data attribute
+        
+            // Make an AJAX POST request to pass the ed_id to the Flask endpoint
+            $.ajax({
+                url: '/edit_account',  // Flask endpoint to handle the edit request
+                type: 'POST',
+                contentType: 'application/json',  // Sending data as JSON
+                data: JSON.stringify({ ed_id: ed_id }),  // Pass ed_id in the request payload
+                success: function(response) {
+                    response = JSON.parse(response)
+                    // Ensure response is valid and check if data exists
+                    $('#edit_form').empty(); // Clear any existing form elements inside #edit_form
+                    
+                    // Handle response based on status (0 for admin, 1 for student)
+                    if (response.status == 1) {
+                        // Populate the #edit_form with the student edit form and directly insert values
+                        $('#edit_form').html(`
+                            <input autocomplete="off" id="acc_id" class="acc_id me-1 form-control mb-3 form-control-sm" type="text" value="${response.id}">
+                        
+                            <!-- Grade and Strand Selection -->
+                            <div class="d-flex align-items-center justify-content-center flex-row mb-3">
+                                <div class="flex-fill me-2">
+                                    <select id="student_grade" class="student_grade text-muted form-select form-select-sm">
+                                        <option disabled>Select Grade</option>
+                                        <option value="Grade 11" ${response.year === 'Grade 11' ? 'selected' : ''}>Grade 11</option>
+                                        <option value="Grade 12" ${response.year === 'Grade 12' ? 'selected' : ''}>Grade 12</option>
+                                    </select>
+                                </div>
+                                <div class="flex-fill">
+                                    <select id="student_strand" class="student_strand text-muted form-select form-select-sm">
+                                        <option disabled>Select Strand</option>
+                                        <option value="GAS" ${response.strand === 'GAS' ? 'selected' : ''}>GAS</option>
+                                        <option value="STEM" ${response.strand === 'STEM' ? 'selected' : ''}>STEM</option>
+                                        <option value="TVL" ${response.strand === 'TVL' ? 'selected' : ''}>TVL</option>
+                                        <option value="ICT" ${response.strand === 'ICT' ? 'selected' : ''}>ICT</option>
+                                    </select>
+                                </div>
+                            </div>
+                        
+                            <!-- Section and Student ID Fields -->
+                            <div class="d-flex align-items-center justify-content-center flex-row mb-3">
+                                <div class="flex-fill me-1">
+                                    <input autocomplete="off" id="student_section" class="student_section form-control form-control-sm" type="text" placeholder="Section" value="${response.section}">
+                                </div>
+                                <div class="flex-fill ms-1">
+                                    <input autocomplete="off" id="student_id" class="student_id form-control form-control-sm" type="text" placeholder="Student No" value="${response.student_no}">
+                                </div>
+                            </div>
+                        
+                            <!-- First Name and Last Name Fields -->
+                            <div class="d-flex">
+                                <input autocomplete="off" id="student_fname" class="student_fname me-1 form-control mb-3 form-control-sm" type="text" placeholder="First Name" value="${response.fname}">
+                                <input autocomplete="off" id="student_lname" class="student_lname ms-1 form-control mb-3 form-control-sm" type="text" placeholder="Last Name" value="${response.lname}">
+                            </div>
+                        
+                            <!-- Email and Contact Fields -->
+                            <div class="d-flex">
+                                <input autocomplete="off" id="student_email" class="student_email me-1 form-control mb-3 form-control-sm" type="email" placeholder="Enter your Email" value="${response.email}">
+                                <input autocomplete="off" id="student_contact" class="student_contact ms-1 form-control mb-3 form-control-sm" type="text" placeholder="Enter your contact" value="${response.contact}">
+                            </div>
+                        
+                            <!-- Address -->
+                            <div class="d-flex">
+                                <textarea id="student_address" class="student_address form-control mb-3" placeholder="Enter your Address" style="font-size: 14px;">${response.address}</textarea>
+                            </div>
+                        
+                            <div class="modal-footer">
+                                <button type="button" style="background-color: #ccf3d7; color: #009429" class="btn" data-bs-dismiss="modal">Cancel</button>
+                                <button onclick="updateStudent()" type="button" style="background-color: #009429; color: white" class="btn">
+                                    <p id="text_update_admin" class="m-0 p-0">Update Student</p>
+                                    <div id="load_update_admin" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </button>
+                            </div>                        
+                        `);
+                    } else if (response.status == 0) {
+                        // Populate the #edit_form with the admin edit form and directly insert values
+                        $('#edit_form').html(`
+                            <!-- First Name and Last Name Fields -->
+                            <div class="d-flex">
+                                <input autocomplete="off" id="admin_id" type="text" value="${response.id}" class="me-1 form-control mb-3 form-control-sm">
+                                <input autocomplete="off" id="admin_fname" type="text" placeholder="First Name" value="${response.fname}" class="me-1 form-control mb-3 form-control-sm">
+                                <input autocomplete="off" id="admin_lname" type="text" placeholder="Last Name" value="${response.lname}" class="ms-1 form-control mb-3 form-control-sm">
+                            </div>
+    
+                            <!-- Email and Contact Fields -->
+                            <div class="d-flex">
+                                <input autocomplete="off" id="admin_email" type="email" placeholder="Enter your Email" value="${response.email}" class="me-1 form-control mb-3 form-control-sm">
+                                <input autocomplete="off" id="admin_contact" type="number" placeholder="Enter your contact" value="${response.contact}" class="ms-1 form-control mb-3 form-control-sm">
+                            </div>
+    
+                            <!-- Address -->
+                            <div class="d-flex">
+                                <textarea id="admin_address" class="form-control mb-3" placeholder="Enter your Address" style="font-size: 14px;">${response.address}</textarea>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" style="background-color: #ccf3d7; color: #009429" class="btn" data-bs-dismiss="modal">Cancel</button>
+                                <button id="updateAdmin" type="button" style="background-color: #009429; color: white" class="btn">
+                                    <p id="text_add_admin" class="m-0 p-0">Update Admin</p>
+                                    <div id="load_add_admin" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                </button>
+                            </div>
+    
+                        `);
+                        
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle error case
+                    console.error('AJAX Error:', status, error);
+                    alert('An error occurred while processing the request.');
+                }
+            });
+        });
+        
+
     }
 
     // Function to render pagination controls
@@ -204,4 +327,65 @@ function delete_account() {
             alert('An error occurred while trying to delete the account.'); // Show error message
         }
     });
+}
+
+
+function updateStudent() {
+    // Collect data from the input fields
+    const id = $('#acc_id').val(); 
+    const student_no = $('.student_id').val(); 
+    const email = $('.student_email').val();
+    const fname = $('.student_fname').val();
+    const lname = $('.student_lname').val();
+    const year = $('.student_grade').val();
+    const strand = $('.student_strand').val();
+    const section = $('.student_section').val();
+    const contact = $('.student_contact').val();
+    const address = $('.student_address').val();
+    // Show loading spinner
+    $('#load_update_admin').show();
+    $('#text_update_admin').hide();
+
+    setTimeout(() => {
+        // Make the AJAX request to update the student
+        $.ajax({
+            url: '/update_student',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                id: id,
+                student_no: student_no,
+                email: email,
+                fname: fname,
+                lname: lname,
+                year: year,
+                strand: strand,
+                section: section,
+                contact: contact,
+                address: address
+            }),
+            success: function(response) {
+                console.log(response)
+                if (response === 1) {
+                    $('#load_update_admin').hide();
+                    $('#text_update_admin').show();
+                    $('#update_success').show()
+                    setTimeout(() => {
+                        location.reload()
+                    }, 2000);
+                } else if (response === 0) {
+                    alert("Student not found.");
+                } else if (response === 2) {
+                    alert("No fields provided for update.");
+                } else {
+                    alert("An error occurred: " + response);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("An error occurred: " + error);
+                $('#load_update_admin').hide();
+                $('#text_update_admin').show();
+            }
+        });
+    }, 3000);
 }

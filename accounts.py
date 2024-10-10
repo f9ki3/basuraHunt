@@ -54,7 +54,96 @@ class Accounts(Database):
         finally:
             cursor.close()
             # conn.close() - Uncomment if managing connection closure here.
+    
+    def updateStudent(self, student_no, id=None, email=None, fname=None, lname=None, year=None, strand=None, section=None, contact=None, address=None, profile=None, status=None):
+        conn = self.conn
+        cursor = conn.cursor()
+        
+        try:
+            # Check if the student exists with the given student_no and optionally id
+            cursor.execute('''
+                SELECT COUNT(*) FROM users WHERE student_no = ? AND (? IS NULL OR id = ?)
+            ''', (student_no, id, id))
+            
+            student_exists = cursor.fetchone()[0] > 0
+            
+            if not student_exists:
+                return 0  # Student not found
 
+            # Prepare the update statement and parameters
+            update_fields = []
+            params = []
+
+            if email is not None:
+                update_fields.append("email = ?")
+                params.append(email)
+
+            if fname is not None:
+                update_fields.append("fname = ?")
+                params.append(fname)
+
+            if lname is not None:
+                update_fields.append("lname = ?")
+                params.append(lname)
+
+            if year is not None:
+                update_fields.append("year = ?")
+                params.append(year)
+
+            if strand is not None:
+                update_fields.append("strand = ?")
+                params.append(strand)
+
+            if section is not None:
+                update_fields.append("section = ?")
+                params.append(section)
+
+            if contact is not None:
+                update_fields.append("contact = ?")
+                params.append(contact)
+
+            if address is not None:
+                update_fields.append("address = ?")
+                params.append(address)
+
+            if profile is not None:
+                update_fields.append("profile = ?")
+                params.append(profile)
+
+            if status is not None:
+                update_fields.append("status = ?")
+                params.append(status)
+
+            # If there are no fields to update
+            if not update_fields:
+                return 2  # No fields provided for update
+
+            # Add student_no to the parameters for the WHERE clause
+            params.append(student_no)
+            
+            # If id is provided, we add it to the parameters
+            if id is not None:
+                params.append(id)
+            
+            # Build the update query
+            update_query = f'''
+                UPDATE users
+                SET {', '.join(update_fields)}
+                WHERE student_no = ? AND (? IS NULL OR id = ?)
+            '''
+            
+            # Execute the update statement with the correct parameters
+            cursor.execute(update_query, params + [id] if id is not None else params)
+            conn.commit()  # Commit the changes
+            return 1  # Update successful
+            
+        except Exception as e:
+            conn.rollback()  # Rollback in case of error
+            return f"An error occurred: {str(e)}"
+            
+        finally:
+            cursor.close()
+            # conn.close() - Uncomment if managing connection closure here.
     
     def deleteAccount(self, account_id):
         conn = self.conn
@@ -135,6 +224,32 @@ class Accounts(Database):
         
         # Return the data as JSON
         return json.dumps(data, indent=4)
+    
+    def getAccountOne(self, id):
+        conn = self.conn
+        cursor = conn.cursor()
+
+        try:
+            # Fetch data from the users table for the specific user with the given id
+            cursor.execute('SELECT * FROM users WHERE id = ?', (id,))  # Use WHERE clause with the id
+            row = cursor.fetchone()
+
+            if row:
+                # Get column names from the cursor description
+                column_names = [description[0] for description in cursor.description]
+
+                # Format the row as a dictionary
+                data = dict(zip(column_names, row))
+            else:
+                # If no user found, return None or an empty dictionary
+                data = None
+
+        finally:
+            cursor.close()
+            conn.close()  # Ensure the connection is closed properly
+
+        # Return the data as JSON
+        return json.dumps(data, indent=4) if data else json.dumps({"message": "User not found"}, indent=4)
 
 # if __name__ == "__main__":
 #     Accounts().createTableAccounts()

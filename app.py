@@ -651,6 +651,36 @@ def delete_account(id):
     # Respond with a success message
     return jsonify({'message': 'Internal Server Error'}), 500
     
+@app.route('/edit_account', methods=['POST'])
+def edit_account():
+    data = request.get_json()
+    ed_id = data.get('ed_id')  # Retrieve the ed_id from the request
+    
+    data = Accounts().getAccountOne(ed_id)
+    # print(data)
+
+    return jsonify(data)
+
+@app.route('/update_student', methods=['POST'])
+def update_student():
+    data = request.get_json()
+
+    # Extract data from the request
+    id = data.get('id')
+    student_no = data.get('student_no')
+    email = data.get('email')
+    fname = data.get('fname')
+    lname = data.get('lname')
+    year = data.get('year')
+    strand = data.get('strand')
+    section = data.get('section')
+    contact = data.get('contact')
+    address = data.get('address')
+    profile = 'profile.png'
+    status = 1
+
+    data = Accounts().updateStudent(student_no, id, email, fname, lname, year, strand, section, contact, address, profile, status)
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
