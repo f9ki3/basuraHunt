@@ -1,6 +1,6 @@
 var socket = io();
 
-function updateMessage(data) {
+function updateMessage2(data) {
     let message;
     if (data < 0) {
         message = 'Empty Trash!';
@@ -12,31 +12,31 @@ function updateMessage(data) {
         message = 'Critical Level';
     } else {
         message = 'Bin Full'; // Covers data >= 100
-        $('#pickTrash2').prop('disabled', false);
-        vibrateButton();
+        $('#pickTrashAdmin2').prop('disabled', false);
+        vibrateButton2();
     }
     $('#messageTrash2').text(message);
 }
 
-function vibrateButton() {
-    const button = $('#pickTrash2');
+function vibrateButton2() {
+    const button = $('#pickTrashAdmin2');
     button.addClass('vibrate');
     setTimeout(() => button.removeClass('vibrate'), 500);
 }
 
-function trashDisplay(total) {
+function trashDisplay2(total) {
     total = Math.max(0, Math.min(total, 100));
-    $('#pickTrash2').prop('disabled', true);
+    $('#pickTrashAdmin2').prop('disabled', true);
     const reversedTotal = 100 - total;
     const displayHeight = total <= 5 ? '100%' : reversedTotal + '%';
 
-    updateMessage(reversedTotal);
-    updateTrashBinStyles(total, displayHeight);
+    updateMessage2(reversedTotal);
+    updateTrashBinStyles2(total, displayHeight);
     $('#trashPercent2').text(total <= 5 ? '100%' : reversedTotal + '%');
 }
 
-function updateTrashBinStyles(total, displayHeight) {
-    const colorContent = getColorByTotal(total);
+function updateTrashBinStyles2(total, displayHeight) {
+    const colorContent = getColorByTotal2(total);
 
     $('.trashBinContent2').css({
         'width': '100%',
@@ -71,7 +71,7 @@ function updateTrashBinStyles(total, displayHeight) {
     });
 }
 
-function getColorByTotal(total) {
+function getColorByTotal2(total) {
     if (total <= 20) return '#fa8c8c'; // Light red
     if (total <= 30) return '#fab78c'; // Light orange
     if (total <= 50) return '#faf38c'; // Pale yellow
@@ -82,7 +82,7 @@ function getColorByTotal(total) {
 
 // Listen for real-time updates via WebSocket
 socket.on('updateTrash', function(data) {
-    trashDisplay(Number(data.count));
+    trashDisplay2(Number(data.count));
 });
 
 // Handle "Throw Trash" button click
@@ -96,14 +96,14 @@ $('#throwTrash').on('click', function () {
 });
 
 // Initial setup to fetch current count
-function initialize() {
+function initialize2() {
     $.ajax({
         type: "GET",
         url: "/getCount2",
         dataType: "json",
         success: function (response) {
             if (response !== 400) {
-                trashDisplay(Number(response.distance));
+                trashDisplay2(Number(response.distance));
             } else {
                 console.log('Disconnected');
             }
@@ -114,11 +114,11 @@ function initialize() {
     });
 }
 
-// Call initialize function to set up the initial state
-initialize();
+// Call initialize2 function to set up the initial state
+initialize2();
 
 // Periodically check the status of the microcontroller
-function checkMicrocontrollerStatus() {
+function checkMicrocontrollerStatus2() {
     $.ajax({
         url: '/check_status2',
         method: 'GET',
@@ -133,9 +133,9 @@ function checkMicrocontrollerStatus() {
     });
 }
 
-setInterval(checkMicrocontrollerStatus, 5000);
+setInterval(checkMicrocontrollerStatus2, 5000);
 
-$('#pickTrash2').click(function (e) {
+$('#pickTrashAdmin2').click(function (e) {
     e.preventDefault();
     $.ajax({
         url: '/process_trash2',
@@ -146,7 +146,7 @@ $('#pickTrash2').click(function (e) {
 });
 
 // Fetch and update dispose count
-function fetchDisposeCount() {
+function fetchdisposeCount2() {
     $.ajax({
         type: "GET",
         url: "/get_dispose",
@@ -161,7 +161,7 @@ function fetchDisposeCount() {
 }
 
 // Initial run on page load
-$(document).ready(fetchDisposeCount);
+$(document).ready(fetchdisposeCount2);
 
 // Fetch on button click
-$('#pickTrash2').click(fetchDisposeCount);
+$('#pickTrashAdmin2').click(fetchdisposeCount2);

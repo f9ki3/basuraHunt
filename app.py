@@ -575,6 +575,20 @@ def process_trash():
     # Return a response
     return jsonify({"status": "success", "dispose": dispose_value, "date": current_date})
 
+@app.route('/process_trash2', methods=['POST'])
+def process_trash2():
+    data = request.get_json()  # Get JSON data from the request
+    dispose_value = data.get('dispose')  # Extract the 'dispose' value
+    print(dispose_value)
+    # Get the current date and time
+    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Format as a string
+
+    # Insert into the database (you would define this function)
+    TrashDispose().insertTrashDispose(current_date, dispose_value)
+
+    # Return a response
+    return jsonify({"status": "success", "dispose": dispose_value, "date": current_date})
+
 #Route to get the total of dispose
 @app.route('/get_dispose', methods=['GET'])
 def getDisposeCount():
