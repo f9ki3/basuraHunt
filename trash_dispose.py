@@ -23,6 +23,7 @@ class TrashDispose(Database):
         VALUES (?, ?, ?);
         ''', (date, dispose, bin_type))
         conn.commit()
+        
 
     def getDisposeCount(self):
         conn = self.conn

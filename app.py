@@ -561,7 +561,7 @@ def get_accounts():
     data = Accounts().getAccounts()  # Call the method to get accounts
     return jsonify(json.loads(data))  # Convert JSON string to a Python object and return as JSON response
 
-@app.route('/process_trash', methods=['POST'])
+@app.route('/process_trash1', methods=['POST'])
 def process_trash():
     data = request.get_json()  # Get JSON data from the request
     dispose_value = data.get('dispose')  # Extract the 'dispose' value
@@ -569,8 +569,10 @@ def process_trash():
     # Get the current date and time
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Format as a string
 
+    type = 'Trash Bin 1'
+
     # Insert into the database (you would define this function)
-    TrashDispose().insertTrashDispose(current_date, dispose_value)
+    TrashDispose().insertTrashDispose(current_date, dispose_value, type)
 
     # Return a response
     return jsonify({"status": "success", "dispose": dispose_value, "date": current_date})
@@ -579,12 +581,14 @@ def process_trash():
 def process_trash2():
     data = request.get_json()  # Get JSON data from the request
     dispose_value = data.get('dispose')  # Extract the 'dispose' value
-    print(dispose_value)
+    
     # Get the current date and time
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Format as a string
 
+    type = 'Trash Bin 2'
+
     # Insert into the database (you would define this function)
-    TrashDispose().insertTrashDispose(current_date, dispose_value)
+    TrashDispose().insertTrashDispose(current_date, dispose_value, type)
 
     # Return a response
     return jsonify({"status": "success", "dispose": dispose_value, "date": current_date})
