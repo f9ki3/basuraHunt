@@ -233,15 +233,15 @@ def create_account_manual():
     year = data.get('grade')      # Extracting grade
     strand = data.get('strand')    # Extracting strand
     section = data.get('section')  # Extracting section
-
+    address = None
+    profile = 'profile.png'
+    status = 1
     # Validate the data
     if not all([email, student_no, password, fname, lname, contact, year, strand, section]):
         return jsonify({'status': 'error', 'message': 'All fields are required.'}), 400
 
     # Insert the data into the database
-    account_data = Accounts().insertAccounts(
-        student_no, email, password, fname, lname, year, strand, section, contact,
-    )
+    account_data = Accounts().insertAccounts( student_no, email, password, fname, lname, year, strand, section, contact, address, profile, status)
 
     # Prepare a response
     if account_data == 0:
