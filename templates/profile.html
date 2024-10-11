@@ -51,9 +51,9 @@
                                     <h3 class="fw-bolder" id="fullname_profile"></h3>
                                 </div>
                                 <div>
-                                    <a class="btn btn-sm border"><i class="bi bi-clock-history me-2"></i>History</a>
+                                    <a id="history" class="btn btn-sm border"><i class="bi bi-clock-history me-2" ></i>History</a>
                                     <a href="/home" class="btn btn-sm border"><i class="bi bi-clipboard2-plus me-2"></i>Report</a>
-                                    <a class="btn btn-sm border"><i class="bi bi-pencil me-2"></i>Edit Profile</a>
+                                    <a id="edit_profile" class="btn btn-sm border"><i class="bi bi-pencil me-2"></i>Edit Profile</a>
                                 </div>
                             </div>
                             
@@ -65,11 +65,11 @@
                         
                     </div>
 
-                    <div class="border shadow rounded-4 mb-3" style="height: auto;">
+                    <div id="content1" class="rounded-4 mb-3" style="height: auto;">
                         <div id="reportContainer2Profile"></div>
                     </div>
 
-                    <div class="border mb-5 shadow rounded-4 mb-3 p-3 pt-4" style="height: auto; display: none">
+                    <div id="content2" class="border mb-5 shadow rounded-4 mb-3 p-3 pt-4" style="height: auto; display: none">
                         <h5 class="fw-bolder mb-3 mt-2">Edit Profile Information</h5>
                         <input type="hidden" class="profile_student_id" id="profile_student_id">
                         <!-- Grade and Strand Selection -->

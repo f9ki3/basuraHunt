@@ -94,3 +94,18 @@ function studentReportPostProfile() {
 }
 
 studentReportPostProfile()
+
+
+$(document).ready(function() {
+    // Toggle History content
+    $('#history').click(function() {
+        $('#content1').fadeToggle();  // Toggle visibility of content1 (History)
+        $('#content2').hide();      // Ensure content2 (Edit Profile) is hidden
+    });
+
+    // Toggle Edit Profile content
+    $('#edit_profile').click(function() {
+        $('#content2').fadeToggle();  // Toggle visibility of content2 (Edit Profile)
+        $('#content1').hide();      // Ensure content1 (History) is hidden
+    });
+});
