@@ -7,7 +7,7 @@
 </head>
 <body>
     {% include 'nav.html' %}
-    <div class="container pt-3">
+    <div class="container zoom-out pt-3">
         <div id="loader_spn">
             <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
                 <div class="spinner-border" role="status">
@@ -65,7 +65,12 @@
                         
                     </div>
 
-                    <div class="border mb-5 shadow rounded-4 mb-3 p-3 pt-4" style="height: auto;">
+                    <div class="border shadow rounded-4 mb-3" style="height: auto;">
+                        <div id="reportContainer2Profile"></div>
+                    </div>
+
+                    <div class="border mb-5 shadow rounded-4 mb-3 p-3 pt-4" style="height: auto; display: none">
+                        <h5 class="fw-bolder mb-3 mt-2">Edit Profile Information</h5>
                         <input type="hidden" class="profile_student_id" id="profile_student_id">
                         <!-- Grade and Strand Selection -->
                         <div class="d-flex align-items-center justify-content-center flex-row mb-3">
@@ -131,7 +136,7 @@
                         </div>
                     
                         <div class="modal-footer">
-                            <button onclick="updateStudentProfile()" type="button" style="background-color: #009429; color: white" class="btn">
+                            <button onclick="updateStudentProfile()" type="button" style="background-color: #009429; color: white" class="btn btn-sm">
                                 <p id="profile_text_update_admin" class="m-0 p-0">Update Student</p>
                                 <div id="profile_load_update_admin" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
                                     <span class="visually-hidden">Loading...</span>

@@ -455,6 +455,15 @@ def getReport():
     data = StudentReport().getStudentReport()
     return jsonify(data)
 
+@app.route('/getReportProfile', methods=['GET'])
+def getReportProfile():
+    session_data = session.get('session_data')
+    data = json.loads(session_data)
+    id = data['id']
+    print(id)
+    data = StudentReport().getStudentReportProfile(id)
+    return jsonify(data)
+
 @app.route('/getSession', methods=['GET'])
 def getSession():
     session_data = session.get('session_data')

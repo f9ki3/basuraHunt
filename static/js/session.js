@@ -24,7 +24,7 @@ function getSessions() {
         dataType: "json",
         success: function(data) {
             data = JSON.parse(data);
-            console.log(data)
+            // console.log(data)
             populateSessionData(data); // Populate fields with the fetched data
         },
         error: function(xhr, status, error) {

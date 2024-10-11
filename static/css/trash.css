@@ -82,6 +82,13 @@ img {
     border-radius: 5px;
 }
 
+.zoom-out {
+    transform: scale(0.9); /* Apply the zoom-out effect */
+    transform-origin: top left; /* Origin for scaling */
+    width: 111.11%; /* Compensate for scaling width */
+    height: 111.11%; /* Compensate for scaling height */
+}
+
 /* vibrate */
 @keyframes vibrate {
     0% { transform: translate(1px, 0); }

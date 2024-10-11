@@ -71,6 +71,48 @@ class StudentReport(Database):
         # Return the data as JSON
         return json.dumps(data, indent=4)  # Convert Python data to JSON format
 
+    def getStudentReportProfile(self, id):
+        conn = self.conn  # Assuming self.conn is a valid connection object
+        cursor = conn.cursor()
+
+        # Fetch data from the studentReport table
+        cursor.execute('''
+            SELECT 
+                ur.id AS user_id,
+                ur.fname AS user_first_name,
+                ur.lname AS user_last_name,
+                ur.email AS user_email,
+                ur.contact AS user_contact,
+                sr.id AS report_id,
+                sr.date AS report_date,
+                sr.description AS report_description,
+                sr.media AS report_media,
+                sr.status AS report_status
+            FROM 
+                studentReport sr
+            JOIN 
+                users ur
+            ON 
+                sr.student_id = ur.id
+            WHERE 
+                sr.student_id = ?;  
+        ''', (id,))  # Pass id as a parameter
+
+        rows = cursor.fetchall()
+
+        # Get column names from the cursor description
+        column_names = [description[0] for description in cursor.description]
+
+        # Format rows as a list of dictionaries
+        data = [dict(zip(column_names, row)) for row in rows]
+
+        cursor.close()  # Close the cursor properly
+        conn.close()  # Close the connection properly
+
+        # Return the data as JSON
+        return json.dumps(data, indent=4)
+
+
     def get_session(self, email, password):
         # Data to be used in the query
         data = (email, password)
