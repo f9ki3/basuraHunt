@@ -1,7 +1,7 @@
 $('#auth').html(`
     <div id="create_page" style="display: none" class="col-12 col-md-6 col-lg-3" style="color: #252422;">
-        <div class="d-flex justify-content-center align-items-center mt-3" style="width: 100%; margin-bottom: 100px;">
-            <div style="width: 15%;">
+        <div class="d-flex justify-content-center align-items-center mt-3" style="width: 100%;">
+            <div style="width: 70%;">
                 <img style="object-fit: cover; width: 100%; height: auto;" src="../static/img/icon.webp" alt="Icon">
             </div>
         </div>
@@ -58,15 +58,15 @@ $('#auth').html(`
             <input autocomplete="off" id="cpassword" type="password" placeholder="Confirm Password" class="ps-4 form-control fs-6 form-control-lg">
         </div>
         
-        <button id="continue" disabled class="border w-100 btn-lg fs-6 btn" style="background-color: #009429; color: white;">Continue</button>
-        <button id="create" disabled class="border mt-3 w-100 btn-lg fs-6 btn" style="display: none; background-color: #009429; color: white;">
+        <button id="continue" disabled class="border w-100 btn-lg fs-6 btn" style="background-color: #2d6979; color: white;">Continue</button>
+        <button id="create" disabled class="border mt-3 w-100 btn-lg fs-6 btn" style="display: none; background-color: #2d6979; color: white;">
             <p id="create_text" class="m-0 p-0">Create</p>
             <div id="create_loader" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </button>
         <button id="back" class="mt-3 w-100 btn-lg border fs-6 btn text-muted" style="display: none;">Back</button>
-        <p class="text-center mt-3 mb-3">Already have an account? <a id="log" style="cursor: pointer; text-decoration: none; color: #009429">Login</a></p>
+        <p class="text-center mt-3 mb-3">Already have an account? <a id="log" style="cursor: pointer; text-decoration: none; color: #2d6979">Login</a></p>
         <p class="text-center mt-3 mb-3">or</p>
         <div>
             <a href="/login" class="btn-hover mt-3 w-100 btn btn-lg fs-6 border d-flex flex-row align-items-center text-muted">
@@ -81,8 +81,8 @@ $('#auth').html(`
 
     $('#auth1').html(`
         <div id="log_page" class="col-12 col-md-6 col-lg-3" style="color: #252422;">
-            <div class="d-flex justify-content-center align-items-center mt-3" style="width: 100%; margin-bottom: 100px;">
-                <div style="width: 15%;">
+            <div class="d-flex justify-content-center align-items-center mt-3" style="width: 100%;">
+                <div style="width: 70%;">
                     <img style="object-fit: cover; width: 100%; height: auto;" src="../static/img/icon.webp" alt="Icon">
                 </div>
             </div>
@@ -100,7 +100,7 @@ $('#auth').html(`
                     <input autocomplete="off" id="log_password" type="password" placeholder="Enter Password" class="ps-4 form-control mb-3 fs-6 form-control-lg">
                 </div>
 
-                <button id="login" disabled class="border w-100 btn-lg fs-6 btn" style="background-color: #009429; color: white;">
+                <button id="login" disabled class="border w-100 btn-lg fs-6 btn" style="background-color: #2d6979; color: white;">
                     <p id="login_text" class="m-0 p-0">Login</p>
                     <div id="login_loader" style="display: none;" class="spinner-grow spinner-grow-sm m-1" role="status">
                         <span class="visually-hidden">Loading...</span>
@@ -108,15 +108,13 @@ $('#auth').html(`
                 </button>
                 
     
-            <p class="text-center mt-3 mb-3">Don't have an Account? <a id="cre" style="cursor: pointer; text-decoration: none; color: #009429">Create</a></p>
+            <p class="text-center mt-3 mb-3">Don't have an Account? <a id="cre" style="cursor: pointer; text-decoration: none; color: #2d6979">Create</a></p>
             <p class="text-center mt-3 mb-3">or</p>
             <div>
                 <a href="/login" class="btn-hover mt-3 w-100 btn btn-lg fs-6 border d-flex flex-row align-items-center text-muted">
                     <i class="bi bi-google fs-5 me-4 ms-2"></i> Continue with Google
                 </a>
-                <a href="#" class=" mt-3 w-100 btn-hover btn btn-lg fs-6 d-flex border flex-row align-items-center text-muted">
-                    <i class="bi bi-facebook fs-5 me-4 ms-2"></i> Continue with Facebook
-                </a>
+                
             </div>
         </div>
         `);

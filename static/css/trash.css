@@ -1,3 +1,17 @@
+.bg_basurahunt {
+    background-image: url('../img/bg_basurahunt.jpg');
+    background-size: cover; /* Ensures the image covers the entire screen */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-attachment: fixed; /* Keeps the image fixed on scroll */
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+
 /* Auth html fles */
 .btn-hover:hover {
     background-color: #ebfff1; /* Example hover background color */
