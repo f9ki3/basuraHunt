@@ -365,7 +365,7 @@ def receive_data2():
     current_trash_count2 = distance  # Update the global variable with new data
     
     # Broadcast the updated trash count via WebSocket
-    socketio.emit('updateTrash', {'count': current_trash_count2})
+    socketio.emit('updateTrash2', {'count': current_trash_count2})
     
     print(f"Distance: {distance}")  # Log the distance received
 

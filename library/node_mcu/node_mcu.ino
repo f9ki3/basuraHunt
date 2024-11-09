@@ -7,7 +7,7 @@
 
 const char* ssid = "ROUTER1";       // Replace with your Wi-Fi network name
 const char* password = "chloesmartbro123"; // Replace with your Wi-Fi password
-const char* serverName = "http://192.168.1.120:5000/data"; // Replace with your server URL
+const char* serverName = "http://192.168.1.120:5000/data2"; // Replace with your server URL
 
 long duration;
 float distance;
@@ -34,7 +34,6 @@ void loop() {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   
-  
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
@@ -50,6 +49,9 @@ void loop() {
     Serial.print("Distance: ");
     Serial.print(distance);
     Serial.println(" cm");
+    
+    // Wait for 500ms before sending the data
+    delay(500); // Add a delay before sending data to the server
     
     // Send data to Flask API
     if (WiFi.status() == WL_CONNECTED) {

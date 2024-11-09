@@ -1,3 +1,4 @@
+// WebSocket setup for real-time updates
 var socket = io();
 
 function updateMessage(data) {
@@ -11,7 +12,7 @@ function updateMessage(data) {
     } else if (data < 95) {
         message = 'Critical Level';
     } else {
-        message = 'Bin Full'; // Covers data >= 100
+        message = 'Bin Full';
         $('#pickTrashAdmin1').prop('disabled', false);
         vibrateButton();
     }
@@ -19,21 +20,19 @@ function updateMessage(data) {
 }
 
 function vibrateButton() {
-    const button = $('#pickTrashAdmin1');
-    button.addClass('vibrate');
-    setTimeout(() => button.removeClass('vibrate'), 500);
+    $('#pickTrashAdmin1').addClass('vibrate');
+    setTimeout(() => $('#pickTrashAdmin1').removeClass('vibrate'), 500);
 }
 
 function trashDisplay(total) {
     total = Math.max(0, Math.min(total, 100));
-    $('#pickTrashAdmin1').prop('disabled', true);
     const reversedTotal = 100 - total;
-    const displayHeight = total <= 5 ? '100%' : reversedTotal + '%';
+    const displayHeight = reversedTotal <= 5 ? '100%' : reversedTotal + '%';
 
+    $('#pickTrashAdmin1').prop('disabled', true);
     updateMessage(reversedTotal);
     updateTrashBinStyles(total, displayHeight);
-    $('#trashPercent').text(total <= 5 ? '100%' : reversedTotal + '%');
-    $('#trash1percent').text(total <= 5 ? '100%' : reversedTotal + '%');
+    $('#trashPercent, #trash1percent').text(displayHeight);
 }
 
 function updateTrashBinStyles(total, displayHeight) {
@@ -73,61 +72,68 @@ function updateTrashBinStyles(total, displayHeight) {
 }
 
 function getColorByTotal(total) {
-    if (total <= 20) return '#fa8c8c'; // Light red
-    if (total <= 30) return '#fab78c'; // Light orange
-    if (total <= 50) return '#faf38c'; // Pale yellow
-    if (total <= 70) return '#e3fa8c'; // Even lighter green
-    if (total <= 80) return '#c5fa8c'; // Lighter green
-    return '#a5fa8c'; // Light green
+    if (total <= 20) return '#fa8c8c';
+    if (total <= 30) return '#fab78c';
+    if (total <= 50) return '#faf38c';
+    if (total <= 70) return '#e3fa8c';
+    if (total <= 80) return '#c5fa8c';
+    return '#a5fa8c';
 }
 
-// Listen for real-time updates via WebSocket
+// Handle real-time data updates
 socket.on('updateTrash', function(data) {
     trashDisplay(Number(data.count));
+}).on('error', function(error) {
+    console.error("WebSocket Error: ", error);
 });
 
-// Handle "Throw Trash" button click
+// AJAX call for "Throw Trash"
 $('#throwTrash').on('click', function () {
     $.ajax({
         type: "POST",
         url: "/data",
         contentType: "application/json",
-        data: JSON.stringify({ distance: 1 })
+        data: JSON.stringify({ distance: 1 }),
+        error: function(xhr, status, error) {
+            console.log("Error while throwing trash: " + error);
+        }
     });
 });
 
-
-// Periodically check the status of the microcontroller
+// Periodically check microcontroller status
 function checkMicrocontrollerStatus() {
     $.ajax({
         url: '/check_status',
         method: 'GET',
         success: function(response) {
             const isMicrocontrollerOn = response.status !== "off";
-            $('#trash').toggle(isMicrocontrollerOn);
-            $('#wifi').toggle(!isMicrocontrollerOn);
-            $('#dashtrash1').toggle(isMicrocontrollerOn);
-            $('#wifidash1').toggle(!isMicrocontrollerOn);
+            $('#trash, #dashtrash1').toggle(isMicrocontrollerOn);
+            $('#wifi, #wifidash1').toggle(!isMicrocontrollerOn);
         },
         error: function(error) {
-            console.error("Error: ", error);
+            console.error("Error checking microcontroller status: ", error);
         }
     });
 }
 
 setInterval(checkMicrocontrollerStatus, 5000);
 
+// Handle "Pick Trash" click event
 $('#pickTrashAdmin1').click(function (e) {
     e.preventDefault();
     $.ajax({
         url: '/process_trash1',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ dispose: 1 })
+        data: JSON.stringify({ dispose: 1 }),
+        success: fetchDisposeCount,
+        error: function(xhr, status, error) {
+            console.log("Error while processing trash: " + error);
+        }
     });
 });
 
-// Fetch and update dispose count
+// Fetch and display dispose count
 function fetchDisposeCount() {
     $.ajax({
         type: "GET",
@@ -137,13 +143,10 @@ function fetchDisposeCount() {
             $('#disposeCount').text(response.response);
         },
         error: function(xhr, status, error) {
-            console.log("Error: " + error);
+            console.log("Error fetching dispose count: " + error);
         }
     });
 }
 
-// Initial run on page load
+// Initialize on page load
 $(document).ready(fetchDisposeCount);
-
-// Fetch on button click
-$('#pickTrashAdmin1').click(fetchDisposeCount);
