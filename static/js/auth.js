@@ -35,7 +35,7 @@ $('#auth').html(`
             </div>
             <input autocomplete="off" id="email" type="email" placeholder="Enter your Email" class="ps-4 form-control mb-3 fs-6 form-control-lg">
             <input autocomplete="off"  maxlength="11" id="contact" type="number" placeholder="Enter your Contact No." class="ps-4 form-control mb-3 fs-6 form-control-lg">
-            <input autocomplete="off" id="student_id" type="text" placeholder="Enter your Student No" class="ps-4 form-control mb-3 fs-6 form-control-lg">
+            <input autocomplete="off" id="student_id" type="hidden" value="00000" placeholder="Enter your Student No" class="ps-4 form-control mb-3 fs-6 form-control-lg">
         </div>
     
         <div id="pass" style="display: none;">
