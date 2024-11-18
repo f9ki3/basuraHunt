@@ -10,6 +10,7 @@ from trash_logs import *
 from student_report import *
 from trash_dispose import *
 from dashboard import *
+from notification import *
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -441,6 +442,9 @@ def insertReport():
 
     # Insert the report with the form data (strand and section)
     StudentReport().insertStudentReport(student_id, desc, files_string, strand, section)
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    Notification().insertNotificationHistory(student_id, 'pending')
+    Notification().insertCountNotification(student_id)
 
     return jsonify({
         "message": "Report inserted successfully",
@@ -529,7 +533,11 @@ def update_report_status():
         # Replace this with actual database logic
         update_success = True  # Change based on your actual logic
 
+        student_id = json.loads(session.get('session_data', '{}')).get('id')
+
         if update_success:
+            Notification().insertNotificationHistory(student_id, 'responding')
+            Notification().insertCountNotification(student_id)
             return jsonify({"success": True}), 200
         else:
             return jsonify({"success": False, "error": "Failed to update report status"}), 500
@@ -555,6 +563,13 @@ def update_report_status_resolve():
         # Assuming you have a function or ORM query to update the status:
         StudentReport().updateStudentReportStatusResponding(report_id, status) 
 
+        student_id = json.loads(session.get('session_data', '{}')).get('id')
+        if status == 3:
+            Notification().insertNotificationHistory(student_id, 'declined')
+            Notification().insertCountNotification(student_id)
+        elif status == 2:
+            Notification().insertNotificationHistory(student_id, 'resolved')
+            Notification().insertCountNotification(student_id)
         # Example: Assume the update is successful
         # Replace this with actual database logic
         update_success = True  # Change based on your actual logic
@@ -737,6 +752,11 @@ def update_admin():
 @app.route('/getDisposeDashboardsAnalytics', methods=['GET'])
 def getDisposeCountDashboard():
     data = TrashDispose().getDisposeCountDashboard()
+    return jsonify(data)
+
+@app.route('/getNotifHistory', methods=['GET'])
+def getNotifHistory():
+    data = Notification().getAllNotificationHistory()
     return jsonify(data)
 
 if __name__ == "__main__":
