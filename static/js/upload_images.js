@@ -157,6 +157,7 @@ $(document).ready(function () {
                     $('#strand').val(''); // Clear the strand dropdown
                     $('#section').val(''); // Clear the section input field
                     $('#closeReport').click();
+                    location.reload()
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

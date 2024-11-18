@@ -11,6 +11,7 @@ function delete_report() {
             console.log(response.message); // Assuming the server sends a message back
             $('#cancelDelReport').click()
             studentReportPost()
+            location.reload()
         },
         error: function (xhr, status, error) {
             // Handle errors here

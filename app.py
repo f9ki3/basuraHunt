@@ -75,7 +75,7 @@ def loginAccount():
         
         data = Accounts().log_account(p,e)
         session_data = StudentReport().get_session(p,e)
-        print(session_data)
+        # print(session_data)
         if data == 1:
             session['status'] = data
             # session['email'] = p 
@@ -464,7 +464,7 @@ def getReportProfile():
     session_data = session.get('session_data')
     data = json.loads(session_data)
     id = data['id']
-    print(id)
+    # print(id)
     data = StudentReport().getStudentReportProfile(id)
     return jsonify(data)
 
@@ -481,7 +481,9 @@ def delete_report():
     report_id = request.json.get('id')  # Get 'id' from the JSON request
     if report_id:
         StudentReport().deleteReport(report_id)
-
+        student_id = json.loads(session.get('session_data', '{}')).get('id')
+        Notification().insertNotificationHistory(student_id, 'deleted')
+        Notification().insertCountNotification(student_id)
         return jsonify({"message": "Report deleted successfully", "status": "success"}), 200
     else:
         return jsonify({"message": "Report ID not provided", "status": "error"}), 400
@@ -534,7 +536,7 @@ def update_report_status():
         update_success = True  # Change based on your actual logic
 
         student_id = json.loads(session.get('session_data', '{}')).get('id')
-
+        
         if update_success:
             Notification().insertNotificationHistory(student_id, 'responding')
             Notification().insertCountNotification(student_id)
@@ -759,14 +761,34 @@ def getNotifHistory():
     data = Notification().getAllNotificationHistory()
     return jsonify(data)
 
+@app.route('/getNotifHistoryStudent', methods=['GET'])
+def getNotifHistoryStudent():
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    # print(student_id)
+    data = Notification().getAllNotificationHistoryStudent(student_id)
+    return jsonify(data)
+
 @app.route('/getCountNotifAdmin', methods=['GET'])
 def getCountNotifAdmin():
     data = Notification().countAdminNotif()
     return jsonify({'count':data})
 
+@app.route('/getCountNotifStudent', methods=['GET'])
+def getCountNotifStudent():
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    data = Notification().countAdminNotif(student_id)
+    return jsonify({'count':data})
+
 @app.route('/clear_notifications', methods=['GET'])
 def clear_notifications():
-    data = Notification().clearNotificationMethod()
+    Notification().clearNotificationMethod()
+    return jsonify(1)
+
+@app.route('/clear_notifications_student', methods=['GET'])
+def clear_notifications_student():
+    print('trigger')
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    Notification().clearNotificationMethodStudent(student_id)
     return jsonify(1)
 
 if __name__ == "__main__":

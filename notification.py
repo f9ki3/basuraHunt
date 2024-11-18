@@ -111,6 +111,34 @@ class Notification(Database):
         finally:
             cursor.close()  # Ensure the cursor is closed
 
+    def countStudentNotif(self, acc_id=None):
+        conn = self.conn  # Get connection from the parent class
+        cursor = conn.cursor()  # Create the cursor
+        
+        try:
+            # Base query to count all rows
+            query = 'SELECT SUM(count) FROM countNotif'
+            
+            # If acc_id is provided, add a WHERE clause
+            if acc_id is not None:
+                query += ' WHERE acc_id = ?'
+            
+            # Execute the count query
+            cursor.execute(query, (acc_id,) if acc_id is not None else ())
+            
+            # Fetch the result
+            result = cursor.fetchone()
+            
+            # Return the count (the first element in the result tuple)
+            return result[0] if result else 0
+        
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return 0  # Return 0 in case of an error
+        
+        finally:
+            cursor.close()  # Ensure the cursor is closed
+
 
 
         
@@ -151,6 +179,42 @@ class Notification(Database):
         finally:
             cursor.close()  # Ensure the cursor is closed
     
+    def getAllNotificationHistoryStudent(self, acc_id):
+        conn = self.conn  # Get connection from the parent class
+        cursor = conn.cursor()  # Create the cursor
+        try:
+            cursor.execute(f'''
+            SELECT n.id, n.acc_id, n.type, n.date, u.fname, u.lname
+            FROM notificationHistory n
+            JOIN users u ON u.id = n.acc_id
+            WHERE acc_id = {acc_id}
+            ORDER BY n.date DESC;
+            ''')
+            rows = cursor.fetchall()
+
+            if rows:
+                # Get column names from cursor.description
+                columns = [description[0] for description in cursor.description]
+                
+                # Convert rows to list of dictionaries
+                notification_history = []
+                for row in rows:
+                    row_dict = dict(zip(columns, row))
+                    notification_history.append(row_dict)
+
+                # Return the list of dictionaries
+                return notification_history
+            else:
+                print("No records found in notification history.")
+                return []
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return []
+
+        finally:
+            cursor.close()  # Ensure the cursor is closed
+
     def clearNotificationMethod(self):
         conn = self.conn  # Get connection from the parent class
         cursor = conn.cursor()  # Create the cursor
@@ -160,6 +224,29 @@ class Notification(Database):
             cursor.execute('''
                 UPDATE countNotif
                 SET count = 0
+            ''')
+            # Commit the transaction
+            conn.commit()
+        
+        except Exception as e:
+            # Handle the exception (optional logging or re-raise)
+            print(f"Error occurred: {e}")
+            conn.rollback()  # Rollback in case of error
+        
+        finally:
+            # Close the cursor to avoid memory leaks
+            cursor.close()
+
+    def clearNotificationMethodStudent(self, acc_id):
+        conn = self.conn  # Get connection from the parent class
+        cursor = conn.cursor()  # Create the cursor
+        
+        try:
+            # Correct SQL query to update the count in the countNotif table
+            cursor.execute(f''' 
+                UPDATE countNotif
+                SET count = 0
+                WHERE acc_id = {acc_id}
             ''')
             # Commit the transaction
             conn.commit()

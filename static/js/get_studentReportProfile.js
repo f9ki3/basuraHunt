@@ -42,18 +42,9 @@ function studentReportPostProfile() {
                                 <button 
                                     style="background-color: transparent; border: none" 
                                     data-bs-toggle="modal" 
-                                    data-bs-target="#edit" 
-                                    class="edit-btn" 
-                                    data-id="${report.report_id}" 
-                                    data-description="${report.report_description}" 
-                                    data-media="${report.report_media}">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button style="background-color: transparent; border: none" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#delete" 
-                                        class="delete-btn" 
-                                        data-id="${report.report_id}">
+                                    data-bs-target="#delete" 
+                                    class="delete-btn" 
+                                    data-id="${report.report_id}">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
