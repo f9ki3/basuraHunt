@@ -2,19 +2,26 @@ var socket = io();
 
 function updateMessage2(data2) {
     let message;
-    if (data2 < 0) {
-        message = 'Empty Trash!';
-    } else if (data2 < 50) {
-        message = 'Normal Level';
-    } else if (data2 < 70) {
-        message = 'Bin Half Filled';
-    } else if (data2 < 95) {
-        message = 'Critical Level';
-    } else {
+
+    // Ensure data2 is between 0 and 100
+    data2 = Math.max(0, Math.min(data2, 100));
+
+    if (data2 === 100) {
         message = 'Bin Full';
         $('#pickTrashAdmin2').prop('disabled', false);
         vibrateButton2();
+    } else if (data2 >= 95) {
+        message = 'Critical Level';
+    } else if (data2 >= 70) {
+        message = 'Bin Half Filled';
+    } else if (data2 >= 50) {
+        message = 'Normal Level';
+    } else if (data2 > 0) {
+        message = 'Empty Trash!';
+    } else {
+        message = '0%'; // If data2 is 0, display 0%
     }
+
     $('#messageTrash2').text(message);
 }
 
@@ -24,6 +31,7 @@ function vibrateButton2() {
 }
 
 function trashDisplay2(total2) {
+    // Make sure total2 is between 0 and 100
     total2 = Math.max(0, Math.min(total2, 100));
     const reversedTotal2 = 100 - total2;
     const displayHeight2 = total2 <= 5 ? '100%' : reversedTotal2 + '%';
