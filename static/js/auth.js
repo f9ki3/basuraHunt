@@ -72,9 +72,7 @@ $('#auth').html(`
             <a href="/login" class="btn-hover mt-3 w-100 btn btn-lg fs-6 border d-flex flex-row align-items-center text-muted">
                 <i class="bi bi-google fs-5 me-4 ms-2"></i> Continue with Google
             </a>
-            <a href="#" class=" mt-3 w-100 btn-hover btn btn-lg fs-6 d-flex border flex-row align-items-center text-muted">
-                <i class="bi bi-facebook fs-5 me-4 ms-2"></i> Continue with Facebook
-            </a>
+            
         </div>
     </div>
     `);
