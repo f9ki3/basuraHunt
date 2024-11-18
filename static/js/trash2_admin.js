@@ -4,25 +4,18 @@ function updateMessage2(data2) {
     let message;
 
     // Handle the case when data2 is less than or equal to 0
-    if (data2 <= 0) {
-        message = 'Empty Trash!'; // Show 'Empty Trash!' if data2 is 0 or less
+    if (data2 === 0) {
+        message = 'Empty Trash!'; // Corrected this condition to check for exactly 0
+    } else if (data2 < 50) {
+        message = 'Normal Level';
+    } else if (data2 < 70) {
+        message = 'Bin Half Filled';
+    } else if (data2 < 95) {
+        message = 'Critical Level';
     } else {
-        // Ensure data2 is between 0 and 100 (constrained to valid range)
-        data2 = Math.max(0, Math.min(data2, 100));
-
-        if (data2 === 100) {
-            message = 'Bin Full';
-            $('#pickTrashAdmin2').prop('disabled', false);
-            vibrateButton2();
-        } else if (data2 >= 95) {
-            message = 'Critical Level';
-        } else if (data2 >= 70) {
-            message = 'Bin Half Filled';
-        } else if (data2 >= 50) {
-            message = 'Normal Level';
-        } else {
-            message = 'Low Level'; // You can modify this to a more appropriate message if needed
-        }
+        message = 'Bin Full';
+        $('#pickTrashAdmin2').prop('disabled', false);
+        vibrateButton();
     }
 
     $('#messageTrash2').text(message);
