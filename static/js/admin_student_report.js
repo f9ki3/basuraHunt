@@ -294,11 +294,34 @@ function renderStudentRecord(record) {
                         <p>Media:</p>
                     </div>
                     <div class="col-8">
-                        <div style="width: 10rem; height: 10rem;">
-                            <a href="../static/uploads/${record.report_media}" target="_blank">
-                                <img class="rounded-4" style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/${record.report_media}" alt="Media Upload">
-                            </a>
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                            ${record.report_media.split(',').map(media => {
+                                // Check if the file is an image or video
+                                if (media.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                                    return `
+                                        <div class="col">
+                                            <a href="../static/uploads/${media}" target="_blank" class="d-block h-100">
+                                                <img class="rounded-4 w-100 h-100 object-fit-cover" src="../static/uploads/${media}" alt="Media Upload">
+                                            </a>
+                                        </div>
+                                    `;
+                                } else if (media.match(/\.(mp4|webm|ogg|mov)$/i)) {
+                                    return `
+                                        <div class="col">
+                                            <a href="../static/uploads/${media}" target="_blank" class="d-block h-100">
+                                                <video class="rounded-4 w-100 h-100 object-fit-cover" controls>
+                                                    <source src="../static/uploads/${media}" type="video/${media.split('.').pop()}">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            </a>
+                                        </div>
+                                    `;
+                                } else {
+                                    return ''; // In case the file type is unsupported
+                                }
+                            }).join('')}
                         </div>
+
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -320,6 +343,7 @@ function renderStudentRecord(record) {
             </div>
         </div>
     `;
+
     viewStudentRecord.append(recordHtml);
 }
 

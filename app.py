@@ -390,29 +390,27 @@ def check_status2():
     else:
         return jsonify({"status": "off", "message": "Second microcontroller is off or not sending data."}), 200
 
-# Configure the upload folder and allowed extensions
+# Configure the upload folder and allowed extensions for both images and videos
 UPLOAD_FOLDER = 'static/uploads'
-ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'mp4', 'mov', 'avi'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Check if the file has an allowed extension
+# Function to check if the file has an allowed extension (images and videos)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Helper function to check for allowed file extensions
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ['jpg', 'jpeg', 'png']
-
 @app.route('/insertReport', methods=['POST'])
 def insertReport():
-    # Get the description from the form data
+    # Get the description, strand, and section from the form data
     desc = request.form.get('desc')
+    strand = request.form.get('strand')
+    section = request.form.get('section')
 
     # Check if the post request has the images part
-    if 'images[]' not in request.files:
+    if 'files[]' not in request.files:
         return jsonify({"error": "No file part"}), 400
 
-    files = request.files.getlist('images[]')  # Get all files from 'images[]'
+    files = request.files.getlist('files[]')  # Get all files from 'files[]'
     
     if len(files) == 0:
         return jsonify({"error": "No selected files"}), 400
@@ -433,20 +431,22 @@ def insertReport():
             file.save(file_path)
             saved_files.append(filename)
         else:
-            return jsonify({"error": f"File '{file.filename}' type not allowed. Only JPG and PNG are accepted."}), 400
+            return jsonify({"error": f"File '{file.filename}' type not allowed. Only JPG, PNG, MP4, MOV, and AVI are accepted."}), 400
 
     # Implode (join) all filenames into a single string, separated by commas
     files_string = ','.join(saved_files)
 
-    # Process your form data (desc) here, e.g., save to a database
+    # Process your form data (desc, strand, and section) here
     student_id = json.loads(session.get('session_data', '{}')).get('id')
 
-    # Insert the report with the imploded filenames (all in one field)
-    StudentReport().insertStudentReport(student_id, desc, files_string)
+    # Insert the report with the form data (strand and section)
+    StudentReport().insertStudentReport(student_id, desc, files_string, strand, section)
 
     return jsonify({
         "message": "Report inserted successfully",
         "desc": desc,
+        "strand": strand,
+        "section": section,
         "files": saved_files
     }), 200
 
