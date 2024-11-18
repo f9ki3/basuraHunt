@@ -23,8 +23,8 @@
                         <div id="post_content">
                             <h1 id="fname_home" class="text-start fw-bolder w-100"></p></h1>
                             <p>What do you want to report in BasuraHunt?</p>
-                            <button data-bs-toggle="modal" data-bs-target="#reportModal" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #009429; color: white;">
-                                <i class="bi fs-3 bi-reply me-2"></i>Post
+                            <button data-bs-toggle="modal" data-bs-target="#reportModal" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #2d6979; color: white;">
+                                <i class="bi fs-3 bi-reply me-2"></i>Report
                             </button>
                         </div>
                         
@@ -39,7 +39,7 @@
                                 <div class="modal-body">   
                                     <div class="row mb-3 g-3">
                                         <div class="col-12 col-md-6">
-                                            <label for="" style="font-size: 12px;">Select Strand</label>
+                                            <label for="" style="font-size: 12px;" class="mb-3">Select Strand</label>
                                             <select name="" id="" class="form-select">
                                                 <option value="">GAS</option>
                                                 <option value="">STEM</option>
@@ -48,10 +48,12 @@
                                             </select>
                                         </div>
                                         <div class="col-12 col-md-6">
-                                            <label for="" style="font-size: 12px;">Section</label>
+                                            <label for="" style="font-size: 12px;" class="mb-3">Section</label>
                                             <input type="text" placeholder="Enter your section" class="form-control">
                                         </div>
                                     </div>
+
+                                    <label style="font-size: 12px;" class="mt-2 mb-3">Report</label>
                                     <div class="border rounded p-2">
                                         <textarea id="desc" placeholder="Write your report here..." style="resize: none; height: 50px; border: none; overflow: hidden; width: 100%; outline: none;" maxlength="300" oninput="updateCharCount(this)"></textarea>                        </textarea>
                                         <div id="char-count" class="text-muted text-end mt-3" style="font-size: 12px;">0 / 300</div>
@@ -59,7 +61,7 @@
 
                                     <input class="form-control form-control mt-3" id="med" type="hidden">
 
-                                    <label for="" style="font-size: 12px;">Upload Images</label>
+                                    <label for="" style="font-size: 12px;" class="m-0 mt-3">Upload Report</label>
                                     <div class="d-flex">
                                         <!-- Upload icon area -->
                                         <div id="uploadBtn" class="border mt-3 rounded d-flex flex-row justify-content-center align-items-center p-4" style="width: 100%; height: 120px; cursor: pointer;">
@@ -70,21 +72,9 @@
                                         <!-- Div where uploaded pictures will be displayed -->
                                         <div id="upload-preview" class="d-flex flex-row"></div>
                                     </div>
+                                    <label style="font-size: 12px;" class="mt-2">Note: please upload atleast 3mb image or video</label>
 
-                                    <label for="" style="font-size: 12px;">Upload Videos</label>
-                                    <div class="d-flex">
-                                        <!-- Upload icon area -->
-                                        <div id="uploadBtn" class="border mt-3 rounded d-flex flex-row justify-content-center align-items-center p-4" style="width: 100%; height: 120px; cursor: pointer;">
-                                            <i class="bi bi-cloud-upload fs-1"></i>
-                                        </div>
-                                        <!-- Hidden file input (separated from the div) -->
-                                        <input type="file" id="fileUpload" multiple class="d-none">
-                                        <!-- Div where uploaded pictures will be displayed -->
-                                        <div id="upload-preview" class="d-flex flex-row"></div>
-                                    </div>
-                                    
-
-                                    <button id="report_student" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #009429; color: white;">
+                                    <button id="report_student" class="border mb-3 mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #2d6979; color: white;">
                                         <i class="bi fs-3 bi-reply me-2"></i>Report
                                     </button>
                                     <div id="loader_post" style="display: none;">
