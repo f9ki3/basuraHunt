@@ -759,6 +759,16 @@ def getNotifHistory():
     data = Notification().getAllNotificationHistory()
     return jsonify(data)
 
+@app.route('/getCountNotifAdmin', methods=['GET'])
+def getCountNotifAdmin():
+    data = Notification().countAdminNotif()
+    return jsonify({'count':data})
+
+@app.route('/clear_notifications', methods=['GET'])
+def clear_notifications():
+    data = Notification().clearNotificationMethod()
+    return jsonify(1)
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
     socketio.run(app)

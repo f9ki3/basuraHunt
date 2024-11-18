@@ -89,7 +89,7 @@ class Notification(Database):
         
         try:
             # Base query to count all rows
-            query = 'SELECT COUNT(*) FROM countNotif'
+            query = 'SELECT SUM(count) FROM countNotif'
             
             # If acc_id is provided, add a WHERE clause
             if acc_id is not None:
@@ -150,6 +150,29 @@ class Notification(Database):
 
         finally:
             cursor.close()  # Ensure the cursor is closed
+    
+    def clearNotificationMethod(self):
+        conn = self.conn  # Get connection from the parent class
+        cursor = conn.cursor()  # Create the cursor
+        
+        try:
+            # Correct SQL query to update the count in the countNotif table
+            cursor.execute('''
+                UPDATE countNotif
+                SET count = 0
+            ''')
+            # Commit the transaction
+            conn.commit()
+        
+        except Exception as e:
+            # Handle the exception (optional logging or re-raise)
+            print(f"Error occurred: {e}")
+            conn.rollback()  # Rollback in case of error
+        
+        finally:
+            # Close the cursor to avoid memory leaks
+            cursor.close()
+
 
 
 if __name__ == "__main__":

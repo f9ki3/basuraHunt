@@ -156,6 +156,7 @@ $(document).ready(function () {
                     $('#fileUpload').val(''); // Clear the input field
                     $('#strand').val(''); // Clear the strand dropdown
                     $('#section').val(''); // Clear the section input field
+                    $('#closeReport').click();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
