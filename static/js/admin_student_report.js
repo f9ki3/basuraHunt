@@ -275,6 +275,22 @@ function renderStudentRecord(record) {
                 </div>
                 <div class="row mb-2">
                     <div class="col-4">
+                        <p>Strand:</p>
+                    </div>
+                    <div class="col-8">
+                        <p>${record.strand}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <p>Section:</p>
+                    </div>
+                    <div class="col-8">
+                        <p>${record.section}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
                         <p>Contact:</p>
                     </div>
                     <div class="col-8">

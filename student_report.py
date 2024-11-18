@@ -53,7 +53,9 @@ class StudentReport(Database):
                             sr.date AS report_date,
                             sr.description AS report_description,
                             sr.media AS report_media,
-                            sr.status AS report_status
+                            sr.status AS report_status,
+                            sr.strand AS strand,
+                            sr.section AS section
                         FROM 
                             studentReport sr
                         JOIN 
