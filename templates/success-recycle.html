@@ -1,0 +1,28 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasuraHunt</title>
+    {% include 'header_links.html' %}
+</head>
+<body>
+    {% include 'nav.html' %}
+    <div class="container pt-3">
+        <div  class="row d-flex justify-content-center flex-column align-items-center">
+            <div class="col-12 col-md-6 col-lg-3" style="color: #252422;">
+                <h2 class="fw-bolder w-100 mb-5 text-center">You've successfully submitted recycle</h2>
+                <p class="text-center">Transaction ID:</p>
+                <h3 class="text-center mb-5">{{ recycle_id }}</h3>
+                <div class="d-flex w-100 justify-content-center mb-5">
+                    <img style="object-fit: cover; width: 100%; height: auto;" src="../static/img/recycle.svg" alt="Icon">
+                </div>
+                <p class="text-center">Note: please screenshot this and remember it for you to validate your submission.</p>
+                <a href="/" class="border w-100 btn-lg fs-6 btn " style="background-color: #2d6979; color: white;">Continue</a>
+                
+            </div>
+        </div>
+    </div>
+    {% include 'footer_links.html' %}
+</body>
+</html>
+

@@ -11,6 +11,7 @@ from student_report import *
 from trash_dispose import *
 from dashboard import *
 from notification import *
+from recycle_submitted import *
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -171,6 +172,14 @@ def student_reward():
         return render_template('student_reward.html')
     else:
         return redirect('/')
+    
+@app.route('/recycle_record')
+def recycle_record():
+    status = session.get('status')
+    if status == 0:
+        return render_template('recycle_record.html')
+    else:
+        return redirect('/')
 
 @app.route('/account_manage')
 def account_manage():
@@ -213,6 +222,16 @@ def recycle():
         return render_template('recycle.html')
     else:
         return redirect('/')
+
+@app.route('/success-recycle')
+def success_recycle():
+    status = session.get('status')
+    if status == 1:
+        recycle_id = request.args.get('recycle_id')  # Get recycle_id from URL parameters
+        return render_template('success-recycle.html', recycle_id=recycle_id)
+    else:
+        return redirect('/')
+    
 
 @app.route('/report')
 def report():
@@ -812,6 +831,29 @@ def clear_notifications_student():
     student_id = json.loads(session.get('session_data', '{}')).get('id')
     Notification().clearNotificationMethodStudent(student_id)
     return jsonify(1)
+
+@app.route('/insert_recycle', methods=['POST'])
+def insert_recycle():
+    data = request.get_json()  # Parse the incoming JSON data
+    
+    # Extract data from the JSON
+    recycle_id = data.get('recycle_id')  # Get the recycle_id from the data
+    recycle_type = data.get('product')
+    grade_level = data.get('grade')
+    strand = data.get('strand')
+    section = data.get('section')
+    quantity = data.get('quantity')
+    status = 'Pending'  # Assuming default status, adjust if needed
+    acc_id = 1  # Assuming some default account ID, replace it with actual logic if needed
+    
+    # Call your insertion method (make sure this is properly implemented in your RecycleSubmitted class)
+    RecycleSubmitted().insert_record(recycle_id, recycle_type, grade_level, strand, section, quantity, status, acc_id)
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    Notification().insertNotificationHistory(student_id, 'recycle_submitted')
+    Notification().insertCountNotification(student_id)
+    
+    return jsonify({'message': 'Data inserted successfully', 'recycle_id': recycle_id}), 200  # Send a success response with the recycle_id
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

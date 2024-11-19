@@ -6,10 +6,11 @@ class RecycleSubmitted(Database):
         with self.conn:
             cursor = self.conn.cursor()
 
-            # Create the table if it doesn't exist
+            # Create the table if it doesn't exist, adding a new column for recycle_id
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS recycle_submitted (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    recycle_id INTEGER NOT NULL UNIQUE,  -- New column for recycle_id
                     recycle_type TEXT NOT NULL,
                     grade_level TEXT NOT NULL,
                     strand TEXT NOT NULL,
@@ -20,27 +21,27 @@ class RecycleSubmitted(Database):
                     FOREIGN KEY (acc_id) REFERENCES accounts(id)
                 )
             ''')
-            print("Table recycle_submitted created!")
+            print("Table recycle_submitted created with recycle_id!")
 
-    def insert_record(self, recycle_type, grade_level, strand, section, quantity, status, acc_id):
+    def insert_record(self, recycle_id, recycle_type, grade_level, strand, section, quantity, status, acc_id):
         # Using 'with' to ensure the connection and cursor are properly managed
         with self.conn:
             cursor = self.conn.cursor()
 
-            # Insert a new record into the recycle_submitted table
+            # Insert a new record into the recycle_submitted table, including recycle_id
             cursor.execute('''
-                INSERT INTO recycle_submitted (recycle_type, grade_level, strand, section, quantity, status, acc_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ''', (recycle_type, grade_level, strand, section, quantity, status, acc_id))
+                INSERT INTO recycle_submitted (recycle_id, recycle_type, grade_level, strand, section, quantity, status, acc_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (recycle_id, recycle_type, grade_level, strand, section, quantity, status, acc_id))
 
-            print("Record inserted into recycle_submitted table!")
+            print("Record inserted into recycle_submitted table with recycle_id!")
 
 if __name__ == "__main__":
     # Assuming you have initialized your database connection properly
     recycle_db = RecycleSubmitted()
 
-    # Create the table
+    # Create the table with the new column
     recycle_db.create_recycle_submitted_table()
 
-    # Insert a record into the table
-    recycle_db.insert_record('Plastic', 'Grade 10', 'STEM', 'A', 50, 'pending', 1)
+    # Insert a record into the table, with a specific recycle_id
+    recycle_db.insert_record(101, 'Plastic', 'Grade 10', 'STEM', 'A', 50, 'pending', 1)
