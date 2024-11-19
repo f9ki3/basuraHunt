@@ -21,17 +21,20 @@ class StudentReport(Database):
         print("Table Student Report Created!")
         conn.close()   # Close the connection properly
     
-    def insertStudentReport(self, student_id, description, media):
+    def insertStudentReport(self, student_id, description, media, strand, section):
         conn = self.conn
         cursor = conn.cursor()
-        # Insert data into the studentReport table
+        
+        # Insert data into the studentReport table, including strand and section
         cursor.execute('''
-            INSERT INTO studentReport (date, student_id, description, media, status)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (datetime.now(), student_id, description, media, '0'))
+            INSERT INTO studentReport (date, student_id, description, media, status, strand, section)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (datetime.now(), student_id, description, media, '0', strand, section))
+        
         conn.commit()
         print("Student Report inserted!")
         conn.close()  # Close the connection properly
+
     
     def getStudentReport(self):
         conn = self.conn
@@ -50,7 +53,9 @@ class StudentReport(Database):
                             sr.date AS report_date,
                             sr.description AS report_description,
                             sr.media AS report_media,
-                            sr.status AS report_status
+                            sr.status AS report_status,
+                            sr.strand AS strand,
+                            sr.section AS section
                         FROM 
                             studentReport sr
                         JOIN 

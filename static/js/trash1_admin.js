@@ -3,8 +3,11 @@ var socket = io();
 
 function updateMessage(data) {
     let message;
-    if (data < 0) {
-        message = 'Empty Trash!';
+    // Ensure data is between 0 and 100
+    data = Math.max(0, Math.min(data, 100));
+    
+    if (data === 0) {
+        message = 'Empty Trash!'; // Corrected this condition to check for exactly 0
     } else if (data < 50) {
         message = 'Normal Level';
     } else if (data < 70) {
@@ -16,6 +19,7 @@ function updateMessage(data) {
         $('#pickTrashAdmin1').prop('disabled', false);
         vibrateButton();
     }
+
     $('#messageTrash').text(message);
 }
 
@@ -27,8 +31,7 @@ function vibrateButton() {
 function trashDisplay(total) {
     total = Math.max(0, Math.min(total, 100));
     const reversedTotal = 100 - total;
-    const displayHeight = reversedTotal <= 5 ? '100%' : reversedTotal + '%';
-
+    const displayHeight = total <= 5 ? '100%' : reversedTotal + '%';
     $('#pickTrashAdmin1').prop('disabled', true);
     updateMessage(reversedTotal);
     updateTrashBinStyles(total, displayHeight);

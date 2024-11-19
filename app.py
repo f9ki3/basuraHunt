@@ -10,6 +10,7 @@ from trash_logs import *
 from student_report import *
 from trash_dispose import *
 from dashboard import *
+from notification import *
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -74,7 +75,7 @@ def loginAccount():
         
         data = Accounts().log_account(p,e)
         session_data = StudentReport().get_session(p,e)
-        print(session_data)
+        # print(session_data)
         if data == 1:
             session['status'] = data
             # session['email'] = p 
@@ -146,6 +147,14 @@ def student_records():
     status = session.get('status')
     if status == 0:
         return render_template('student_record.html')
+    else:
+        return redirect('/')
+
+@app.route('/student_reward')
+def student_reward():
+    status = session.get('status')
+    if status == 0:
+        return render_template('student_reward.html')
     else:
         return redirect('/')
 
@@ -390,29 +399,27 @@ def check_status2():
     else:
         return jsonify({"status": "off", "message": "Second microcontroller is off or not sending data."}), 200
 
-# Configure the upload folder and allowed extensions
+# Configure the upload folder and allowed extensions for both images and videos
 UPLOAD_FOLDER = 'static/uploads'
-ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'mp4', 'mov', 'avi'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Check if the file has an allowed extension
+# Function to check if the file has an allowed extension (images and videos)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Helper function to check for allowed file extensions
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ['jpg', 'jpeg', 'png']
-
 @app.route('/insertReport', methods=['POST'])
 def insertReport():
-    # Get the description from the form data
+    # Get the description, strand, and section from the form data
     desc = request.form.get('desc')
+    strand = request.form.get('strand')
+    section = request.form.get('section')
 
     # Check if the post request has the images part
-    if 'images[]' not in request.files:
+    if 'files[]' not in request.files:
         return jsonify({"error": "No file part"}), 400
 
-    files = request.files.getlist('images[]')  # Get all files from 'images[]'
+    files = request.files.getlist('files[]')  # Get all files from 'files[]'
     
     if len(files) == 0:
         return jsonify({"error": "No selected files"}), 400
@@ -433,20 +440,25 @@ def insertReport():
             file.save(file_path)
             saved_files.append(filename)
         else:
-            return jsonify({"error": f"File '{file.filename}' type not allowed. Only JPG and PNG are accepted."}), 400
+            return jsonify({"error": f"File '{file.filename}' type not allowed. Only JPG, PNG, MP4, MOV, and AVI are accepted."}), 400
 
     # Implode (join) all filenames into a single string, separated by commas
     files_string = ','.join(saved_files)
 
-    # Process your form data (desc) here, e.g., save to a database
+    # Process your form data (desc, strand, and section) here
     student_id = json.loads(session.get('session_data', '{}')).get('id')
 
-    # Insert the report with the imploded filenames (all in one field)
-    StudentReport().insertStudentReport(student_id, desc, files_string)
+    # Insert the report with the form data (strand and section)
+    StudentReport().insertStudentReport(student_id, desc, files_string, strand, section)
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    Notification().insertNotificationHistory(student_id, 'pending')
+    Notification().insertCountNotification(student_id)
 
     return jsonify({
         "message": "Report inserted successfully",
         "desc": desc,
+        "strand": strand,
+        "section": section,
         "files": saved_files
     }), 200
 
@@ -460,7 +472,7 @@ def getReportProfile():
     session_data = session.get('session_data')
     data = json.loads(session_data)
     id = data['id']
-    print(id)
+    # print(id)
     data = StudentReport().getStudentReportProfile(id)
     return jsonify(data)
 
@@ -477,7 +489,9 @@ def delete_report():
     report_id = request.json.get('id')  # Get 'id' from the JSON request
     if report_id:
         StudentReport().deleteReport(report_id)
-
+        student_id = json.loads(session.get('session_data', '{}')).get('id')
+        Notification().insertNotificationHistory(student_id, 'deleted')
+        Notification().insertCountNotification(student_id)
         return jsonify({"message": "Report deleted successfully", "status": "success"}), 200
     else:
         return jsonify({"message": "Report ID not provided", "status": "error"}), 400
@@ -529,7 +543,11 @@ def update_report_status():
         # Replace this with actual database logic
         update_success = True  # Change based on your actual logic
 
+        student_id = json.loads(session.get('session_data', '{}')).get('id')
+        
         if update_success:
+            Notification().insertNotificationHistory(student_id, 'responding')
+            Notification().insertCountNotification(student_id)
             return jsonify({"success": True}), 200
         else:
             return jsonify({"success": False, "error": "Failed to update report status"}), 500
@@ -555,6 +573,13 @@ def update_report_status_resolve():
         # Assuming you have a function or ORM query to update the status:
         StudentReport().updateStudentReportStatusResponding(report_id, status) 
 
+        student_id = json.loads(session.get('session_data', '{}')).get('id')
+        if status == 3:
+            Notification().insertNotificationHistory(student_id, 'declined')
+            Notification().insertCountNotification(student_id)
+        elif status == 2:
+            Notification().insertNotificationHistory(student_id, 'resolved')
+            Notification().insertCountNotification(student_id)
         # Example: Assume the update is successful
         # Replace this with actual database logic
         update_success = True  # Change based on your actual logic
@@ -738,6 +763,41 @@ def update_admin():
 def getDisposeCountDashboard():
     data = TrashDispose().getDisposeCountDashboard()
     return jsonify(data)
+
+@app.route('/getNotifHistory', methods=['GET'])
+def getNotifHistory():
+    data = Notification().getAllNotificationHistory()
+    return jsonify(data)
+
+@app.route('/getNotifHistoryStudent', methods=['GET'])
+def getNotifHistoryStudent():
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    # print(student_id)
+    data = Notification().getAllNotificationHistoryStudent(student_id)
+    return jsonify(data)
+
+@app.route('/getCountNotifAdmin', methods=['GET'])
+def getCountNotifAdmin():
+    data = Notification().countAdminNotif()
+    return jsonify({'count':data})
+
+@app.route('/getCountNotifStudent', methods=['GET'])
+def getCountNotifStudent():
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    data = Notification().countAdminNotif(student_id)
+    return jsonify({'count':data})
+
+@app.route('/clear_notifications', methods=['GET'])
+def clear_notifications():
+    Notification().clearNotificationMethod()
+    return jsonify(1)
+
+@app.route('/clear_notifications_student', methods=['GET'])
+def clear_notifications_student():
+    print('trigger')
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    Notification().clearNotificationMethodStudent(student_id)
+    return jsonify(1)
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

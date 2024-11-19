@@ -8,19 +8,14 @@
 <body>
     {% include 'nav.html' %}
     <div class="container">
-        <div id="loader_spn">
-            <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        </div>
-        <div id="content_userwaste" style="display: none;">
-            <div class="row g-4">
-                <div class="row">
-                    <div class="col-12">
+        <div class="row" id="viewStudentRecordsTable">
+            <h4 >Waste Level Monitoring</h4>
+            <div id="content_userwaste">
+                <div class="row g-4">
+                    <!-- Left Column -->
+                    <div class="col-12 col-md-6">
                         <div id="trash" style="display: none;">
-                            <div style="background-color: white;">
+                            <div class="bg-white p-3"> <!-- Use Bootstrap classes for background and padding -->
                                 {% include 'trash_bin1.html' %}
                             </div>
                         </div>
@@ -33,9 +28,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12">
+                    <!-- Right Column -->
+                    <div class="col-12 col-md-6">
                         <div id="trash2" style="display: none;">
-                            <div style="background-color: white;">
+                            <div class="bg-white p-3">
                                 {% include 'trash_bin2.html' %}
                             </div>
                         </div>

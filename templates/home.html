@@ -20,73 +20,68 @@
               
                 <div class="col-12 col-md-6 col-lg-6" style="color: hsl(40, 4%, 14%);">
                     <div class="border shadow p-4 rounded-4 mb-3" style="height: auto;">
-                        <div id="post_content">
+                        <div>
                             <h1 id="fname_home" class="text-start fw-bolder w-100"></p></h1>
                             <p>What do you want to report in BasuraHunt?</p>
-                            <button data-bs-toggle="modal" data-bs-target="#reportModal" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #009429; color: white;">
-                                <i class="bi fs-3 bi-reply me-2"></i>Post
+                            <button data-bs-toggle="modal" data-bs-target="#reportModal" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #2d6979; color: white;">
+                                <i class="bi fs-3 bi-reply me-2"></i>Report
                             </button>
                         </div>
                         
                         <!-- Modal -->
                         <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
-                            <div class="modal-content">
+                            <div class="modal-content" >
                                 <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">Report</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button id="closeReport" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">   
-                                    <div class="row mb-3 g-3">
-                                        <div class="col-12 col-md-6">
-                                            <label for="" style="font-size: 12px;">Select Strand</label>
-                                            <select name="" id="" class="form-select">
-                                                <option value="">GAS</option>
-                                                <option value="">STEM</option>
-                                                <option value="">ICT</option>
-                                                <option value="">TVL</option>
-                                            </select>
+                                    <div id="post_content">
+                                        <div class="row mb-3 g-3">
+                                            <div class="col-12 col-md-6">
+                                                <label for="" style="font-size: 12px;" class="mb-3">Select Strand</label>
+                                                <select id="strand" class="form-select">
+                                                    <option value="">Select Strand</option>
+                                                    <option value="GAS">GAS</option>
+                                                    <option value="STEM">STEM</option>
+                                                    <option value="ICT">ICT</option>
+                                                    <option value="TVL">TVL</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <label for="" style="font-size: 12px;" class="mb-3">Section</label>
+                                                <input type="text" id="section" placeholder="Enter your section" class="form-control">
+                                            </div>                                            
                                         </div>
-                                        <div class="col-12 col-md-6">
-                                            <label for="" style="font-size: 12px;">Section</label>
-                                            <input type="text" placeholder="Enter your section" class="form-control">
+    
+                                        <label style="font-size: 12px;" class="mt-2 mb-3">Report</label>
+                                        <div class="border rounded p-2">
+                                            <textarea id="desc" placeholder="Write your report here..." style="resize: none; height: 50px; border: none; overflow: hidden; width: 100%; outline: none;" maxlength="300" oninput="updateCharCount(this)"></textarea>                        </textarea>
+                                            <div id="char-count" class="text-muted text-end mt-3" style="font-size: 12px;">0 / 300</div>
                                         </div>
+    
+                                        <input class="form-control form-control mt-3" id="med" type="hidden">
+    
+                                        <label for="" style="font-size: 12px;" class="m-0 mt-3">Upload Report</label>
+                                        <div class="d-flex flex-wrap">
+                                            <!-- Hidden file input (separated from the div) -->
+                                            <input type="file" id="fileUpload" multiple class="d-none">
+                                            <!-- Div where uploaded pictures will be displayed -->
+                                            <div id="upload-preview" class="d-flex flex-wrap w-100">
+                                                <!-- Upload icon area -->
+                                                <div id="uploadBtn" class="border mt-3 me-3 rounded d-flex flex-row justify-content-center align-items-center p-4" style="cursor: pointer; height: 120px; width: 120px">
+                                                    <i class="bi bi-cloud-upload fs-1"></i>
+                                                </div>
+                                            </div>
+                                        </div>                                    
+                                        
+                                        <label style="font-size: 12px;" class="mt-2">Note: please upload 5 images or video with atleast 3mb sizes</label>
+    
+                                        <button id="report_student" class="border mb-3 mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #2d6979; color: white;">
+                                            <i class="bi fs-3 bi-reply me-2"></i>Report
+                                        </button>
                                     </div>
-                                    <div class="border rounded p-2">
-                                        <textarea id="desc" placeholder="Write your report here..." style="resize: none; height: 50px; border: none; overflow: hidden; width: 100%; outline: none;" maxlength="300" oninput="updateCharCount(this)"></textarea>                        </textarea>
-                                        <div id="char-count" class="text-muted text-end mt-3" style="font-size: 12px;">0 / 300</div>
-                                    </div>
-
-                                    <input class="form-control form-control mt-3" id="med" type="hidden">
-
-                                    <label for="" style="font-size: 12px;">Upload Images</label>
-                                    <div class="d-flex">
-                                        <!-- Upload icon area -->
-                                        <div id="uploadBtn" class="border mt-3 rounded d-flex flex-row justify-content-center align-items-center p-4" style="width: 100%; height: 120px; cursor: pointer;">
-                                            <i class="bi bi-cloud-upload fs-1"></i>
-                                        </div>
-                                        <!-- Hidden file input (separated from the div) -->
-                                        <input type="file" id="fileUpload" multiple class="d-none">
-                                        <!-- Div where uploaded pictures will be displayed -->
-                                        <div id="upload-preview" class="d-flex flex-row"></div>
-                                    </div>
-
-                                    <label for="" style="font-size: 12px;">Upload Videos</label>
-                                    <div class="d-flex">
-                                        <!-- Upload icon area -->
-                                        <div id="uploadBtn" class="border mt-3 rounded d-flex flex-row justify-content-center align-items-center p-4" style="width: 100%; height: 120px; cursor: pointer;">
-                                            <i class="bi bi-cloud-upload fs-1"></i>
-                                        </div>
-                                        <!-- Hidden file input (separated from the div) -->
-                                        <input type="file" id="fileUpload" multiple class="d-none">
-                                        <!-- Div where uploaded pictures will be displayed -->
-                                        <div id="upload-preview" class="d-flex flex-row"></div>
-                                    </div>
-                                    
-
-                                    <button id="report_student" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #009429; color: white;">
-                                        <i class="bi fs-3 bi-reply me-2"></i>Report
-                                    </button>
                                     <div id="loader_post" style="display: none;">
                                         <div class="d-flex justify-content-center pt-5 pb-5">
                                             <div class="spinner-border" role="status">
@@ -133,23 +128,6 @@
                         </div>
                         </div>
                     </div>
-                    <div class="modal fade mt-5" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                            <input type="hidden" id="delete_id">
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                            <p class="text-center">Are you sure you want to delete?</p>
-                            </div>
-                            <div class="modal-footer">
-                            <button id="cancelDelReport" type="button" style="background-color: #f3cccc; color: #940000" class="btn" data-bs-dismiss="modal">Cancel</button>
-                            <button onclick="delete_report()" type="button" style="background-color: #940000; color: white" class="btn">Delete</button>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
                     <div class="modal fade" id="view_img" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-fullscreen">
                             <div class="modal-content" style="background-color: rgba(0, 0, 0, 0.8); color: white;"> <!-- Set semi-transparent black -->
@@ -159,8 +137,8 @@
                                 <div class="modal-body">
                                     <div class="container">
                                         <div id="image-container" style="height: 80vh; width: 100%; cursor: grab; overflow: hidden; position: relative;" class="mt-3">
-                                            <img id="zoom-image" style="object-fit: fit; width: 100%; height: 100%;" src="../static/uploads/garbage.jpeg" alt="Image">
-                                        </div>
+                                            <!-- Image or Video will be inserted here dynamically -->
+                                        </div>                                        
                                         <div style="z-index: 100; position: relative;" class="d-flex flex-row mt-3 justify-content-center">
                                             <button id="previous" class="btn me-1 border border-muted" style="color: white; border-color: #444;">Previous Photo</button>
                                             <button id="next" class="btn me-1 border border-muted" style="color: white; border-color: #444;">Next Photo</button>

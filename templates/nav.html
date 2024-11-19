@@ -3,10 +3,59 @@
         <div class="p-2">
             <img style="object-fit: cover; width: 6rem; height: auto;" src="../static/img/icon.webp" alt="Icon">
         </div>
+        <input type="hidden" class="profile_student_id" id="global_student_id" value="">
         <div class="d-flex align-items-center">
             <!-- Notification button -->
-            <button class="btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><i class="bi fs-3 bi-bell-fill"></i></button>
-            
+            <button onclick="clearNotifStudent()" class="btn position-relative" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                <i class="bi fs-3 bi-bell-fill"></i>
+                <span style="display: none;" class="position-absolute top-0 start-1 translate-middle badge rounded-pill bg-danger">
+                </span>
+            </button>
+            <script>
+                $(document).ready(function() {
+                    var previousCount = null;  // Variable to store the previous notification count
+                
+                    // Function to fetch the notification count and update the badge
+                    function fetchNotificationCount() {
+                        $.ajax({
+                            url: '/getCountNotifStudent',  // URL for the route
+                            method: 'GET',               // HTTP method
+                            success: function(response) {
+                                // Assuming the response contains a 'count' property
+                                var count = response.count;
+                                
+                                // If the count has changed, update the badge
+                                if (count !== previousCount) {
+                                    // Update the badge count in the button
+                                    var badge = $('.btn .badge');
+                                    badge.text(count);  // Set the count text to the badge
+                
+                                    // If the count is 0, hide the badge, else show it
+                                    if (count === 0) {
+                                        badge.hide();  // Hide the badge if the count is 0
+                                    } else {
+                                        badge.show();  // Show the badge if the count is not 0
+                                    }
+                
+                                    // Update the previousCount with the current count
+                                    previousCount = count;
+                                }
+                            },
+                            error: function() {
+                                console.error('Error fetching notification count');
+                            }
+                        });
+                    }
+                
+                    // Call the function once when the page is loaded
+                    fetchNotificationCount();
+                
+                    // Set an interval to fetch the notification count every 5 seconds
+                    setInterval(fetchNotificationCount, 1000);  // Poll every 5 seconds
+                });
+                
+                
+            </script>
             <!-- User dropdown button -->
             <div class="dropdown burger-menu1">
                 <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -34,8 +83,8 @@
       <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Notification</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body">
-      <!-- <p>Try scrolling the rest of the page to see this option in action.</p> -->
+    <div class="offcanvas-body" id="notificationHistoryStudent">
+        
     </div>
 </div>
 
@@ -60,7 +109,7 @@
                 </a>
             </div>
             <div class="col-6">
-                <a class="btn w-100 border p-3">
+                <a href="/recycle" class="btn w-100 border p-3">
                     <i class="bi bi-recycle mb-3" style="font-size: 50px;"></i>
                     <p>Recycle </p>
                 </a>
@@ -86,3 +135,21 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade mt-5" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <input type="hidden" id="delete_id">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        <p class="text-center">Are you sure you want to delete?</p>
+        </div>
+        <div class="modal-footer">
+        <button id="cancelDelReport" type="button" style="background-color: #f3cccc; color: #940000" class="btn" data-bs-dismiss="modal">Cancel</button>
+        <button onclick="delete_report()" type="button" style="background-color: #940000; color: white" class="btn">Delete</button>
+        </div>
+    </div>
+    </div>
+</div>

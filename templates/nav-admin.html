@@ -1,16 +1,60 @@
 <div style="background-color: white;" class="sticky-top mt-3">
     <div class="container z-index-3  d-flex justify-content-between align-items-center">
         <div class="p-2">
-            <img style="object-fit: cover; width: 6rem; height: auto;" src="../static/img/logo.png" alt="Icon">
+            <img style="object-fit: cover; width: 6rem; height: auto;" src="../static/img/icon.webp" alt="Icon">
         </div>
         <div class="d-flex align-items-center">
             <!-- Notification button -->
-            <button class="btn position-relative" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+            <button onclick="clearNotif()" class="btn position-relative" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
                 <i class="bi fs-3 bi-bell-fill"></i>
-                <span class="position-absolute top-0 start-1 translate-middle badge rounded-pill bg-danger">
-                  1
+                <span style="display: none;" class="position-absolute top-0 start-1 translate-middle badge rounded-pill bg-danger">
                 </span>
             </button>
+            <script>
+                $(document).ready(function() {
+                    var previousCount = null;  // Variable to store the previous notification count
+                
+                    // Function to fetch the notification count and update the badge
+                    function fetchNotificationCount() {
+                        $.ajax({
+                            url: '/getCountNotifAdmin',  // URL for the route
+                            method: 'GET',               // HTTP method
+                            success: function(response) {
+                                // Assuming the response contains a 'count' property
+                                var count = response.count;
+                                
+                                // If the count has changed, update the badge
+                                if (count !== previousCount) {
+                                    // Update the badge count in the button
+                                    var badge = $('.btn .badge');
+                                    badge.text(count);  // Set the count text to the badge
+                
+                                    // If the count is 0, hide the badge, else show it
+                                    if (count === 0) {
+                                        badge.hide();  // Hide the badge if the count is 0
+                                    } else {
+                                        badge.show();  // Show the badge if the count is not 0
+                                    }
+                
+                                    // Update the previousCount with the current count
+                                    previousCount = count;
+                                }
+                            },
+                            error: function() {
+                                console.error('Error fetching notification count');
+                            }
+                        });
+                    }
+                
+                    // Call the function once when the page is loaded
+                    fetchNotificationCount();
+                
+                    // Set an interval to fetch the notification count every 5 seconds
+                    setInterval(fetchNotificationCount, 5000);  // Poll every 5 seconds
+                });
+                
+                
+            </script>
             
             <!-- User dropdown button -->
             <div class="dropdown burger-menu1">
@@ -18,10 +62,10 @@
                     <i class="bi fs-3 bi-person-circle"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item custom-dropdown-item" href="profile">Profile</a></li>
+                    <!-- <li><a class="dropdown-item custom-dropdown-item" href="profile">Profile</a></li>
                     <li><a class="dropdown-item custom-dropdown-item" href="recycle">Recycle Submission</a></li>
                     <li><a class="dropdown-item custom-dropdown-item" href="report">Report Submission</a></li>
-                    <li><a class="dropdown-item custom-dropdown-item" href="settings">Settings</a></li>
+                    <li><a class="dropdown-item custom-dropdown-item" href="settings">Settings</a></li> -->
                     <li><a class="dropdown-item custom-dropdown-item" href="/logout">Logout</a></li>
                 </ul>
             </div>
@@ -39,11 +83,8 @@
       <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Notification</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body">
-      <!-- <p>Try scrolling the rest of the page to see this option in action.</p> -->
-       <div id="#notif">
-
-       </div>
+    <div class="offcanvas-body" id="notificationHistory">
+        
     </div>
 </div>
 
