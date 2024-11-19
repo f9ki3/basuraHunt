@@ -86,6 +86,20 @@ function fetchNotificationsStudent() {
                                     </div>
                                 </div>
                             `;
+                        } else if (notification.type === 'recycle_submitted') {
+                            notificationHTML = `
+                                <div class="alert alert-light border-none alert-dismissible fade show d-flex align-items-center" role="alert">
+                                    <div class="me-3 rounded-5 p-3 fs-3 bg-success text-white">
+                                        <i class="bi bi-check-circle"></i>
+                                    </div>
+                                    <div>
+                                        <strong>${notification.fname} ${notification.lname}</strong>
+                                        <p style="font-size: 12px; margin-bottom: 0;">Recycle submitted successfully.</p>
+                                        <p style="font-size: 12px">${notification.date}</p>
+                                        <p class="time-difference" style="font-size: 12px;">${timeDifferenceText}</p>
+                                    </div>
+                                </div>
+                            `;
                         }
 
                         // If notificationHTML was created, append it to the #notificationHistoryStudent div

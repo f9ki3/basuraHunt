@@ -11,6 +11,7 @@ from student_report import *
 from trash_dispose import *
 from dashboard import *
 from notification import *
+from recycle_submitted import *
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -56,15 +57,6 @@ def index():
 def success_create():
     return render_template('success_create.html')
 
-@app.route('/login')
-def login():
-    # Generate a nonce and store it in the session
-    session['nonce'] = os.urandom(16).hex()
-
-    # Pass the nonce in the authorization request
-    redirect_uri = url_for('authorized', _external=True)
-    return google.authorize_redirect(redirect_uri, nonce=session['nonce'])
-
 @app.route('/log_account', methods=['POST'])
 def loginAccount():
     # Ensure the request contains JSON data
@@ -92,6 +84,15 @@ def loginAccount():
     else:
         return jsonify({"error": "Invalid request format"}), 400
 
+@app.route('/login')
+def login():
+    # Generate a nonce and store it in the session
+    session['nonce'] = os.urandom(16).hex()
+
+    # Pass the nonce in the authorization request
+    redirect_uri = url_for('authorized', _external=True)
+    return google.authorize_redirect(redirect_uri, nonce=session['nonce'])
+
 @app.route('/login/callback')
 def authorized():
     token = google.authorize_access_token()
@@ -106,15 +107,29 @@ def authorized():
         user_info = google.parse_id_token(token, nonce=nonce)
 
         if user_info:
-            # Get email, first name, surname, profile picture, and birthdate from the token
+            # Get email, first name, and surname from the token
             email = user_info.get('email')
             first_name = user_info.get('given_name')
             surname = user_info.get('family_name')
-            profile_picture = user_info.get('picture')
+            
+            result = Accounts().insertAccountsFromGoogle(email, first_name, surname, student_no=None, password=None, year=None, strand=None, section=None, contact=None, address=None, profile=None, status=None)
+            email, passw = result
+            print(result)
+            data = 1
+            session_data = StudentReport().get_session(email,passw)
+            # print(session_data)
+            if data == 1:
+                session['status'] = data
+                # session['email'] = p 
+                session['session_data'] = session_data  # Store the session data
+            elif data == 0:
+                session['status'] = data
+                # session['email'] = p 
+                session['session_data'] = session_data  # Store the session data
+            
+            # Display the user information
+            return redirect('/')
 
-            # return (f'Logged in as: {first_name} {surname}, Email: {email}, '
-            #         f'Profile Picture: <img src="{profile_picture}" alt="Profile Picture" />, ')
-            return redirect('/student_records')
     except Exception as e:
         return f'Login failed: {str(e)}'
 
@@ -155,6 +170,14 @@ def student_reward():
     status = session.get('status')
     if status == 0:
         return render_template('student_reward.html')
+    else:
+        return redirect('/')
+    
+@app.route('/recycle_record')
+def recycle_record():
+    status = session.get('status')
+    if status == 0:
+        return render_template('recycle_record.html')
     else:
         return redirect('/')
 
@@ -199,6 +222,16 @@ def recycle():
         return render_template('recycle.html')
     else:
         return redirect('/')
+
+@app.route('/success-recycle')
+def success_recycle():
+    status = session.get('status')
+    if status == 1:
+        recycle_id = request.args.get('recycle_id')  # Get recycle_id from URL parameters
+        return render_template('success-recycle.html', recycle_id=recycle_id)
+    else:
+        return redirect('/')
+    
 
 @app.route('/report')
 def report():
@@ -798,6 +831,34 @@ def clear_notifications_student():
     student_id = json.loads(session.get('session_data', '{}')).get('id')
     Notification().clearNotificationMethodStudent(student_id)
     return jsonify(1)
+
+@app.route('/get_all_recycle_submitted', methods=['GET'])
+def get_all_recycle_submitted():
+    data = RecycleSubmitted().get_all_recycle_submitted()
+    return jsonify(data)
+
+@app.route('/insert_recycle', methods=['POST'])
+def insert_recycle():
+    data = request.get_json()  # Parse the incoming JSON data
+    
+    # Extract data from the JSON
+    recycle_id = data.get('recycle_id')  # Get the recycle_id from the data
+    recycle_type = data.get('product')
+    grade_level = data.get('grade')
+    strand = data.get('strand')
+    section = data.get('section')
+    quantity = data.get('quantity')
+    status = 'Pending'  # Assuming default status, adjust if needed
+    acc_id = 1  # Assuming some default account ID, replace it with actual logic if needed
+    
+    # Call your insertion method (make sure this is properly implemented in your RecycleSubmitted class)
+    RecycleSubmitted().insert_record(recycle_id, recycle_type, grade_level, strand, section, quantity, status, acc_id)
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    Notification().insertNotificationHistory(student_id, 'recycle_submitted')
+    Notification().insertCountNotification(student_id)
+    
+    return jsonify({'message': 'Data inserted successfully', 'recycle_id': recycle_id}), 200  # Send a success response with the recycle_id
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasuraHunt</title>
+    {% include 'header_links.html' %}
+</head>
+<body>
+    {% include 'nav-admin.html' %}
+    <div class="container d-flex flex-row">
+        {% include 'header.html' %}
+        <div class="container body-color">
+            <div id="viewRecycleRecord"></div>
+            <div class="row" id="viewRecycleRecordsTable">
+                <h4>Recycle Records</h4>
+                <div class="col-12 col-md-6">
+                    <input class="w-100 form-control form-control-sm no-outline" placeholder="Search here ..." type="text" id="recycleSearchInput">
+                </div>
+                <div class="col-12 col-md-6 d-flex flex-row">
+                    <button class="btn btn-sm" id="filterAll">All</button>
+                    <button class="btn btn-sm" id="filterPlastic">Plastic</button>
+                    <button class="btn btn-sm" id="filterPaper">Paper</button>
+                    <button class="btn btn-sm" id="filterMetal">Metal</button>
+                    <select class="form-select form-select-sm no-outline border-none" id="recycleItemsPerPage">
+                        <option value="10" selected>Show 10 Items</option>
+                        <option value="15">Show 15 Items</option>
+                        <option value="20">Show 20 Items</option>
+                        <option value="100">Show 100 Items</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <table class="table table-hover text-muted mt-3 mb-4" style="font-size: 12px;">
+                        <thead>
+                          <tr>
+                            <th scope="col" width="5%">Account ID</th>
+                            <th scope="col" width="35%">Recycle ID</th>
+                            <th scope="col" width="15%">Recycle Type</th>
+                            <th scope="col" width="15%">Grade Level and Section</th>
+                          </tr>
+                        </thead>
+                        <tbody id="recycleReportTable"></tbody>
+                    </table>
+                    <p id="noRecycleItemsMessage" class="text-muted" style="display: none;">No items found.</p>
+                </div>
+                <div class="col-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination pagination-sm" id="recyclePaginationControls">
+                            <!-- Pagination controls will be dynamically added here -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'footer_links.html' %}
+</body>
+</html>
+
+<script>
+let currentImageIndexRecycle = 0; // Global variable to keep track of the current image index
+let imagesArrayRecycle = []; // Global array to store image paths
+
+function studentReportPost() {
+    $.ajax({
+        type: "GET",
+        url: "/get_all_recycle_submitted",
+        dataType: "json", // Automatically parses JSON
+        success: function (data) {
+            $('#recycleReportTable').empty(); // Clear the table before appending new data
+            
+            if (data.length === 0) {
+                $('#noRecycleItemsMessage').show();
+                return;
+            }
+            $('#noRecycleItemsMessage').hide();
+
+            data.forEach(item => {
+                const row = `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${item.recycle_id}</td>
+                        <td>${item.recycle_type}</td>
+                        <td>${item.grade_level} - ${item.section}</td>
+                    </tr>
+                `;
+                $('#recycleReportTable').append(row);
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching reports:', error);
+        }
+    });
+}
+</script>

@@ -1,5 +1,7 @@
 from database import Database
 import json
+import random
+import string
 
 class Accounts(Database):
     def createTableAccounts(self):
@@ -244,6 +246,71 @@ class Accounts(Database):
             cursor.close()
             # conn.close() - Uncomment if managing connection closure here.
 
+    def generate_password(self, length=8):
+        """Generate a random password with letters and digits."""
+        characters = string.ascii_letters + string.digits
+        return ''.join(random.choice(characters) for _ in range(length))
+
+    def insertAccountsFromGoogle(self, email, fname, lname, student_no=None, password=None, year=None, strand=None, section=None, contact=None, address=None, profile=None, status=None):
+        conn = self.conn
+        cursor = conn.cursor()
+
+        try:
+            # Ensure that email, first name, and last name are not empty
+            if not email or not fname or not lname:
+                return "Email, first name, and last name are required."
+            
+            # Check if the email already exists
+            cursor.execute('''
+                SELECT COUNT(*) FROM users WHERE email = ?
+            ''', (email,))
+            
+            email_exists = cursor.fetchone()[0] > 0
+            
+            if email_exists:
+                # If email exists, check if the password matches
+                cursor.execute('''
+                    SELECT password FROM users WHERE email = ?
+                ''', (email,))
+                stored_password = cursor.fetchone()[0]
+                
+                if stored_password == stored_password:
+                    # Call the log_account method if the password matches
+                    self.log_account(email, stored_password)
+                    return {email,stored_password}
+                else:
+                    return "Incorrect password."
+            else:
+                # If password is None, generate a new password
+                if not password:
+                    password = self.generate_password()  # Generate a random password
+                
+                # Set default values for optional fields that are None
+                student_no = student_no or None
+                year = year or None
+                strand = strand or None
+                section = section or None
+                contact = contact or None
+                address = address or None
+                profile = profile or 'profile.png'
+                status = status or 1  # Default to 0 (inactive) if not provided
+
+                # If email does not exist, insert the new record with optional fields
+                cursor.execute('''
+                    INSERT INTO users (student_no, email, password, fname, lname, year, strand, section, contact, address, profile, status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (student_no, email, password, fname, lname, year, strand, section, contact, address, profile, status))
+                conn.commit()  # Commit the changes
+                
+                self.log_account(email, password)
+                
+                # Return the status and success message
+                return {email,password}
+
+        except Exception as e:
+            # Handle any exceptions that occur during the process
+            return f"An error occurred: {e}"
+
     def log_account(self, email, password):
         conn = self.conn
         cursor = conn.cursor()
@@ -319,7 +386,9 @@ class Accounts(Database):
         # Return the data as JSON
         return json.dumps(data, indent=4) if data else json.dumps({"message": "User not found"}, indent=4)
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    result = Accounts().insertAccountsFromGoogle('sample@gmail.com','firstname','lname')
+    print(result)
 #     Accounts().createTableAccounts()
 #     insert_result = Accounts().insertAccounts(
 #         student_no="00000",

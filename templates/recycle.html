@@ -21,47 +21,70 @@
                     <div class="border shadow p-4 rounded-4 mb-3" style="height: auto;">
                         <div id="post_content">
                             <h1 class="text-start fw-bolder w-100">Recycle Submission</h1>
-                            <div class="col-12 col-md-12 mt-2">
-                                <label for="" style="font-size: 12px;">Select Product</label>
-                                <select name="" id="" class="form-select">
-                                    <option value="">Plastic Bottle</option>
-                                    <option value="">Papers</option>
-                                    <option value="">Metal</option>
+                            <div class="col-12 mb-3 mt-2">
+                                <label for="productSelect" class="form-label" style="font-size: 12px;">Select Product</label>
+                                <select class="form-select" id="productSelect" aria-label="Select Product">
+                                    <option value="">Select a Product</option>
+                                    <option value="plastic_bottle">Plastic Bottle</option>
+                                    <option value="papers">Papers</option>
+                                    <option value="metal">Metal</option>
                                 </select>
+                                <div id="productError" class="text-danger" style="font-size: 12px;"></div>
                             </div>
                             <div class="row mb-3 g-3">
                                 <div class="col-12 col-md-6">
-                                    <label for="" style="font-size: 12px;">Grade Level</label>
-                                    <select name="" id="" class="form-select">
-                                        <option value="">Grade 11</option>
-                                        <option value="">Grade 12</option>
+                                    <label for="gradeSelect" class="form-label" style="font-size: 12px;">Grade Level</label>
+                                    <select class="form-select" id="gradeSelect" aria-label="Grade Level">
+                                        <option value="">Select Grade Level</option>
+                                        <option value="grade_11">Grade 11</option>
+                                        <option value="grade_12">Grade 12</option>
                                     </select>
+                                    <div id="gradeError" class="text-danger" style="font-size: 12px;"></div>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" style="font-size: 12px;">Select Strand</label>
-                                    <select name="" id="" class="form-select">
-                                        <option value="">GAS</option>
-                                        <option value="">STEM</option>
-                                        <option value="">ICT</option>
-                                        <option value="">TVL</option>
+                                    <label for="strandSelect" class="form-label" style="font-size: 12px;">Select Strand</label>
+                                    <select class="form-select" id="strandSelect" aria-label="Select Strand">
+                                        <option value="">Select Strand</option>
+                                        <option value="GAS">GAS</option>
+                                        <option value="STEM">STEM</option>
+                                        <option value="ICT">ICT</option>
+                                        <option value="ABM">ABM</option>
+                                        <option value="HUMSS">HUMSS</option>
                                     </select>
+                                    <div id="strandError" class="text-danger" style="font-size: 12px;"></div>
                                 </div>
-                                
                             </div>
-                            <div class="col-12 col-md-12">
-                                <label for="" style="font-size: 12px;">Section</label>
-                                <input type="text" placeholder="Enter your section" class="form-control">
+                            <div class="col-12">
+                                <label for="sectionSelect" class="form-label" style="font-size: 12px;">Section</label>
+                                <select class="form-select" id="sectionSelect" aria-label="Select Section">
+                                    <option value="">Select Section</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                </select>
+                                <div id="sectionError" class="text-danger" style="font-size: 12px;"></div>
                             </div>
-                            <div class="col-12 col-md-12 mt-3">
-                                <label for="" style="font-size: 12px;">Quantity</label>
-                                <input type="text" placeholder="Enter your product quantity" class="form-control">
+                            <div class="col-12 mt-3">
+                                <label for="quantityInput" class="form-label" style="font-size: 12px;">Quantity</label>
+                                <input type="text" id="quantityInput" placeholder="Enter your product quantity" class="form-control" aria-label="Quantity">
+                                <div id="quantityError" class="text-danger" style="font-size: 12px;"></div>
                             </div>
-                            <button data-bs-toggle="modal" data-bs-target="#reportModal" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #009429; color: white;">
-                                <i class="bi fs-3 bi-reply me-2"></i>Post
+                            <button type="submit" id="submitBtn" class="border mt-3 w-100 btn-lg fs-6 btn d-flex align-items-center justify-content-center" style="background-color: #2d6979; color: white;">
+                                <div id="sub_btn">
+                                    <i class="bi fs-3 bi-reply me-2"></i>Submit Recycle
+                                </div>
+                                <!-- Spinner element -->
+                                <div id="spinner" class="spinner-border text-light d-none" role="status" style="width: 1.5rem; height: 1.5rem;">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
                             </button>
                         </div>
-                    </div> 
-                </div> 
+                        
+                    </div>
+                </div>
+                
+                
             
                 <div class="col-12 col-md-6 col-lg-6" style="color: hsl(40, 4%, 14%);">
                     <div class="border shadow p-4 rounded-4 mb-3" style="height: auto;">
@@ -90,7 +113,7 @@
                                             <p>1kg</p>
                                         </td>
                                         <td>
-                                            <p>Unit</p>
+                                            <p>1 points</p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -101,7 +124,7 @@
                                             <p>1kg</p>
                                         </td>
                                         <td>
-                                            <p>Product</p>
+                                            <p>1 points</p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -112,7 +135,7 @@
                                             <p>1kg</p>
                                         </td>
                                         <td>
-                                            <p>Unit</p>
+                                            <p>1 points</p>
                                         </td>
                                     </tr>
                                 </tbody>
