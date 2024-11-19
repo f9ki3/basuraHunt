@@ -110,6 +110,7 @@ def authorized():
             email = user_info.get('email')
             first_name = user_info.get('given_name')
             surname = user_info.get('family_name')
+            
             result = Accounts().insertAccountsFromGoogle(email, first_name, surname, student_no=None, password=None, year=None, strand=None, section=None, contact=None, address=None, profile=None, status=None)
             email, passw = result
             print(result)
