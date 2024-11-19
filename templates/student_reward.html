@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BasuraHunt</title>
+    <title>Student Rewards</title>
     {% include 'header_links.html' %}
 </head>
 <body>
@@ -10,20 +10,15 @@
     <div class="container d-flex flex-row">
         {% include 'header.html' %}
         <div class="container body-color">
-            
             <div id="viewStudentRecord">
             </div>
             <div class="row" id="viewStudentRecordsTable">
-                <h4 >Student Reward</h4>
+                <h4>Student Rewards</h4>
                 <div class="col-12 col-md-6">
-                    <input class="w-100 form-control form-control-sm no-outline" placeholder="Search here ..." type="text" id="searchInput">
+                    <input class="w-100 form-control form-control-sm no-outline" placeholder="Search students..." type="text" id="searchInput">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-row">
-                    <button class="btn btn-sm" id="allBtn">All</button>
-                    <button class="btn btn-sm" id="pendingBtn">Plastic</button>
-                    <button class="btn btn-sm" id="respondingBtn">Paper</button>
-                    <button class="btn btn-sm" id="resolveBtn">Metal</button>
-                    <select class="form-select form-select-sm no-outline border-none" aria-label="Default select example" id="itemsPerPage">
+                    <select class="form-select form-select-sm no-outline border-none" id="itemsPerPage">
                         <option value="10" selected>Show 10 Items</option>
                         <option value="15">Show 15 Items</option>
                         <option value="20">Show 20 Items</option>
@@ -34,17 +29,16 @@
                     <table class="table table-hover text-muted mt-3 mb-4" style="font-size: 12px;">
                         <thead>
                           <tr>
-                            <th scope="col" width="5%">ID</th>
-                            <th scope="col" width="35%">Report Description</th>
-                            <th scope="col" width="15%">Student</th>
-                            <th scope="col" width="15%">Email</th>
-                            <th scope="col" width="10%">Status</th>
+                            <th scope="col" width="10%">ID</th>
+                            <th scope="col" width="40%">Student Name</th>
+                            <th scope="col" width="20%">Points</th>
+                            <th scope="col" width="30%">Action</th>
                           </tr>
                         </thead>
-                        <tbody id="reportTable">
+                        <tbody id="studentTable">
                         </tbody>
                     </table>
-                    <p id="noItemsMessage" class="text-muted" style="display: none;">No items found.</p>
+                    <p id="noItemsMessage" class="text-muted" style="display: none;">No students found.</p>
                 </div>
                 <div class="col-12">
                     <nav aria-label="Page navigation example">
@@ -55,8 +49,61 @@
                 </div>
             </div>
         </div>
-        
     </div>
     {% include 'footer_links.html' %}
 </body>
 </html>
+<script>
+    let studentDataCache = []; // To store fetched student data for filtering
+
+    // Fetch and display student records
+    function fetchStudentRecords() {
+        $.ajax({
+            type: "GET",
+            url: "/get_all_students", // Replace with your endpoint for fetching student records
+            dataType: "json",
+            success: function (data) {
+                studentDataCache = data; // Cache the fetched data
+                renderTable(data); // Render the table with the fetched data
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching student records:', error);
+            }
+        });
+    }
+
+    // Render table with student data
+    function renderTable(data) {
+        $('#studentTable').empty(); // Clear existing table rows
+
+        if (data.length === 0) {
+            $('#noItemsMessage').show();
+            return;
+        }
+        $('#noItemsMessage').hide();
+
+        data.forEach(item => {
+            const row = `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.section}</td>
+                    <td>${item.points}</td>
+                    <td><button class="btn btn-sm btn-primary">Reward</button></td>
+                </tr>
+            `;
+            $('#studentTable').append(row);
+        });
+    }
+
+    // Search functionality
+    $('#searchInput').on('input', function () {
+        const query = $(this).val().toLowerCase();
+        const filteredData = studentDataCache.filter(item =>
+            item.name.toLowerCase().includes(query) ||
+            String(item.points).includes(query)
+        );
+        renderTable(filteredData); // Display filtered results
+    });
+
+    fetchStudentRecords(); // Fetch student data on page load
+</script>

@@ -34,12 +34,13 @@
                         <thead>
                           <tr>
                             <th scope="col" width="5%">Account ID</th>
-                            <th scope="col" width="35%">Recycle ID</th>
-                            <th scope="col" width="15%">Recycle Type</th>
-                            <th scope="col" width="15%">Grade Level and Section</th>
+                            <th scope="col" width="25%">Recycle ID</th>
+                            <th scope="col" width="25%">Recycle Type</th>
+                            <th scope="col" width="25%">Grade Level and Section</th>
+                            <th scope="col" width="25%"></th>
                           </tr>
                         </thead>
-                        <tbody id="recycleReportTable"></tbody>
+                        <tbody id="recycleRecycle"></tbody>
                     </table>
                     <p id="noRecycleItemsMessage" class="text-muted" style="display: none;">No items found.</p>
                 </div>
@@ -56,40 +57,60 @@
     {% include 'footer_links.html' %}
 </body>
 </html>
-
 <script>
-let currentImageIndexRecycle = 0; // Global variable to keep track of the current image index
-let imagesArrayRecycle = []; // Global array to store image paths
+    let dataCache = []; // To store fetched data for filtering
+    let imagesArrayRecycle = []; // Global array to store image paths
 
-function studentReportPost() {
-    $.ajax({
-        type: "GET",
-        url: "/get_all_recycle_submitted",
-        dataType: "json", // Automatically parses JSON
-        success: function (data) {
-            $('#recycleReportTable').empty(); // Clear the table before appending new data
-            
-            if (data.length === 0) {
-                $('#noRecycleItemsMessage').show();
-                return;
+    // Fetch and display recycle records
+    function recycleRecycle() {
+        $.ajax({
+            type: "GET",
+            url: "/get_all_recycle_points",
+            dataType: "json",
+            success: function (data) {
+                dataCache = data; // Cache the fetched data
+                renderTable(data); // Render the table with the fetched data
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching reports:', error);
             }
-            $('#noRecycleItemsMessage').hide();
+        });
+    }
 
-            data.forEach(item => {
-                const row = `
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.recycle_id}</td>
-                        <td>${item.recycle_type}</td>
-                        <td>${item.grade_level} - ${item.section}</td>
-                    </tr>
-                `;
-                $('#recycleReportTable').append(row);
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error('Error fetching reports:', error);
+    // Render table with data
+    function renderTable(data) {
+        $('#recycleRecycle').empty(); // Clear existing table rows
+
+        if (data.length === 0) {
+            $('#noRecycleItemsMessage').show();
+            return;
         }
+        $('#noRecycleItemsMessage').hide();
+
+        data.forEach(item => {
+            const row = `
+                <tr>
+                    <td class="pt-3 pb-3">${item.id}</td>
+                    <td class="pt-3 pb-3">${item.recycle_id}</td>
+                    <td class="pt-3 pb-3">${item.recycle_type}</td>
+                    <td class="pt-3 pb-3">${item.grade_level} ${item.section}</td>
+                    <td class="pt-3 pb-3"><button class="btn btn-sm">Receive</button></td>
+                </tr>
+            `;
+            $('#recycleRecycle').append(row);
+        });
+    }
+
+    // Search functionality
+    $('#recycleSearchInput').on('input', function () {
+        const query = $(this).val().toLowerCase();
+        const filteredData = dataCache.filter(item =>
+            item.recycle_id.toLowerCase().includes(query) ||
+            item.recycle_type.toLowerCase().includes(query) ||
+            (item.grade_level + " " + item.section).toLowerCase().includes(query)
+        );
+        renderTable(filteredData); // Display filtered results
     });
-}
+
+    recycleRecycle(); // Fetch data on page load
 </script>
