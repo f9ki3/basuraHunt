@@ -150,6 +150,14 @@ def student_records():
     else:
         return redirect('/')
 
+@app.route('/student_reward')
+def student_reward():
+    status = session.get('status')
+    if status == 0:
+        return render_template('student_reward.html')
+    else:
+        return redirect('/')
+
 @app.route('/account_manage')
 def account_manage():
     status = session.get('status')

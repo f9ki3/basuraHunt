@@ -80,7 +80,7 @@ function fetchNotificationsStudent() {
                                     </div>
                                     <div>
                                         <strong>${notification.fname} ${notification.lname}</strong>
-                                        <p style="font-size: 12px; margin-bottom: 0;">Declined the Account Report.</p>
+                                        <p style="font-size: 12px; margin-bottom: 0;">Deleted the Account Report.</p>
                                         <p style="font-size: 12px">${notification.date}</p>
                                         <p class="time-difference" style="font-size: 12px;">${timeDifferenceText}</p>
                                     </div>
