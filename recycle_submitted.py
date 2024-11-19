@@ -36,12 +36,28 @@ class RecycleSubmitted(Database):
 
             print("Record inserted into recycle_submitted table with recycle_id!")
 
-if __name__ == "__main__":
-    # Assuming you have initialized your database connection properly
-    recycle_db = RecycleSubmitted()
+    def get_all_recycle_submitted(self):
+        # Retrieve all records from the recycle_submitted table and return as a list of dictionaries
+        with self.conn:
+            cursor = self.conn.cursor()
+            cursor.execute('SELECT * FROM recycle_submitted')
+            columns = [col[0] for col in cursor.description]
+            records = cursor.fetchall()
 
-    # Create the table with the new column
-    recycle_db.create_recycle_submitted_table()
+            # Convert each row into a dictionary
+            result = [dict(zip(columns, record)) for record in records]
+            return result
 
-    # Insert a record into the table, with a specific recycle_id
-    recycle_db.insert_record(101, 'Plastic', 'Grade 10', 'STEM', 'A', 50, 'pending', 1)
+# if __name__ == "__main__":
+#     # Assuming you have initialized your database connection properly
+#     recycle_db = RecycleSubmitted()
+
+#     # Create the table with the new column
+#     recycle_db.create_recycle_submitted_table()
+
+#     # Insert a record into the table, with a specific recycle_id
+#     recycle_db.insert_record(101, 'Plastic', 'Grade 10', 'STEM', 'A', 50, 'pending', 1)
+
+#     # Retrieve and print all records
+#     records = recycle_db.get_all_recycle_submitted()
+#     print(records)

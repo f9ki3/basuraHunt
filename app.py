@@ -832,6 +832,11 @@ def clear_notifications_student():
     Notification().clearNotificationMethodStudent(student_id)
     return jsonify(1)
 
+@app.route('/get_all_recycle_submitted', methods=['GET'])
+def get_all_recycle_submitted():
+    data = RecycleSubmitted().get_all_recycle_submitted()
+    return jsonify(data)
+
 @app.route('/insert_recycle', methods=['POST'])
 def insert_recycle():
     data = request.get_json()  # Parse the incoming JSON data
