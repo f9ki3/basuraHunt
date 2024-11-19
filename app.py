@@ -56,15 +56,6 @@ def index():
 def success_create():
     return render_template('success_create.html')
 
-@app.route('/login')
-def login():
-    # Generate a nonce and store it in the session
-    session['nonce'] = os.urandom(16).hex()
-
-    # Pass the nonce in the authorization request
-    redirect_uri = url_for('authorized', _external=True)
-    return google.authorize_redirect(redirect_uri, nonce=session['nonce'])
-
 @app.route('/log_account', methods=['POST'])
 def loginAccount():
     # Ensure the request contains JSON data
@@ -92,6 +83,15 @@ def loginAccount():
     else:
         return jsonify({"error": "Invalid request format"}), 400
 
+@app.route('/login')
+def login():
+    # Generate a nonce and store it in the session
+    session['nonce'] = os.urandom(16).hex()
+
+    # Pass the nonce in the authorization request
+    redirect_uri = url_for('authorized', _external=True)
+    return google.authorize_redirect(redirect_uri, nonce=session['nonce'])
+
 @app.route('/login/callback')
 def authorized():
     token = google.authorize_access_token()
@@ -106,15 +106,28 @@ def authorized():
         user_info = google.parse_id_token(token, nonce=nonce)
 
         if user_info:
-            # Get email, first name, surname, profile picture, and birthdate from the token
+            # Get email, first name, and surname from the token
             email = user_info.get('email')
             first_name = user_info.get('given_name')
             surname = user_info.get('family_name')
-            profile_picture = user_info.get('picture')
+            result = Accounts().insertAccountsFromGoogle(email, first_name, surname, student_no=None, password=None, year=None, strand=None, section=None, contact=None, address=None, profile=None, status=None)
+            email, passw = result
+            print(result)
+            data = 1
+            session_data = StudentReport().get_session(email,passw)
+            # print(session_data)
+            if data == 1:
+                session['status'] = data
+                # session['email'] = p 
+                session['session_data'] = session_data  # Store the session data
+            elif data == 0:
+                session['status'] = data
+                # session['email'] = p 
+                session['session_data'] = session_data  # Store the session data
+            
+            # Display the user information
+            return redirect('/')
 
-            # return (f'Logged in as: {first_name} {surname}, Email: {email}, '
-            #         f'Profile Picture: <img src="{profile_picture}" alt="Profile Picture" />, ')
-            return redirect('/student_records')
     except Exception as e:
         return f'Login failed: {str(e)}'
 

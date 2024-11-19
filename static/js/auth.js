@@ -49,7 +49,8 @@ $('#auth').html(`
                     <option disabled selected>Select Strand</option>
                     <option value="GAS">GAS</option>
                     <option value="STEM">STEM</option>
-                    <option value="TVL">TVL</option>
+                    <option value="HUMSS">HUMSS</option>
+                    <option value="ABM">ABM</option>
                     <option value="ICT">ICT</option>
                 </select>    
             </div>
@@ -129,8 +130,8 @@ $('#auth').html(`
         // Email validation regex
         let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         
-        // Name validation regex (only alphabetic characters)
-        let namePattern = /^[A-Za-z]+$/;
+        // Name validation regex (letters and spaces only)
+        let namePattern = /^[A-Za-z\s]+$/;
         
         // Student ID validation regex (exactly 5 digits)
         let studentIdPattern = /^\d{5}$/;
@@ -152,14 +153,14 @@ $('#auth').html(`
             $('#student_id').removeClass('is-valid').addClass('is-invalid');
         }
     
-        // Validate first name (must not be empty and only contain letters)
+        // Validate first name (must not be empty and only contain letters and spaces)
         if (namePattern.test(fname) && fname !== '') {
             $('#fname').removeClass('is-invalid').addClass('is-valid');
         } else {
             $('#fname').removeClass('is-valid').addClass('is-invalid');
         }
     
-        // Validate last name (must not be empty and only contain letters)
+        // Validate last name (must not be empty and only contain letters and spaces)
         if (namePattern.test(lname) && lname !== '') {
             $('#lname').removeClass('is-invalid').addClass('is-valid');
         } else {
@@ -183,8 +184,7 @@ $('#auth').html(`
         } else {
             $('#continue').prop('disabled', true);  // Disable the button
         }
-    });
-    
+    });    
 
     $('#continue').on('click', function() {  
         $(this).hide();
