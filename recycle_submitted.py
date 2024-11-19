@@ -47,6 +47,18 @@ class RecycleSubmitted(Database):
             # Convert each row into a dictionary
             result = [dict(zip(columns, record)) for record in records]
             return result
+    
+    def get_all_recycle_points(self):
+        # Retrieve all records from the recycle_submitted table and return as a list of dictionaries
+        with self.conn:
+            cursor = self.conn.cursor()
+            cursor.execute('SELECT * FROM recycle_rewards')
+            columns = [col[0] for col in cursor.description]
+            records = cursor.fetchall()
+
+            # Convert each row into a dictionary
+            result = [dict(zip(columns, record)) for record in records]
+            return result
 
 # if __name__ == "__main__":
 #     # Assuming you have initialized your database connection properly

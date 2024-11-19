@@ -837,6 +837,12 @@ def get_all_recycle_submitted():
     data = RecycleSubmitted().get_all_recycle_submitted()
     return jsonify(data)
 
+@app.route('/get_all_recycle_points', methods=['GET'])
+def get_all_recycle_points():
+    data = RecycleSubmitted().get_all_recycle_points()
+    return jsonify(data)
+
+
 @app.route('/insert_recycle', methods=['POST'])
 def insert_recycle():
     data = request.get_json()  # Parse the incoming JSON data

@@ -34,9 +34,10 @@
                         <thead>
                           <tr>
                             <th scope="col" width="5%">Account ID</th>
-                            <th scope="col" width="35%">Recycle ID</th>
-                            <th scope="col" width="15%">Recycle Type</th>
-                            <th scope="col" width="15%">Grade Level and Section</th>
+                            <th scope="col" width="25%">Recycle ID</th>
+                            <th scope="col" width="25%">Recycle Type</th>
+                            <th scope="col" width="25%">Grade Level and Section</th>
+                            <th scope="col" width="25%"></th>
                           </tr>
                         </thead>
                         <tbody id="recycleRecycle"></tbody>
@@ -64,7 +65,7 @@
     function recycleRecycle() {
         $.ajax({
             type: "GET",
-            url: "/get_all_recycle_submitted",
+            url: "/get_all_recycle_points",
             dataType: "json",
             success: function (data) {
                 dataCache = data; // Cache the fetched data
@@ -93,6 +94,7 @@
                     <td class="pt-3 pb-3">${item.recycle_id}</td>
                     <td class="pt-3 pb-3">${item.recycle_type}</td>
                     <td class="pt-3 pb-3">${item.grade_level} ${item.section}</td>
+                    <td class="pt-3 pb-3"><button class="btn btn-sm">Receive</button></td>
                 </tr>
             `;
             $('#recycleRecycle').append(row);
