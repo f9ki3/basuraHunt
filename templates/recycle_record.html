@@ -103,7 +103,7 @@
 
         paginatedData.forEach((item) => {
             // Conditional button logic
-            let button = `<button onclick="receive_function(${item.id}, '${item.grade_level} ${item.strand} ${item.section}', ${item.quantity})" style="background-color: #2d6979" class="btn text-light btn-sm">Receive</button>`;
+            let button = `<button onclick="receive_function(${item.id}, '${item.grade_level} ${item.strand} ${item.section}', ${item.quantity})" style="background-color: #2d6979" class="btn text-light btn-sm">Claim</button>`;
             if (item.status === "Receive") {
                 button = `<button class="btn text-light btn-sm btn-sm" style="background-color: #2d6979" disabled>Receive</button>`;
             }
@@ -255,8 +255,18 @@
             data: JSON.stringify({ id: id, section: section, points: points}), // Sending the data as JSON
             success: function(response) {
                 // Handle the response here
-                location.reload()
+                Swal.fire({
+                    title: "Claim Success",
+                    text: "You clicked the button!",
+                    icon: "success"
+                });
+            
+                // Reload the page after 3 seconds
+                setTimeout(function() {
+                    location.reload();
+                }, 3000); // 3000 milliseconds = 3 seconds
             },
+            
             error: function(xhr, status, error) {
                 // Handle errors here
                 console.error('Error:', error);
