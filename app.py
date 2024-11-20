@@ -173,6 +173,14 @@ def student_reward():
     else:
         return redirect('/')
     
+@app.route('/student_reward_student')
+def student_reward_student():
+    status = session.get('status')
+    if status == 0:
+        return render_template('student_reward_client.html')
+    else:
+        return redirect('/')
+    
 @app.route('/recycle_record')
 def recycle_record():
     status = session.get('status')
@@ -831,6 +839,26 @@ def clear_notifications_student():
     student_id = json.loads(session.get('session_data', '{}')).get('id')
     Notification().clearNotificationMethodStudent(student_id)
     return jsonify(1)
+
+@app.route('/recieve_recycle', methods=['POST'])
+def recieve_recycle():
+    try:
+        # Get the JSON data from the request
+        data = request.get_json()
+
+        # Extract the id from the JSON data
+        id = data.get('id')
+        section = data.get('section')
+        points = data.get('points')
+        print(id, section, points)
+        RecycleSubmitted().update_recieve(id, points, section)
+        # You can now use the id (e.g., do something with it)
+        # For demonstration, just return the id as a response
+        return jsonify({'status': 'success', 'id': id}), 200
+    except Exception as e:
+        # Handle errors and return an appropriate message
+        return jsonify({'status': 'error', 'message': str(e)}), 400
+    
 
 @app.route('/get_all_recycle_submitted', methods=['GET'])
 def get_all_recycle_submitted():

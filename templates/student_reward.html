@@ -10,9 +10,8 @@
     <div class="container d-flex flex-row">
         {% include 'header.html' %}
         <div class="container body-color">
-            <div id="viewStudentRecord">
-            </div>
-            <div class="row" id="viewStudentRecordsTable">
+            <div id="viewStudentRecord"></div>
+            <div class="row" id="viewStudentRewardsSection">
                 <h4>Student Rewards</h4>
                 <div class="col-12 col-md-6">
                     <input class="w-100 form-control form-control-sm no-outline" placeholder="Search students..." type="text" id="searchInput">
@@ -29,19 +28,18 @@
                     <table class="table table-hover text-muted mt-3 mb-4" style="font-size: 12px;">
                         <thead>
                           <tr>
-                            <th scope="col" width="10%">ID</th>
-                            <th scope="col" width="40%">Student Name</th>
+                            <th scope="col" width="10%">Ranking</th>
+                            <th scope="col" width="40%">Student Section</th>
                             <th scope="col" width="20%">Points</th>
-                            <th scope="col" width="30%">Action</th>
+                            <th class="text-end" scope="col" width="30%">Action</th>
                           </tr>
                         </thead>
-                        <tbody id="studentTable">
-                        </tbody>
+                        <tbody id="studentTable"></tbody>
                     </table>
                     <p id="noItemsMessage" class="text-muted" style="display: none;">No students found.</p>
                 </div>
                 <div class="col-12">
-                    <nav aria-label="Page navigation example">
+                    <nav aria-label="Page navigation">
                         <ul class="pagination pagination-sm" id="paginationControls">
                             <!-- Pagination controls will be dynamically added here -->
                         </ul>
@@ -53,18 +51,33 @@
     {% include 'footer_links.html' %}
 </body>
 </html>
+
 <script>
     let studentDataCache = []; // To store fetched student data for filtering
+    let currentPageSection = 1; // Track the current page
+    let itemsPerPageSection = 10; // Default items per page
+    let totalPagesSection = 0; // Total number of pages
+    let filteredData = []; // To store filtered data for search
 
-    // Fetch and display student records
+    // Store the data to check if it has changed
+    let lastStudentDataCache = null;
+
+    // Function to fetch and display student records
     function fetchStudentRecords() {
         $.ajax({
             type: "GET",
-            url: "/get_all_students", // Replace with your endpoint for fetching student records
+            url: "/get_all_recycle_points", // Replace with your endpoint for fetching student records
             dataType: "json",
             success: function (data) {
-                studentDataCache = data; // Cache the fetched data
-                renderTable(data); // Render the table with the fetched data
+                // Compare the new data with the cached data
+                if (JSON.stringify(lastStudentDataCache) !== JSON.stringify(data)) {
+                    studentDataCache = data; // Cache the fetched data
+                    filteredData = data; // Initially, all data is available for filtering
+                    totalPagesSection = Math.ceil(filteredData.length / itemsPerPageSection); // Calculate total pages
+                    renderTable(filteredData); // Render the table with the fetched data
+                    renderPagination(); // Render the pagination controls
+                    lastStudentDataCache = data; // Update the lastStudentDataCache
+                }
             },
             error: function (xhr, status, error) {
                 console.error('Error fetching student records:', error);
@@ -72,38 +85,139 @@
         });
     }
 
-    // Render table with student data
+    // Render table with student data for the current page
     function renderTable(data) {
         $('#studentTable').empty(); // Clear existing table rows
 
-        if (data.length === 0) {
-            $('#noItemsMessage').show();
+        const start = (currentPageSection - 1) * itemsPerPageSection;
+        const end = start + itemsPerPageSection;
+        const pageData = data.slice(start, end); // Get data for the current page
+
+        // Show 'noStudentFound' message if no data is available
+        if (pageData.length === 0) {
+            $('#noItemsMessage').show();  // Show "No students found" message
             return;
         }
-        $('#noItemsMessage').hide();
 
-        data.forEach(item => {
+        $('#noItemsMessage').hide(); // Hide the message if there is data
+
+        let rank = start + 1; // Starting rank for the current page
+        pageData.forEach(item => {
             const row = `
                 <tr>
-                    <td>${item.id}</td>
+                    <td>${rank++}</td>
                     <td>${item.section}</td>
                     <td>${item.points}</td>
-                    <td><button class="btn btn-sm btn-primary">Reward</button></td>
+                    <td class="text-end">
+                        <a href="/student_reward_student?section=${item.section}" 
+                           class="btn btn-sm text-light" 
+                           style="background-color: #2d6979" 
+                           target="_blank">Generate Certificate</a>
+                    </td>
                 </tr>
             `;
             $('#studentTable').append(row);
         });
+        
     }
 
-    // Search functionality
+    // Start polling the server for new data every 5 seconds
+    setInterval(fetchStudentRecords, 5000); // Poll every 5 seconds (5000 ms)
+
+
+    // Render pagination controls dynamically
+    function renderPagination() {
+        const paginationControls = $('#paginationControls');
+        paginationControls.empty(); // Clear existing pagination controls
+
+        const prevPage = $('<li class="page-item"><a class="page-link text-secondary" href="#" id="prevPage">Previous</a></li>');
+        paginationControls.append(prevPage);
+
+        // Add page number buttons
+        for (let i = 1; i <= totalPagesSection; i++) {
+            const pageButton = $(`<li class="page-item"><a class="page-link text-secondary" href="#" id="page${i}">${i}</a></li>`);
+            if (i === currentPageSection) {
+                pageButton.addClass('active');
+            }
+            paginationControls.append(pageButton);
+        }
+
+        const nextPage = $('<li class="page-item"><a class="page-link text-secondary" href="#" id="nextPage">Next</a></li>');
+        paginationControls.append(nextPage);
+
+        // Disable Previous button if on the first page
+        if (currentPageSection === 1) {
+            $('#prevPage').addClass('disabled');
+        } else {
+            $('#prevPage').removeClass('disabled');
+        }
+
+        // Disable Next button if on the last page
+        if (currentPageSection === totalPagesSection) {
+            $('#nextPage').addClass('disabled');
+        } else {
+            $('#nextPage').removeClass('disabled');
+        }
+
+        // Add event listeners for pagination
+        $('#prevPage').click(function (e) {
+            e.preventDefault();
+            if (currentPageSection > 1) {
+                currentPageSection--;
+                renderTable(filteredData); // Re-render table with new page data
+                renderPagination(); // Re-render pagination controls
+            }
+        });
+
+        $('#nextPage').click(function (e) {
+            e.preventDefault();
+            if (currentPageSection < totalPagesSection) {
+                currentPageSection++;
+                renderTable(filteredData); // Re-render table with new page data
+                renderPagination(); // Re-render pagination controls
+            }
+        });
+
+        // Handle page number click events
+        paginationControls.find('.page-link').click(function (e) {
+            e.preventDefault();
+            const pageId = $(this).attr('id');
+            if (pageId.startsWith('page')) {
+                currentPageSection = parseInt(pageId.replace('page', ''));
+                renderTable(filteredData); // Re-render table with new page data
+                renderPagination(); // Re-render pagination controls
+            }
+        });
+    }
+
+    // Search functionality (search only by section)
     $('#searchInput').on('input', function () {
         const query = $(this).val().toLowerCase();
-        const filteredData = studentDataCache.filter(item =>
-            item.name.toLowerCase().includes(query) ||
-            String(item.points).includes(query)
+        filteredData = studentDataCache.filter(item =>
+            item.section.toLowerCase().includes(query) // Search only by 'section'
         );
+        totalPagesSection = Math.ceil(filteredData.length / itemsPerPageSection); // Recalculate total pages after search
+        currentPageSection = 1; // Reset to the first page after search
         renderTable(filteredData); // Display filtered results
+        renderPagination(); // Re-render pagination controls after search
+
+        // Show 'noItemsMessage' when no search results are found
+        if (filteredData.length === 0) {
+            $('#noItemsMessage').show();
+        } else {
+            $('#noItemsMessage').hide();
+        }
     });
 
-    fetchStudentRecords(); // Fetch student data on page load
+    // Update items per page
+    $('#itemsPerPage').on('change', function () {
+        itemsPerPageSection = parseInt($(this).val());
+        totalPagesSection = Math.ceil(filteredData.length / itemsPerPageSection); // Recalculate total pages
+        currentPageSection = 1; // Reset to the first page
+        renderTable(filteredData); // Render table with updated items per page
+        renderPagination(); // Render updated pagination controls
+    });
+
+    // Initial data fetch and render
+    fetchStudentRecords();
 </script>

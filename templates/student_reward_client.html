@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Appreciation</title>
+    {% include 'header_links.html' %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Global Reset */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Landscape Letter Paper Size */
+        @page {
+            size: 11in 8.5in;  /* Letter size in landscape */
+            margin: 0;
+        }
+
+        /* Ensure content fits on the page */
+        .container {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #fff;
+            border: 5px solid #2e8b57;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Title and Subtitle Styles */
+        .certificate-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2e8b57;
+            margin: 20px 0;
+        }
+
+        .certificate-subtitle {
+            font-size: 30px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .certificate-content {
+            font-size: 24px;
+            line-height: 1.5;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .signature {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 50px;
+            padding: 0 50px;
+        }
+
+        .signature div {
+            width: 45%;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .footer a {
+            color: #2e8b57;
+            text-decoration: none;
+        }
+
+        .section_name {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .certificate-title {
+                font-size: 42px;
+            }
+
+            .certificate-subtitle {
+                font-size: 28px;
+            }
+
+            .certificate-content {
+                font-size: 22px;
+            }
+
+            .signature div {
+                width: 48%;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .certificate-title {
+                font-size: 36px;
+            }
+
+            .certificate-subtitle {
+                font-size: 24px;
+            }
+
+            .certificate-content {
+                font-size: 20px;
+            }
+
+            .signature {
+                flex-direction: column;
+                padding: 0;
+                margin-top: 40px;
+            }
+
+            .signature div {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .footer {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .certificate-title {
+                font-size: 30px;
+            }
+
+            .certificate-subtitle {
+                font-size: 20px;
+            }
+
+            .certificate-content {
+                font-size: 18px;
+            }
+
+            .signature div {
+                font-size: 14px;
+            }
+
+            .footer {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4 p-5" id="certificateContent">
+        <p class="text-center">BUTING SENIOR HIGH SCHOOL</p>
+        <div>
+            <img src="../static/img/butin_logo.png" alt="">
+            <img src="../static/img/cert_logo.png" alt="">
+        </div>
+        <h1 class="certificate-title text-center">Certificate of Appreciation</h1>
+        <p class="certificate-subtitle text-center">Awarded to</p>
+        <h2 class="section_name text-center" id="sectionReports"></h2>
+        <p class="certificate-content mt-5 text-center">
+            For your active participation in the Recycling Submission Program<br>
+            Your efforts in contributing to the sustainability of our environment are truly commendable.<br>
+            We appreciate your commitment and hope to see your continued support in future initiatives.
+        </p>
+        
+        <div class="signature">
+            <div>
+                <hr style="width: 80%; margin: auto;">
+                <p>Authorized Person</p>
+            </div>
+            <div>
+                <hr style="width: 80%; margin: auto;">
+                <p>School Principal</p>
+            </div>
+        </div>
+
+        <p class="footer">
+            Given this day, <span id="currentDate"></span>. <br>
+            <a href="https://www.butinghs.edu.ph" target="_blank">www.butinghs.edu.ph</a>
+        </p>
+    </div>
+
+    <script>
+        // Set the current date in the footer
+        const currentDate = new Date().toLocaleDateString();
+        document.getElementById("currentDate").textContent = currentDate;
+        
+        // Function to get the value of a query parameter from the URL
+        function getQueryParameter(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Get the 'section' query parameter from the URL
+        const section = getQueryParameter('section');
+
+        // Display the 'section' value in the <h2> element with the ID 'sectionReports'
+        if (section) {
+            document.getElementById('sectionReports').textContent = section;
+        }
+
+        // Automatically download as PDF when the page is loaded
+        window.onload = function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape', 'pt', 'letter'); // Landscape orientation and letter size
+
+            // Add content to the PDF (mimicking the content from the page)
+            doc.html(document.getElementById('certificateContent'), {
+                callback: function (doc) {
+                    // Save the PDF as a file
+                    doc.save('certificate_of_appreciation.pdf');
+                },
+                margin: [20, 20, 20, 20], // Adjust margins as needed
+            });
+        }
+    </script>
+</body>
+</html>

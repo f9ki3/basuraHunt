@@ -52,6 +52,9 @@ $('#auth').html(`
                     <option value="HUMSS">HUMSS</option>
                     <option value="ABM">ABM</option>
                     <option value="ICT">ICT</option>
+                    <option value="HE">HE</option>
+                    <option value="ALS">ALS</option>
+                    <option value="SMAW">SMAW</option>
                 </select>    
             </div>
             <input autocomplete="off" id="section" type="text" placeholder="Enter your section" class="ps-4 form-control mb-3 fs-6 form-control-lg">
