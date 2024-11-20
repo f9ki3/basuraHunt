@@ -40,7 +40,7 @@ class RecycleSubmitted(Database):
         # Retrieve all records from the recycle_submitted table and return as a list of dictionaries
         with self.conn:
             cursor = self.conn.cursor()
-            cursor.execute('SELECT * FROM recycle_submitted')
+            cursor.execute('SELECT * FROM recycle_submitted ORDER BY id DESC')
             columns = [col[0] for col in cursor.description]
             records = cursor.fetchall()
 
@@ -48,11 +48,49 @@ class RecycleSubmitted(Database):
             result = [dict(zip(columns, record)) for record in records]
             return result
     
+    def update_recieve(self, id, points, section):
+        sections = [
+            "11 STEM A", "11 STEM B", "11 STEM C", "11 STEM D",
+            "11 ABM A", "11 ABM B", "11 ABM C", "11 ABM D",
+            "11 ICT A", "11 ICT B", "11 ICT C", "11 ICT D",
+            "11 HUMSS A", "11 HUMSS B", "11 HUMSS C", "11 HUMSS D",
+            "12 STEM A", "12 STEM B", "12 STEM C", "12 STEM D",
+            "12 ABM A", "12 ABM B", "12 ABM C", "12 ABM D",
+            "12 ICT A", "12 ICT B", "12 ICT C", "12 ICT D",
+            "12 HUMSS A", "12 HUMSS B", "12 HUMSS C", "12 HUMSS D"
+        ]
+
+        if section not in sections:
+            print("Invalid section")
+            return  # Stop the function if the section is not valid
+
+        # Ensure the SQL query is correct and avoid SQL injection
+        with self.conn:
+            cursor = self.conn.cursor()
+            
+            # Update the recycle_submitted table to mark the item as 'Received'
+            cursor.execute('UPDATE recycle_submitted SET status = ? WHERE id = ?', ('Receive', id))
+            
+            # Fetch the current points for the given section
+            cursor.execute('SELECT points FROM recycle_rewards WHERE section = ?', (section,))
+            result = cursor.fetchone()
+            
+            if result:
+                current_points = result[0]  # Extract the points from the query result
+                new_points = current_points + points
+                
+                # Update the recycle_rewards table with the new points
+                cursor.execute('UPDATE recycle_rewards SET points = ? WHERE section = ?', (new_points, section))
+            
+            self.conn.commit()  # Commit the transaction if the update is successful
+
+
+    
     def get_all_recycle_points(self):
         # Retrieve all records from the recycle_submitted table and return as a list of dictionaries
         with self.conn:
             cursor = self.conn.cursor()
-            cursor.execute('SELECT * FROM recycle_rewards')
+            cursor.execute('SELECT * FROM recycle_rewards ORDER BY points DESC;')
             columns = [col[0] for col in cursor.description]
             records = cursor.fetchall()
 

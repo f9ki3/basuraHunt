@@ -22,7 +22,7 @@
                     <button class="btn btn-sm" id="filterPlastic">Plastic</button>
                     <button class="btn btn-sm" id="filterPaper">Paper</button>
                     <button class="btn btn-sm" id="filterMetal">Metal</button>
-                    <select class="form-select form-select-sm no-outline border-none" id="recycleItemsPerPage">
+                    <select class="form-select form-select-sm no-outline border-none" id="recycleitemsPerPageRecycle">
                         <option value="10" selected>Show 10 Items</option>
                         <option value="15">Show 15 Items</option>
                         <option value="20">Show 20 Items</option>
@@ -33,10 +33,11 @@
                     <table class="table table-hover text-muted mt-3 mb-4" style="font-size: 12px;">
                         <thead>
                           <tr>
-                            <th scope="col" width="5%">Account ID</th>
+                            <th scope="col" width="5%">ID</th>
                             <th scope="col" width="25%">Recycle ID</th>
                             <th scope="col" width="25%">Recycle Type</th>
                             <th scope="col" width="25%">Grade Level and Section</th>
+                            <th scope="col" width="25%">Status</th>
                             <th scope="col" width="25%"></th>
                           </tr>
                         </thead>
@@ -57,60 +58,211 @@
     {% include 'footer_links.html' %}
 </body>
 </html>
+<div class="col-12">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pagination-sm" id="recyclePaginationControls">
+            <!-- Pagination controls will be dynamically added here -->
+        </ul>
+    </nav>
+</div>
 <script>
-    let dataCache = []; // To store fetched data for filtering
-    let imagesArrayRecycle = []; // Global array to store image paths
+    let dataCache = []; // To store fetched data
+    let currentPageRecycle = 1; // Current page
+    let itemsPerPageRecycle = 10; // Default items per page
 
     // Fetch and display recycle records
     function recycleRecycle() {
         $.ajax({
             type: "GET",
-            url: "/get_all_recycle_points",
+            url: "/get_all_recycle_submitted",
             dataType: "json",
             success: function (data) {
                 dataCache = data; // Cache the fetched data
                 renderTable(data); // Render the table with the fetched data
+                setupPagination(data.length); // Set up pagination
             },
             error: function (xhr, status, error) {
-                console.error('Error fetching reports:', error);
-            }
+                console.error("Error fetching reports:", error);
+            },
         });
     }
 
-    // Render table with data
+    // Render table with paginated data
     function renderTable(data) {
-        $('#recycleRecycle').empty(); // Clear existing table rows
+        $("#recycleRecycle").empty(); // Clear existing table rows
 
         if (data.length === 0) {
-            $('#noRecycleItemsMessage').show();
+            $("#noRecycleItemsMessage").show();
             return;
         }
-        $('#noRecycleItemsMessage').hide();
+        $("#noRecycleItemsMessage").hide();
 
-        data.forEach(item => {
+        const start = (currentPageRecycle - 1) * itemsPerPageRecycle;
+        const end = start + itemsPerPageRecycle;
+        const paginatedData = data.slice(start, end);
+
+        paginatedData.forEach((item) => {
+            // Conditional button logic
+            let button = `<button onclick="receive_function(${item.id}, '${item.grade_level} ${item.strand} ${item.section}', ${item.quantity})" style="background-color: #2d6979" class="btn text-light btn-sm">Receive</button>`;
+            if (item.status === "Receive") {
+                button = `<button class="btn text-light btn-sm btn-sm" style="background-color: #2d6979" disabled>Receive</button>`;
+            }
+        
+            // Conditional status display logic
+            let statusDisplay = '';
+            if (item.status === "Pending") {
+                statusDisplay = `
+                    <div class="alert alert-warning" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
+                        <p style="margin: 0;"><i class="bi bi-arrow-repeat me-2"></i>Pending</p>
+                    </div>
+                `;
+            } else if (item.status === "Receive") {
+                statusDisplay = `
+                    <div class="alert alert-success" role="alert" style="display: inline-block; padding: 2px 8px; font-size: 12px; margin: 0;">
+                        <p style="margin: 0;"><i class="bi bi-check-circle me-2"></i>Received</p>
+                    </div>
+                `;
+            }
+        
+            // Create the row
             const row = `
                 <tr>
                     <td class="pt-3 pb-3">${item.id}</td>
                     <td class="pt-3 pb-3">${item.recycle_id}</td>
                     <td class="pt-3 pb-3">${item.recycle_type}</td>
-                    <td class="pt-3 pb-3">${item.grade_level} ${item.section}</td>
-                    <td class="pt-3 pb-3"><button class="btn btn-sm">Receive</button></td>
+                    <td class="pt-3 pb-3">${item.grade_level} ${item.strand} ${item.section}</td>
+                    <td class="pt-3 pb-3">${statusDisplay}</td>
+                    <td class="pt-3 pb-3">${button}</td>
                 </tr>
             `;
-            $('#recycleRecycle').append(row);
+            
+            // Append the row to the table
+            $("#recycleRecycle").append(row);
+        });
+        
+    }
+
+    // Set up pagination controls with next/previous buttons
+    function setupPagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / itemsPerPageRecycle);
+        $("#recyclePaginationControls").empty();
+
+        // Add Previous button
+        const prevDisabled = currentPageRecycle === 1 ? "disabled" : "";
+        $("#recyclePaginationControls").append(`
+            <li class="page-item ${prevDisabled}">
+                <a class="page-link text-secondary" href="#" id="prevPage">Previous</a>
+            </li>
+        `);
+
+        // Add page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            const activeClass = i === currentPageRecycle ? "active" : "";
+            $("#recyclePaginationControls").append(`
+                <li class="page-item ${activeClass}">
+                    <a class="page-link text-secondary page-number" href="#">${i}</a>
+                </li>
+            `);
+        }
+
+        // Add Next button
+        const nextDisabled = currentPageRecycle === totalPages ? "disabled" : "";
+        $("#recyclePaginationControls").append(`
+            <li class="page-item ${nextDisabled}">
+                <a class="page-link text-secondary" href="#" id="nextPage">Next</a>
+            </li>
+        `);
+
+        // Add click event to page numbers
+        $(".page-number").on("click", function (e) {
+            e.preventDefault();
+            currentPageRecycle = parseInt($(this).text());
+            renderTable(dataCache);
+            setupPagination(dataCache.length);
+        });
+
+        // Add click event to Previous button
+        $("#prevPage").on("click", function (e) {
+            e.preventDefault();
+            if (currentPageRecycle > 1) {
+                currentPageRecycle--;
+                renderTable(dataCache);
+                setupPagination(dataCache.length);
+            }
+        });
+
+        // Add click event to Next button
+        $("#nextPage").on("click", function (e) {
+            e.preventDefault();
+            if (currentPageRecycle < totalPages) {
+                currentPageRecycle++;
+                renderTable(dataCache);
+                setupPagination(dataCache.length);
+            }
         });
     }
 
-    // Search functionality
-    $('#recycleSearchInput').on('input', function () {
-        const query = $(this).val().toLowerCase();
-        const filteredData = dataCache.filter(item =>
-            item.recycle_id.toLowerCase().includes(query) ||
-            item.recycle_type.toLowerCase().includes(query) ||
-            (item.grade_level + " " + item.section).toLowerCase().includes(query)
-        );
-        renderTable(filteredData); // Display filtered results
+    // Items per page change handler
+    $("#recycleitemsPerPageRecycle").on("change", function () {
+        itemsPerPageRecycle = parseInt($(this).val());
+        currentPageRecycle = 1; // Reset to first page
+        renderTable(dataCache);
+        setupPagination(dataCache.length);
     });
 
+    // Filter data by type
+    function filterData(type) {
+        let filteredData =
+            type === "All"
+                ? dataCache
+                : dataCache.filter(
+                      (item) =>
+                          item.recycle_type.toLowerCase() === type.toLowerCase()
+                  );
+        currentPageRecycle = 1; // Reset to first page
+        renderTable(filteredData);
+        setupPagination(filteredData.length);
+    }
+
+    // Attach click event listeners to filter buttons
+    $("#filterAll").on("click", () => filterData("All"));
+    $("#filterPlastic").on("click", () => filterData("plastic_bottle"));
+    $("#filterPaper").on("click", () => filterData("papers"));
+    $("#filterMetal").on("click", () => filterData("metal"));
+
+    // Search functionality
+    $("#recycleSearchInput").on("input", function () {
+        const query = $(this).val().toLowerCase();
+        const filteredData = dataCache.filter(
+            (item) =>
+                item.recycle_id.toLowerCase().includes(query) ||
+                item.recycle_type.toLowerCase().includes(query) ||
+                (item.grade_level + " " + item.section)
+                    .toLowerCase()
+                    .includes(query)
+        );
+        currentPageRecycle = 1; // Reset to first page
+        renderTable(filteredData);
+        setupPagination(filteredData.length);
+    });
+
+    function receive_function(id, section, points) {
+        console.log(id, section, points)
+        $.ajax({
+            url: '/recieve_recycle',  // Replace with your endpoint URL
+            type: 'POST',           // Using POST method (you can use GET if needed)
+            contentType: 'application/json',  // Setting content type as JSON
+            data: JSON.stringify({ id: id, section: section, points: points}), // Sending the data as JSON
+            success: function(response) {
+                // Handle the response here
+                location.reload()
+            },
+            error: function(xhr, status, error) {
+                // Handle errors here
+                console.error('Error:', error);
+            }
+        });
+    }
+    
     recycleRecycle(); // Fetch data on page load
 </script>

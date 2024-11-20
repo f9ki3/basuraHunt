@@ -29,7 +29,7 @@
                     <table class="table table-hover text-muted mt-3 mb-4" style="font-size: 12px;">
                         <thead>
                           <tr>
-                            <th scope="col" width="10%">ID</th>
+                            <th scope="col" width="10%">Ranking</th>
                             <th scope="col" width="40%">Student Name</th>
                             <th scope="col" width="20%">Points</th>
                             <th scope="col" width="30%">Action</th>
@@ -55,12 +55,12 @@
 </html>
 <script>
     let studentDataCache = []; // To store fetched student data for filtering
-
+    let rank = 0
     // Fetch and display student records
     function fetchStudentRecords() {
         $.ajax({
             type: "GET",
-            url: "/get_all_students", // Replace with your endpoint for fetching student records
+            url: "/get_all_recycle_points", // Replace with your endpoint for fetching student records
             dataType: "json",
             success: function (data) {
                 studentDataCache = data; // Cache the fetched data
@@ -85,7 +85,7 @@
         data.forEach(item => {
             const row = `
                 <tr>
-                    <td>${item.id}</td>
+                    <td>${rank +=1}</td>
                     <td>${item.section}</td>
                     <td>${item.points}</td>
                     <td><button class="btn btn-sm btn-primary">Reward</button></td>

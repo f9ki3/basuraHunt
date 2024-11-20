@@ -832,6 +832,26 @@ def clear_notifications_student():
     Notification().clearNotificationMethodStudent(student_id)
     return jsonify(1)
 
+@app.route('/recieve_recycle', methods=['POST'])
+def recieve_recycle():
+    try:
+        # Get the JSON data from the request
+        data = request.get_json()
+
+        # Extract the id from the JSON data
+        id = data.get('id')
+        section = data.get('section')
+        points = data.get('points')
+        print(id, section, points)
+        RecycleSubmitted().update_recieve(id, points, section)
+        # You can now use the id (e.g., do something with it)
+        # For demonstration, just return the id as a response
+        return jsonify({'status': 'success', 'id': id}), 200
+    except Exception as e:
+        # Handle errors and return an appropriate message
+        return jsonify({'status': 'error', 'message': str(e)}), 400
+    
+
 @app.route('/get_all_recycle_submitted', methods=['GET'])
 def get_all_recycle_submitted():
     data = RecycleSubmitted().get_all_recycle_submitted()
