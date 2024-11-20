@@ -173,6 +173,14 @@ def student_reward():
     else:
         return redirect('/')
     
+@app.route('/student_reward_student')
+def student_reward_student():
+    status = session.get('status')
+    if status == 0:
+        return render_template('student_reward_client.html')
+    else:
+        return redirect('/')
+    
 @app.route('/recycle_record')
 def recycle_record():
     status = session.get('status')

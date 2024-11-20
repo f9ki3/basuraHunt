@@ -59,18 +59,25 @@
     let totalPagesSection = 0; // Total number of pages
     let filteredData = []; // To store filtered data for search
 
-    // Fetch and display student records
+    // Store the data to check if it has changed
+    let lastStudentDataCache = null;
+
+    // Function to fetch and display student records
     function fetchStudentRecords() {
         $.ajax({
             type: "GET",
             url: "/get_all_recycle_points", // Replace with your endpoint for fetching student records
             dataType: "json",
             success: function (data) {
-                studentDataCache = data; // Cache the fetched data
-                filteredData = data; // Initially, all data is available for filtering
-                totalPagesSection = Math.ceil(filteredData.length / itemsPerPageSection); // Calculate total pages
-                renderTable(filteredData); // Render the table with the fetched data
-                renderPagination(); // Render the pagination controls
+                // Compare the new data with the cached data
+                if (JSON.stringify(lastStudentDataCache) !== JSON.stringify(data)) {
+                    studentDataCache = data; // Cache the fetched data
+                    filteredData = data; // Initially, all data is available for filtering
+                    totalPagesSection = Math.ceil(filteredData.length / itemsPerPageSection); // Calculate total pages
+                    renderTable(filteredData); // Render the table with the fetched data
+                    renderPagination(); // Render the pagination controls
+                    lastStudentDataCache = data; // Update the lastStudentDataCache
+                }
             },
             error: function (xhr, status, error) {
                 console.error('Error fetching student records:', error);
@@ -101,12 +108,22 @@
                     <td>${rank++}</td>
                     <td>${item.section}</td>
                     <td>${item.points}</td>
-                    <td class="text-end"><button class="btn btn-sm text-light" style="background-color: #2d6979">Generate Certificate</button></td>
+                    <td class="text-end">
+                        <a href="/student_reward_student?section=${item.section}" 
+                           class="btn btn-sm text-light" 
+                           style="background-color: #2d6979" 
+                           target="_blank">Generate Certificate</a>
+                    </td>
                 </tr>
             `;
             $('#studentTable').append(row);
         });
+        
     }
+
+    // Start polling the server for new data every 5 seconds
+    setInterval(fetchStudentRecords, 5000); // Poll every 5 seconds (5000 ms)
+
 
     // Render pagination controls dynamically
     function renderPagination() {

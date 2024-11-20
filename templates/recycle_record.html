@@ -70,16 +70,23 @@
     let currentPageRecycle = 1; // Current page
     let itemsPerPageRecycle = 10; // Default items per page
 
-    // Fetch and display recycle records
+    // Store the data to check if it has changed
+    let lastDataCache = null;
+
+    // Function to fetch and display recycle records
     function recycleRecycle() {
         $.ajax({
             type: "GET",
             url: "/get_all_recycle_submitted",
             dataType: "json",
             success: function (data) {
-                dataCache = data; // Cache the fetched data
-                renderTable(data); // Render the table with the fetched data
-                setupPagination(data.length); // Set up pagination
+                // Compare the new data with the cached data
+                if (JSON.stringify(lastDataCache) !== JSON.stringify(data)) {
+                    dataCache = data; // Cache the fetched data
+                    renderTable(data); // Render the table with the fetched data
+                    setupPagination(data.length); // Set up pagination
+                    lastDataCache = data; // Update the lastDataCache
+                }
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching reports:", error);
@@ -139,8 +146,11 @@
             // Append the row to the table
             $("#recycleRecycle").append(row);
         });
-        
     }
+
+    // Start polling the server for new data every 5 seconds
+    setInterval(recycleRecycle, 5000); // Poll every 5 seconds (5000 ms)
+
 
     // Set up pagination controls with next/previous buttons
     function setupPagination(totalItems) {
