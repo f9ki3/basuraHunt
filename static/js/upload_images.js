@@ -108,34 +108,37 @@ $(document).ready(function () {
     $('#report_student').on('click', function () {
         let desc = $('#desc').val();
         let strand = $('#strand').val(); // Get selected strand value
+        let location = $('#location').val(); // Get selected location value
         let section = $('#section').val(); // Get entered section value
         
-        if (!strand || !section) {
-            alert('Please select a strand and enter a section.');
+        // Validation for empty fields
+        if (!strand || !section || !location) {
+            alert('Please select a strand, enter a section, and provide a location.');
             return;
         }
-
+    
         if (selectedFiles.length === 0) {
             alert('Please upload at least one file.');
             return;
         }
-
+    
         // Create FormData object to send the form data
         let formData = new FormData();
         formData.append('desc', desc);
         formData.append('strand', strand); // Append strand to FormData
+        formData.append('location', location); // Append location to FormData
         formData.append('section', section); // Append section to FormData
-
+    
         // Append each selected file to the FormData
         for (let i = 0; i < selectedFiles.length; i++) {
             formData.append('files[]', selectedFiles[i]); // Append each file with the name 'files[]'
         }
-
+    
         // Log FormData content for debugging
         for (let pair of formData.entries()) {
             console.log(pair[0] + ': ' + pair[1]); // Logs each key-value pair
         }
-
+    
         $('#post_content').hide();
         $('#loader_post').show();
         
@@ -156,13 +159,14 @@ $(document).ready(function () {
                     $('#fileUpload').val(''); // Clear the input field
                     $('#strand').val(''); // Clear the strand dropdown
                     $('#section').val(''); // Clear the section input field
+                    $('#location').val(''); // Clear the location input field
                     $('#closeReport').click();
-                    location.reload()
+                    location.reload();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
                 }
             });
         }, 3000);
-    });
+    });    
 });
