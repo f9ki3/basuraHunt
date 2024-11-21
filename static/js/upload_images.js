@@ -109,9 +109,15 @@ $(document).ready(function () {
         let desc = $('#desc').val();
         let strand = $('#strand').val(); // Get selected strand value
         let section = $('#section').val(); // Get entered section value
+        let location = $('#location').val()
         
         if (!strand || !section) {
             alert('Please select a strand and enter a section.');
+            return;
+        }
+
+        if (!location || !location) {
+            alert('Please enter the location.');
             return;
         }
 
@@ -125,6 +131,7 @@ $(document).ready(function () {
         formData.append('desc', desc);
         formData.append('strand', strand); // Append strand to FormData
         formData.append('section', section); // Append section to FormData
+        formData.append('location', location); // Append section to FormData
 
         // Append each selected file to the FormData
         for (let i = 0; i < selectedFiles.length; i++) {

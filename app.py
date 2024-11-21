@@ -455,6 +455,7 @@ def insertReport():
     desc = request.form.get('desc')
     strand = request.form.get('strand')
     section = request.form.get('section')
+    location = request.form.get('location')
 
     # Check if the post request has the images part
     if 'files[]' not in request.files:
@@ -490,7 +491,7 @@ def insertReport():
     student_id = json.loads(session.get('session_data', '{}')).get('id')
 
     # Insert the report with the form data (strand and section)
-    StudentReport().insertStudentReport(student_id, desc, files_string, strand, section)
+    StudentReport().insertStudentReport(student_id, desc, files_string, strand, section, location)
     student_id = json.loads(session.get('session_data', '{}')).get('id')
     Notification().insertNotificationHistory(student_id, 'pending')
     Notification().insertCountNotification(student_id)
