@@ -21,15 +21,15 @@ class StudentReport(Database):
         print("Table Student Report Created!")
         conn.close()   # Close the connection properly
     
-    def insertStudentReport(self, student_id, description, media, strand, section):
+    def insertStudentReport(self, student_id, description, media, strand, section, location):
         conn = self.conn
         cursor = conn.cursor()
         
         # Insert data into the studentReport table, including strand and section
         cursor.execute('''
-            INSERT INTO studentReport (date, student_id, description, media, status, strand, section)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (datetime.now(), student_id, description, media, '0', strand, section))
+            INSERT INTO studentReport (date, student_id, description, media, status, strand, section, location)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (datetime.now(), student_id, description, media, '0', strand, section, location))
         
         conn.commit()
         print("Student Report inserted!")
