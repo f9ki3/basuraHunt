@@ -598,6 +598,21 @@ def update_report_status():
         # Log the exception (optional)
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route('/follow_up', methods=['POST'])
+def follow_up():
+    # Ensure data is retrieved correctly
+    try:
+        data = request.get_json()  # Get the JSON payload
+        report_id = data.get('report_id')
+        
+        if not report_id:
+            return jsonify({"error": "Missing report_id"}), 400
+
+        StudentReport().follow_up(report_id)  # Call the method to update follow-up
+        return jsonify({"message": "Follow-up updated successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/update_report_status_resolve', methods=['POST'])
 def update_report_status_resolve():
     try:
@@ -870,6 +885,11 @@ def get_all_recycle_submitted():
 def get_all_recycle_points():
     data = RecycleSubmitted().get_all_recycle_points()
     return jsonify(data)
+
+@app.route('/get_all_recycle_points_students', methods=['GET'])
+def get_all_recycle_points_students():
+    data = RecycleSubmitted().get_all_recycle_points_students()
+    return data
 
 
 @app.route('/insert_recycle', methods=['POST'])

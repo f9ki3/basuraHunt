@@ -34,6 +34,36 @@ class StudentReport(Database):
         conn.commit()
         print("Student Report inserted!")
         conn.close()  # Close the connection properly
+    
+    def follow_up(self, report_id):
+        conn = self.conn  # Use the provided connection
+        cursor = conn.cursor()
+        
+        try:
+            # Fetch the current follow_up count
+            cursor.execute("SELECT follow_up FROM StudentReport WHERE id = %s", (report_id,))
+            result = cursor.fetchone()
+            
+            if result:
+                current_count = result[0]
+                new_count = current_count + 1
+
+                # Update the follow_up count
+                cursor.execute(
+                    "UPDATE StudentReport SET follow_up = %s WHERE id = %s",
+                    (new_count, report_id)
+                )
+                conn.commit()  # Commit the transaction
+                print(f"Successfully updated follow_up to {new_count} for report_id {report_id}.")
+            else:
+                print(f"Report with id {report_id} not found.")
+        except Exception as e:
+            print(f"Error updating follow_up: {e}")
+            conn.rollback()  # Rollback in case of error
+        finally:
+            # Close the cursor
+            cursor.close()
+
 
     
     def getStudentReport(self):
@@ -55,7 +85,8 @@ class StudentReport(Database):
                             sr.media AS report_media,
                             sr.status AS report_status,
                             sr.strand AS strand,
-                            sr.section AS section
+                            sr.section AS section,
+                            sr.location AS location
                         FROM 
                             studentReport sr
                         JOIN 

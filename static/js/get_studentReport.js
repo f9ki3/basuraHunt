@@ -39,15 +39,14 @@ function studentReportPost() {
                     let reportHtml = `
                         <div class="border p-4 rounded rounded-4 mb-3 shadow" style="height: auto;">
                             <div class="d-flex justify-content-between">
-                                <div class="d-flex">
+                                <div class="d-flex align-items-center">
                                     <i class="bi me-2 fs-3 bi-person-circle"></i>
-                                    <p class="text-muted">Anonymous</p>
+                                    <p class="text-muted mb-0">Anonymous</p>
                                 </div>
                                 <div>
                                     ${
                                         String(report.user_id) === globalStudentId
                                             ? `
-                                            
                                             <button 
                                                 style="background-color: transparent; border: none" 
                                                 data-bs-toggle="modal" 
@@ -65,8 +64,9 @@ function studentReportPost() {
                             <div style="height: auto;" class="p-3 bg-light rounded-4">
                                 <p>${report.report_description}</p>
                             </div>
+
                             <div 
-                                style="height: 300px; width: 100%; cursor: pointer" 
+                                style="height: 300px; width: 100%; cursor: pointer;" 
                                 class="mt-3 border bg-light rounded-4" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#view_img">
@@ -87,17 +87,22 @@ function studentReportPost() {
                                             style="object-fit: cover; width: 100%; height: 100%;" 
                                             class="view-image rounded-4" 
                                             src="../static/uploads/${firstImage}" 
-                                            alt="Image">
+                                            alt="Report Image">
                                         `
                                 }
                             </div>
-        
+
                             <div>
-                                <button class="btn border mt-3"><i class="bi bi-reply me-2"></i> Follow Up</button>
+                                <button 
+                                    class="btn border mt-3" 
+                                    onclick="follow_up(${report.report_id})">
+                                    <i class="bi bi-reply me-2"></i> Follow Up
+                                </button>
                                 ${statusButtons}
                             </div>
                         </div>
                     `;
+
         
                     // Append each report to the container
                     $('#reportContainer').append(reportHtml);
@@ -289,6 +294,25 @@ function autoResize(textarea) {
 }
 
 studentReportPost()
+
+function follow_up(report_id) {
+    console.log("Report ID:", report_id);
+    $.ajax({
+        url: '/follow_up', // Replace with your endpoint URL
+        type: 'POST', // POST is more appropriate for modifying data
+        contentType: 'application/json', // Ensure the data is sent as JSON
+        data: JSON.stringify({ report_id: report_id }), // Convert data to JSON string
+        success: function(response) {
+            // Handle success response
+            console.log('Success:', response);
+            studentReportPost(); // Call the function to refresh or update the UI
+        },
+        error: function(xhr, status, error) {
+            // Handle error response
+            console.error('Error:', error);
+        }
+    });
+}
 
 // put it under the delete
 // <button 

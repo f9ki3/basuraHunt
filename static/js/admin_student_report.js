@@ -267,6 +267,14 @@ function renderStudentRecord(record) {
                 </div>
                 <div class="row mb-2">
                     <div class="col-4">
+                        <p>location:</p>
+                    </div>
+                    <div class="col-8">
+                        <p>${record.location}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">
                         <p>Email:</p>
                     </div>
                     <div class="col-8">
