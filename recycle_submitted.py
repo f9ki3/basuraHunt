@@ -49,15 +49,23 @@ class RecycleSubmitted(Database):
             return result
     
     def update_recieve(self, id, points, section):
-        sections = [
+        sections =  [
+            "11 GAS A", "11 GAS B", "11 GAS C", "11 GAS D",
             "11 STEM A", "11 STEM B", "11 STEM C", "11 STEM D",
-            "11 ABM A", "11 ABM B", "11 ABM C", "11 ABM D",
             "11 ICT A", "11 ICT B", "11 ICT C", "11 ICT D",
+            "11 ABM A", "11 ABM B", "11 ABM C", "11 ABM D",
             "11 HUMSS A", "11 HUMSS B", "11 HUMSS C", "11 HUMSS D",
+            "11 HE A", "11 HE B", "11 HE C", "11 HE D",
+            "11 ALS A", "11 ALS B", "11 ALS C", "11 ALS D",
+            "11 SMAW A", "11 SMAW B", "11 SMAW C", "11 SMAW D",
+            "12 GAS A", "12 GAS B", "12 GAS C", "12 GAS D",
             "12 STEM A", "12 STEM B", "12 STEM C", "12 STEM D",
-            "12 ABM A", "12 ABM B", "12 ABM C", "12 ABM D",
             "12 ICT A", "12 ICT B", "12 ICT C", "12 ICT D",
-            "12 HUMSS A", "12 HUMSS B", "12 HUMSS C", "12 HUMSS D"
+            "12 ABM A", "12 ABM B", "12 ABM C", "12 ABM D",
+            "12 HUMSS A", "12 HUMSS B", "12 HUMSS C", "12 HUMSS D",
+            "12 HE A", "12 HE B", "12 HE C", "12 HE D",
+            "12 ALS A", "12 ALS B", "12 ALS C", "12 ALS D",
+            "12 SMAW A", "12 SMAW B", "12 SMAW C", "12 SMAW D"
         ]
 
         if section not in sections:
@@ -97,6 +105,24 @@ class RecycleSubmitted(Database):
             # Convert each row into a dictionary
             result = [dict(zip(columns, record)) for record in records]
             return result
+    
+    def get_all_recycle_points_students(self):
+        """
+        Retrieve all records from the recycle_rewards table and return as a JSON object
+        with 'sections' and 'points' stored as separate lists.
+        """
+        with self.conn:
+            cursor = self.conn.cursor()
+            cursor.execute('SELECT section, points FROM recycle_rewards;')  # Fetch only 'section' and 'points'
+            records = cursor.fetchall()
+
+            # Separate sections and points into two lists
+            sections = [record[0] for record in records]  # First column: section
+            points = [record[1] for record in records]    # Second column: points
+
+            # Return JSON-like dictionary
+            return {"sections": sections, "points": points}
+
 
 # if __name__ == "__main__":
 #     # Assuming you have initialized your database connection properly

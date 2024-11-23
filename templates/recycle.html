@@ -17,7 +17,8 @@
         </div>
         <div id="content_userwaste" style="display: none;">
             <div class="row">
-                <div class="col-12 col-md-6 col-lg-6" style="color: hsl(40, 4%, 14%);">
+                <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-12 col-lg-12" style="color: hsl(40, 4%, 14%);">
                     <div class="border shadow p-4 rounded-4 mb-3" style="height: auto;">
                         <div id="post_content">
                             <h1 class="text-start fw-bolder w-100">Recycle Submission</h1>
@@ -89,7 +90,7 @@
                 
                 
             
-                <div class="col-12 col-md-6 col-lg-6" style="color: hsl(40, 4%, 14%);">
+                <div class="col-12 col-md-12 col-lg-12" style="color: hsl(40, 4%, 14%);">
                     <div class="border shadow p-4 rounded-4 mb-3" style="height: auto;">
                         <div id="post_content">
                             <h1 class="text-start fw-bolder w-100">Reward Guide</h1>
@@ -145,7 +146,99 @@
                             </table>
                         </div>
                     </div> 
-                </div>       
+                </div>    
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-6" style="color: hsl(40, 4%, 14%);">
+                    <div class="border shadow p-4 rounded-4 mb-3">
+                        <div id="post_content">
+                            <h1 class="text-start fw-bolder w-100">Ranking of Sections</h1>
+                            <div id="ranking_students"></div>
+                            <script>
+                                $(document).ready(function() {
+                                    let previousData = null; // Store the previous data to compare
+                                
+                                    function fetchAndUpdateChart() {
+                                        // AJAX request to fetch data
+                                        $.ajax({
+                                            url: "/get_all_recycle_points_students",
+                                            method: "GET",
+                                            dataType: "json", // Ensures response is automatically parsed as JSON
+                                            success: function(response) {
+                                                // Extract sections and points from the response
+                                                const sections = response.sections;
+                                                const points = response.points;
+                                
+                                                // Combine sections and points into a single data structure
+                                                const currentData = sections.map((section, index) => ({
+                                                    section,
+                                                    point: points[index]
+                                                }));
+                                
+                                                // Check if data has changed
+                                                if (JSON.stringify(currentData) !== JSON.stringify(previousData)) {
+                                                    previousData = currentData; // Update the previous data
+                                
+                                                    // Separate sections and points
+                                                    const chartSections = currentData.map(item => item.section);
+                                                    const chartPoints = currentData.map(item => item.point);
+                                
+                                                    // Assign colors based on points (different color for zero points)
+                                                    const barColors = currentData.map(item => (item.point === 0 ? '#cccccc' : '#2d6979'));
+                                
+                                                    // Calculate dynamic height based on the number of sections
+                                                    const chartHeight = Math.max(chartSections.length * 30, 350); // Minimum height of 350px
+                                
+                                                    // Chart options
+                                                    const options = {
+                                                        series: [{
+                                                            data: chartPoints // Include all points
+                                                        }],
+                                                        chart: {
+                                                            type: 'bar',
+                                                            height: chartHeight // Dynamic height
+                                                        },
+                                                        plotOptions: {
+                                                            bar: {
+                                                                borderRadius: 4,
+                                                                borderRadiusApplication: 'end',
+                                                                horizontal: true,
+                                                            }
+                                                        },
+                                                        colors: barColors, // Apply custom colors
+                                                        dataLabels: {
+                                                            enabled: false
+                                                        },
+                                                        xaxis: {
+                                                            categories: chartSections // Include all sections
+                                                        }
+                                                    };
+                                
+                                                    // Render the chart
+                                                    $("#ranking_students").empty(); // Clear the old chart
+                                                    const chart = new ApexCharts(document.querySelector("#ranking_students"), options);
+                                                    chart.render();
+                                                }
+                                            },
+                                            error: function(xhr, status, error) {
+                                                console.error("Failed to fetch data:", error);
+                                            }
+                                        });
+                                    }
+                                
+                                    // Polling interval (e.g., every 5 seconds)
+                                    setInterval(fetchAndUpdateChart, 1000);
+                                
+                                    // Initial fetch
+                                    fetchAndUpdateChart();
+                                });
+                                
+                            </script>
+                                
+                        </div>
+                    </div> 
+                </div>    
+                </div>   
             </div>            
         </div>
     </div>
