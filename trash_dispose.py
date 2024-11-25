@@ -16,6 +16,7 @@ class TrashDispose(Database):
         conn.commit()
 
     def insertTrashDispose(self, date, dispose, bin_type):
+        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         conn = self.conn
         cursor = conn.cursor()
         cursor.execute('''

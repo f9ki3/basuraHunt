@@ -661,7 +661,7 @@ def process_trash():
     dispose_value = data.get('dispose')  # Extract the 'dispose' value
     
     # Get the current date and time
-    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Format as a string
+    current_date = 'datetime.now().strftime("%Y-%m-%d %H:%M:%S")'  # Format as a string
 
     type = 'Trash Bin 1'
 
@@ -677,7 +677,7 @@ def process_trash2():
     dispose_value = data.get('dispose')  # Extract the 'dispose' value
     
     # Get the current date and time
-    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Format as a string
+    current_date = 'datetime.now().strftime("%Y-%m-%d %H:%M:%S")'  # Format as a string
 
     type = 'Trash Bin 2'
 
