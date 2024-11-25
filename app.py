@@ -376,8 +376,17 @@ def receive_data():
         current_trash_count = 404
         return jsonify({"status": "error", "message": "Invalid data"}), 400
     
+    # Get the distance from the data (assuming it's a float or integer value)
     distance = int(data.get('distance', 0))
-    current_trash_count = distance  # Update the global variable with new data
+
+    # Ensure the distance is within the range of 2 cm to 40 cm
+    distance = max(2, min(distance, 40))
+
+    # Calculate the percentage based on the range and round to the nearest integer
+    current_trash_count = round(((distance - 2) / (40 - 2)) * 100)
+
+    # Now, current_trash_count is the percentage as a whole number
+
     
     # Broadcast the updated trash count via WebSocket
     socketio.emit('updateTrash', {'count': current_trash_count})
@@ -412,7 +421,14 @@ def receive_data2():
         return jsonify({"status": "error", "message": "Invalid data"}), 400
     
     distance = int(data.get('distance', 0))
-    current_trash_count2 = distance  # Update the global variable with new data
+
+    # Ensure the distance is within the range of 2 cm to 40 cm
+    distance = max(2, min(distance, 40))
+
+    # Calculate the percentage based on the range and round to the nearest integer
+    current_trash_count2 = round(((distance - 2) / (40 - 2)) * 100)
+
+    # Now, current_trash_count is the percentage as a whole number
     
     # Broadcast the updated trash count via WebSocket
     socketio.emit('updateTrash2', {'count': current_trash_count2})
