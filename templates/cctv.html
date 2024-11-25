@@ -1,0 +1,176 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasuraHunt</title>
+    {% include 'header_links.html' %}
+</head>
+<body>
+    {% include 'nav-admin.html' %}
+    <div class="container d-flex flex-row">
+        {% include 'header.html' %}
+        <div class="container body-color">
+            <h4>CCTV Camera</h4>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="Camera">
+                        <video style="border: 10px solid red; border-radius: 10px" id="videoElement" width="100%" height="auto" autoplay></video>
+                    </div>
+                    <div class="mt-3">
+                        <button id="recordButton" class="btn-light btn"><i class="bi bi-camera-reels me-2"></i>Live</button>
+                        <button id="stopButton" class="btn-light btn" disabled>Stop</button>
+                        <button id="fullscreenButton" class="btn-light btn">Fullscreen</button>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <h1 class="time-display fw-bolder m-0 p-0"></h1>
+                    <h6 class="date-display m-0 p-0"></h6>
+                    <div class="mt-3">
+                        <h5>Recording Time: <span id="timeDisplay">00:00</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const videoElement = document.getElementById('videoElement');
+        const recordButton = document.getElementById('recordButton');
+        const stopButton = document.getElementById('stopButton');
+        const fullscreenButton = document.getElementById('fullscreenButton');
+        const timeDisplay = document.getElementById('timeDisplay');
+
+        let mediaRecorder;
+        let recordedChunks = [];
+        let recordingStartTime;
+        let recordingInterval;
+        let isRecording = false;
+
+        // Check if the browser supports getUserMedia
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            // Request access to the camera
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    videoElement.srcObject = stream;
+
+                    // Initialize the MediaRecorder with the video stream
+                    mediaRecorder = new MediaRecorder(stream);
+
+                    // Store recorded data chunks
+                    mediaRecorder.ondataavailable = function(event) {
+                        recordedChunks.push(event.data);
+                    };
+
+                    // Handle stopping the recording
+                    mediaRecorder.onstop = function() {
+                        // Create a Blob from the recorded chunks
+                        const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+
+                        // Create a download link for the recorded video
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'recorded-video.mp4';
+                        document.body.appendChild(a);
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    };
+
+                    // Check if there's a saved recording state and time in sessionStorage
+                    if (sessionStorage.getItem('isRecording') === 'true') {
+                        resumeRecording();
+                    } else {
+                        const savedTime = sessionStorage.getItem('recordingTime');
+                        if (savedTime) {
+                            recordingStartTime = Date.now() - parseInt(savedTime);
+                            recordingInterval = setInterval(updateRecordingTime, 1000);
+                        }
+                    }
+                })
+                .catch(function(error) {
+                    console.error("Error accessing the camera: ", error);
+                });
+        } else {
+            alert("Camera not supported by this browser.");
+        }
+
+        // Record button event listener
+        recordButton.addEventListener('click', function() {
+            if (!isRecording) {
+                startRecording();
+            }
+        });
+
+        // Stop button event listener
+        stopButton.addEventListener('click', function() {
+            if (isRecording) {
+                stopRecording();
+            }
+        });
+
+        // Fullscreen button event listener
+        fullscreenButton.addEventListener('click', function() {
+            if (videoElement.requestFullscreen) {
+                videoElement.requestFullscreen();
+            } else if (videoElement.mozRequestFullScreen) { // Firefox
+                videoElement.mozRequestFullScreen();
+            } else if (videoElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                videoElement.webkitRequestFullscreen();
+            } else if (videoElement.msRequestFullscreen) { // IE/Edge
+                videoElement.msRequestFullscreen();
+            }
+        });
+
+        // Function to start recording
+        function startRecording() {
+            mediaRecorder.start();
+            recordingStartTime = Date.now();
+            recordingInterval = setInterval(updateRecordingTime, 1000);
+            sessionStorage.setItem('isRecording', 'true');
+            sessionStorage.setItem('recordingTime', '0');
+            isRecording = true;
+            recordButton.disabled = true;
+            stopButton.disabled = false;
+            console.log('Recording started...');
+        }
+
+        // Function to stop recording
+        function stopRecording() {
+            mediaRecorder.stop();
+            clearInterval(recordingInterval);
+            isRecording = false;
+            sessionStorage.setItem('isRecording', 'false');
+            sessionStorage.setItem('recordingTime', Date.now() - recordingStartTime);
+            recordButton.disabled = false;
+            stopButton.disabled = true;
+            console.log('Recording stopped...');
+        }
+
+        // Function to resume recording
+        function resumeRecording() {
+            recordingStartTime = Date.now() - parseInt(sessionStorage.getItem('recordingTime'));
+            recordingInterval = setInterval(updateRecordingTime, 1000);
+            isRecording = true;
+            recordButton.disabled = true;
+            stopButton.disabled = false;
+            console.log('Recording resumed...');
+        }
+
+        // Function to update the recording time
+        function updateRecordingTime() {
+            const elapsedTime = Math.floor((Date.now() - recordingStartTime) / 1000);
+            const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
+            const seconds = String(elapsedTime % 60).padStart(2, '0');
+            timeDisplay.textContent = `${minutes}:${seconds}`;
+        }
+
+        // Function to reset the recording time
+        function resetRecordingTime() {
+            timeDisplay.textContent = '00:00';
+        }
+    </script>
+
+    {% include 'footer_links.html' %}
+</body>
+</html>

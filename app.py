@@ -189,6 +189,14 @@ def recycle_record():
     else:
         return redirect('/')
 
+@app.route('/cctv')
+def cctv():
+    status = session.get('status')
+    if status == 0:
+        return render_template('cctv.html')
+    else:
+        return redirect('/')
+
 @app.route('/account_manage')
 def account_manage():
     status = session.get('status')
