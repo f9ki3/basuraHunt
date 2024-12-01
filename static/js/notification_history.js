@@ -117,7 +117,20 @@ function fetchNotifications() {
                                     </div>
                                 </div>
                             `;
-                        }
+                        } else if (notification.type === 'full') {
+                            notificationHTML = `
+                                <div class="alert alert-light border-none alert-dismissible fade show d-flex align-items-center" role="alert">
+                                    <div class="me-3 rounded-5 p-3 fs-3 bg-danger text-white">
+                                        <i class="bi bi-x-circle"></i>
+                                    </div>
+                                    <div>
+                                        <p style="font-size: 12px; margin-bottom: 0;">The trashbin is full.</p>
+                                        <p style="font-size: 12px">${notification.date}</p>
+                                        <p class="time-difference" style="font-size: 12px;">${timeDifferenceText}</p>
+                                    </div>
+                                </div>
+                            `;
+                        } 
 
                         // If notificationHTML was created, append it to the #notificationHistory div
                         if (notificationHTML) {

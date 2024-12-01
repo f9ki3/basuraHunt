@@ -691,7 +691,9 @@ def process_trash():
 
     # Insert into the database (you would define this function)
     TrashDispose().insertTrashDispose(current_date, dispose_value, type)
-
+    student_id = json.loads(session.get('session_data', '{}')).get('id')
+    Notification().insertNotificationHistory(student_id, 'full')
+    Notification().insertCountNotification(student_id)
     # Return a response
     return jsonify({"status": "success", "dispose": dispose_value, "date": current_date})
 
